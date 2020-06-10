@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>hive原理及优化</title>
+<style>
+.table{
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+
+<h4>hql语句执行顺序</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+	a.与oracle相反，从左往右解析<br/>
+	b.多表关联，一般表越大，写越右，一般最右表作为驱动表（除使用hint的情况）<br/>
+	<br/>
+	</li>
+
+</ul>
+
+
+<h4>多表关联</h4>
+<ul style=" list-style-type: decimal;">
+	<li>使用 select * from A <span style="color:red">join</span> B <span style="color:red">on</span> 方式:<br/>
+	&nbsp;&nbsp;a. 在on语句中只支持等值连接 <br/>
+	&nbsp;&nbsp;b. 关联时查询优先于where子句<br/>
+	&nbsp;&nbsp;c. 在on语句中不支持 or 语法<br/>
+	</li>
+	
+	<li>使用 select * from A,B where 方式:<br/>
+	&nbsp;&nbsp;a.where中的条件不会跟oracle一样，强推入on语句，所以会先产生笛卡尔集连接，再对where条件进行数据过滤;
+	  如果分区条件写在where中不会走分区<br/>
+	&nbsp;&nbsp;b. <br/>
+	</li>
+</ul>
+
+<h4>in/not in ; exists/not exists 优化处理</h4>
+<ul style=" list-style-type: decimal;">
+	<li>oracle: select A.id,A.name from A where A.name='xx' and A.id in/not in (select B.id from B where B.id=1);<br/>
+	    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select A.id,A.name from A where A.name='xx' and exists/not exists (select 1 from B where A.id=B.id) ;<br/>
+	</li>
+	<li>
+		<span style="color:red">left join </span>改写in/not in ;exists/not exists <br/>
+		select A.id.A.name <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from (select A.id, A.name from A where A.name = 'xx') t<br/>
+		left join B
+		on A.id = B.id
+		where B.id is null / is not null<br/>
+	</li>
+	<li>
+		<span style="color:red">left semi join</span> 改写 in exists 效率更高<br/> 
+		
+		select t1.id,t1.name from (select t.id, t.name from testpartition t where t.name = 'xz') t1 left semi join user t2 on t1.id = t2.id ;
+		<br/>
+	</li>
+</ul>
+
+
+<h4>map-side join优化</h4>
+<ul style=" list-style-type: decimal;">
+	<li>原理：预读小表入内存，关联时，大表作为驱动表，减少map数<br/>
+	(默认)开启set hive.auto.convert.join=true<br/>
+	<br/>
+	</li>
+	<li>
+	优化反例：<br/>
+	小表26W（2M）数据，大表5000W数据，使用map-side join时，map阶段偶尔OOM 40个map 20reduce左右 执行时间70分钟<br/>
+	书上2种方式：<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;a.set hive.auto.convert.join=false  关闭map-side join优化<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b.set hive.mapjoin.smalltable.filesize=xxx字节  前表数据量超过大小时不使用map-side join <span style="color:red">（不生效）</span><br/>
+	关闭map-side join优化 后，map增加10倍达到400多，执行时间减少到11分钟<br/>
+	前表全部进入内存，占用很大的cpu，占用过多内存，导致内存溢出，使用强制走mapreduce的方式
+	<br/>
+	</li>
+	
+</ul>
+
+<h4>小文件合并</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+	map输入合并小文件<br/>
+	<span style="color:red">1.每个map最大输入大小 默认为256M,影响2</span><br/>
+	set mapred.max.split.size=256000000;<br/>
+	<span style="color:red">2.进行小文件合并，数量由1决定</span><br/>
+	set hive.input.format=org.apache.hadoop.hive.ql.io.CombineHiveInputFormat;<br/>
+	<span style="color:red">3.split时最大文件大小</span><br/>
+	set mapreduce.input.fileinputformat.split.maxsize=1073741824;<br/>
+	<span style="color:red">4.split时最小文件大小</span><br/>
+	set mapreduce.input.fileinputformat.split.minsize=1073741824;<br/>
+	<span style="color:red">5.每个datanode上的文件是否需要合并>3设置的值</span><br/>
+    set mapreduce.input.fileinputformat.split.minsize.per.node=1073741824;<br/>
+	<span style="color:red">6.每个rack机架上的文件是否需要合并>3设置的值</span><br/>
+    set mapreduce.input.fileinputformat.split.minsize.per.rack=1073741824;<br/>
+	
+
+	<br/>
+	</li>
+	
+	<li>
+	输出合并<br/>
+	<span style="color:red">1.map-only任务结束时合并</span><br/>
+	set hive.merge.mapfiles=true;<br/>
+	<span style="color:red">2.map-reduce任务结束时合并</span><br/>
+    set hive.merge.mapredfiles=true;<br/>
+	<span style="color:red">3.合并文件的大小</span><br/>
+	set hive.merge.size.per.task=1073741824;<br/>
+	<span style="color:red">4.当输出文件的平均大小小于该值，启动一个独立的MR任务进行文件merge</span><br/>
+    set hive.merge.smallfiles.avgsize=1073741824;<br/>
+	<br/>
+	</li>
+	
+</ul>
+
+
+<h4>文件拆分</h4>
+<ul style=" list-style-type: decimal;">
+	<li>场景，一个数据块，但是条数很多，需要设置合理的mapper数量,使单个mapper处理合适的数据量<br/>
+		mapper的划分和split、块大小、文件数相关联，采用直接拆分文件数来增加mapper数量<br/>
+		拆分文件即生成相对数量的reducer，使用 distribute by 控制mapper如何拆分数据给reducer<br/>
+		distribute by 使用哈希算法进行分发<br/>
+	<br/>
+	</li>
+	<li>方式一：set hive.exec.reducers.bytes.per.reducer=xxx字节;  每个reducer处理的字节数<br/>
+		方式二：set mapred.reduce.tasks=xx ;  xx个reducer数<br/>
+		生成临时表 create table tableName_1 as select * from tableName distribute by rand(xx) <br/>
+	<br/>
+	</li>
+</ul>
+
+<h4>数据倾斜</h4>
+<ul style=" list-style-type: decimal;">
+	<li>本质就是mapper端 每个mapper处理的数据量差异过大<br/>
+	<br/>
+	</li>
+	<li>参数设置：<br/>
+		set hive.map.aggr=true  Map 端部分聚合，相当于Combiner<br/>
+		set hive.groupby.skewindata=true 有数据倾斜的时候进行负载均衡
+<br/>
+	<br/>
+	</li>
+	<li>null值问题：<br/>
+	方法1：不参与关联，最后使用union all 合并数据 <br/>
+	方法2：left join ，连接条件使用case when 给null值赋随机数 随机平均分配到不同mapper中<br/>
+	<br/>
+	</li>
+</ul>
+</body>
+
+</html>

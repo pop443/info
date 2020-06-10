@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>metric</title>
+
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+
+
+<h4>度量</h4>
+<ul style=" list-style-type:;">
+	<li>
+		一般使用 com.yammer.metrics metrics-core 2.2.0 作为度量jar包<br/>
+		MetricRegistry为metric注册中心，它是程序中所有度量metric的容器
+		<br/><br/>
+	</li>
+	<li>
+		Gauge 仪表:<br/>
+		最简单的计量，一般用来统计瞬时状态的数据信息<br/>
+		线程安全
+		<br/><br/>
+	</li>
+	<li>
+		Counter 计数器:<br/>
+		是Gauge的一个特例，维护一个计数器，可以通过inc()和dec()方法对计数器做修改<br/>
+		线程安全
+		<br/><br/>
+	</li>
+	<li>
+		Meters :<br/>
+		用来计算事件的速率<br/>
+		线程安全
+		<br/><br/>
+	</li>
+	<li>
+		HISTOGRAM 直方图:<br/>
+		可以为数据流提供统计数据。 除了最大值，最小值，平均值外，它还可以测量 中值(median)，百分比<br/>
+		线程安全<br/><br/>
+		在统计中位数以及95%这样的数据的时候，通常需要把所有的数据拿出来，然后进行运算
+		（在大量的数据下该方法失效，所以采用了水库采集法--reservoir sampling，通过维护一个小的、可管理的水库来代表全部统计数据），
+		具体采集法有以下几种：
+<br/>
+Uniform Reservoirs：随机选择具有线性递减概率的储层的值，仅用于长时间的测量。测量统计数据最近是不是发生了变化，不要使用这个（使用下边的指数衰减水库）。<br/>
+Exponentially Decaying Reservoirs（指数衰减水库）：该水库采集的数据可以代表大约最后5分钟的全部数据。该水库也是Times 类metrics使用histogram的默认选择水库。<br/>
+Sliding Window Reservoirs：代表过去n次测量的数据<br/>
+Sliding Time Window Reservoirs：严格的代表过去n秒内的数据（注意与指数衰减库的区别，该方法严格的记录过去的每一秒的数据（而指数衰减其实还是在最后5min进行抽样），所以在高频下可能需要更多内存，而且也是最慢的水库类型）
+		<br/><br/>
+	</li>
+	<li>
+		TIMER 计时器 : meter和histogram的组合<br/>
+		用来测量一段代码被调用的速率和用时。等于Meter+Hitogram，既算TPS，也算执行时间<br/>
+		线程安全
+		<br/><br/>
+	</li>
+	<li>
+		Health Check 健康检查:<br/>
+		服务健康检查能力， 由metrics-healthchecks模块提供
+		<br/><br/>
+	</li>
+	<li>
+		总结:<br/>
+		统计某个函数被调用的频率（TPS），使用Meters。<br/>
+		统计某个方法的耗时，使用Histograms。--注意时间是以纳秒为单位的<br/>
+		既要统计某个方法的TPS又要统计其耗时时，使用Timers。--注意时间是以纳秒为单位的<br/>
+		counter用于计数<br/>
+		gauge只用于记录瞬时值<br/>
+		<br/>
+		
+		<br/><br/>
+	</li>
+	
+	
+</ul>
+
+<h4>reporter</h4>
+<ul style=" list-style-type: none;">
+	
+	<li>
+		JmxReporter :<br/>
+		可以通过 JConsole 查看
+		<br/><br/>
+	</li>
+	<li>
+		ConsoleReporter :<br/>
+		控制台输出
+		<br/><br/>
+	</li>
+	<li>
+		CsvReporter :<br/>
+		csv格式输出
+		<br/><br/>
+	</li>
+	<li>
+		Slf4jReporter :<br/>
+		log4j输出
+		<br/><br/>
+	</li>
+	<li>
+		ScheduledReporter :<br/>
+		ConsoleReporter，CsvReporter，Slf4jReporter 父类 定时任务
+		<br/><br/>
+	</li>
+</ul>
+
+
+
+
+
+
+
+</body>
+
+</html>

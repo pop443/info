@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>zookeeper概念</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h4>zookeeper 文件系统+通知机制</h4>
+<ul style=" list-style-type: decimal;">
+	<li>节点<br/>
+	<table class="table" style="width:90%;">
+		<tr>
+			<td>PERSISTENT--持久化目录节点</td>
+			<td>客户端与zookeeper断开连接后，该节点依旧存在</td>
+		</tr>
+		<tr>
+			<td>PERSISTENT_SEQUENTIAL-持久化顺序编号目录节点</td>
+			<td>客户端与zookeeper断开连接后，该节点依旧存在，只是Zookeeper给该节点名称进行顺序编号</td>
+		</tr>
+		<tr>
+			<td>EPHEMERAL-临时目录节点</td>
+			<td>客户端与zookeeper断开连接后，该节点被删除</td>
+		</tr>
+		<tr>
+			<td>EPHEMERAL_SEQUENTIAL-临时顺序编号目录节点</td>
+			<td>客户端与zookeeper断开连接后，该节点被删除，只是Zookeeper给该节点名称进行顺序编号</td>
+		</tr>
+		
+
+		</table><br/>
+	</li>
+	
+
+	<li>
+	对节点进行监听，当目录节点发生变化（数据改变、被删除、子目录节点增加删除）时，通知客户端
+	<br/>
+	</li>
+	
+	
+
+</ul>
+
+<h4>zookeeper 存放其他组件的元数据</h4>
+<ul style=" list-style-type: decimal;">
+	<li>结构：逻辑目录存储，每个路径存储数据 包括创建时间，修改时间，是否含有子文件等信息,如果是文件记录数据<br/>
+	</li>
+	
+
+	<li>hbase元数据：table,namespace，meta-region-server等信息<br/>
+	</li>
+	
+	
+	<li>kafka元数据：consumers,brokers等信息<br/>
+	</li>
+	
+
+</ul>
+
+</body>
+
+</html>

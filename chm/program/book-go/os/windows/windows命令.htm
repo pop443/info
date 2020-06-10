@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>windows指令</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+.table{
+	width:100%;
+	margin-left:-10px;
+}
+.table tr td{
+	border:1px solid black;
+	padding-left:10px;
+}
+
+.table2 tr td{
+	border:1px solid black;
+	text-align:left;
+	padding-left:10px;
+}
+
+
+.style1 {
+	color: #008000;
+}
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+<h2>windows 常用指令</h2>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+基本指令
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td style="width:20%">进程详细信息</td>
+			<td style="width:75%">wmic  process [PID]</td>
+		</tr>
+		<tr>
+			<td style="width:20%">根据网络连接找 对应 pid 或者port</td>
+			<td style="width:75%">netstat -ano | findstr [PID,port]</td>
+		</tr>
+		
+		
+</table>
+</div>
+
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

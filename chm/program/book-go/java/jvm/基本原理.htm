@@ -1,0 +1,266 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>基本原理</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:15px;
+}
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+
+</style>
+</head>
+
+<body>
+
+
+<h4>物理结构</h4>
+<img src="jvm.jpg"/>
+<ul style=" list-style-type: decimal;">
+	<li>
+	JVM内存结构主要包括两个子系统和两个组件。<br/>
+	两个子系统分别是Class loader子系统和Execution engine(执行引擎)子系统;<br/>
+	两个组件分别是Runtime data area(运行时数据区域)组件和Native interface(本地接口)组件<br/><br/>
+	</li>
+	<li>Class loader子系统的作用:<br/>
+	根据给定的全限定名类名(如java.lang.Object)来装载class文件的内容到Runtimedataarea中的methodarea(方法区域)。<br/>
+	Java程序员可以 继承 java.lang.ClassLoader类来写自己的Classloader
+	<br/><br/>
+	</li>
+	<li>Execution engine子系统的作用:<br/>
+	执行classes中的指令。任何JVMspecification实现(JDK)的核心都是Executionengine;<br/>
+	不同的JDK例如Sun的JDK和IBM的JDK好坏主要就取决于他们各自实现的Executionengine的好坏
+	<br/><br/>
+	</li>
+	<li>Nativeinterface组件:<br/>
+	与nativelibraries交互，是其它编程语言交互的接口。<br/>
+	当调用native方法的时候，就进入了一个全新的并且不再受虚拟机限制的世界，所以也很容易出现JVM无法控制的nativeheapOutOfMemory
+	<br/><br/>
+	</li>
+	<li>
+	RuntimeDataArea组件:<br/>
+	
+	a.ProgramCounter(程序计数器 PC寄存器)：每个线程启动的时候，都会创建一个PC寄存器。PC寄存器里保存有当前正在执行的JVM指令的地址。<br/><br/>	
+	b.Heap(堆)：用来保存实例或者对象的空间，而且它是垃圾回收的主要目标。当讨论类似于JVM性能之类的问题时，它经常会被提及。JVM提供者可以决定怎么来配置堆空间，以及不对它进行垃圾回收。<br/><br/>
+	c.JavaStack(java的栈)：每个线程启动的时候，都会创建一个JVM堆栈。它是用来保存栈帧的。JVM只会在JVM堆栈上对栈帧进行push和pop的操作。如果出现了异常，堆栈跟踪信息的每一行都代表一个栈帧立的信息，这些信息是通过类似于printStackTrace()这样的方法来展示的。<br/><br/>
+	
+	
+	d.MethodArea(方法区域)：方法区是所有线程共享的，它是在JVM启动的时候创建的。它保存所有被JVM加载的类和接口的运行时常量池，成员变量以及方法的信息，静态变量以及方法的字节码。JVM的提供者可以通过不同的方式来实现方法区。在Oracle 的HotSpot JVM里，方法区被称为永久区或者永久代（PermGen）。是否对方法区进行垃圾回收对JVM的实现是可选的。<br/><br/>
+
+	e. Runtime constant pool(运行时常量池):这个区域是包含在方法区里的，不过，对于JVM的操作而言，它是一个核心的角色。因此在JVM规范里特别提到了它的重要性。除了包含每个类和接口的常量，它也包含了所有方法和变量的引用。简而言之，当一个方法或者变量被引用时，JVM通过运行时常量区来查找方法或者变量在内存里的实际地址。<br/><br/>
+	
+	f.Nativemethodstack(本地方法栈)：供用非Java语言实现的本地方法的堆栈。换句话说，它是用来调用通过JNI(Java Native Interface Java本地接口）调用的C/C++代码。根据具体的语言，一个C堆栈或者C++堆栈会被创建。<br/><br/>
+	
+	</li>
+	<li>栈:<br/>
+	a.字面值 可复用 ，比如  String s1 = "abc" ; String s2 = "ab"+"c" ; 在栈中使用同一地址<br/>
+	b.操作指令 --方法形参 --线程调用方法的压栈记录 --方法计算过程中的中间值和计算结果<br/>
+	c.对象引用<br/>
+	String a = "abc" ; 可能不创建对象或在栈中创建一个字面值
+	<br/><br/>
+	</li>
+	<li>堆:<br/>
+	a.实例对象 new <br/>
+	b.方法区类字信息引用 this<br/>
+	c.实参<br/>
+	String a = new String("abc") ; 可能 在堆中创建一个对象或 在堆中创建一个 在栈中创建一个字面值
+	<br/><br/>
+	</li>
+	<li>变量:Java中变量分为静态变量，实例变量，临时变量<br/>
+	a.静态变量：位于方法区 <br/>
+	b.实例变量：作为对象的一部分，保存在堆中<br/>
+	c.临时变量：保存于栈中，栈随线程的创建而被分配<br/>
+	注：常量：位于常量池，而常量池位于方法区，若JVM采用的是分代垃圾回收，则方法区就是Perm区（永久存储区）
+	<br/><br/>
+	</li>
+</ul>
+
+<h4>编译</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		java 文件 --->
+		词法分析器--->
+		token流--->
+		语法分析器--->
+		生成语法树、抽象语法树---><br/>
+		语义分析器--->
+		注解抽象语法树--->
+		字节码生成器 --->
+		class文件<br/><br/>	
+	</li>
+	<li>
+		hive sql 解析成MR 与此类似<br/><br/>	
+	</li>
+</ul>
+
+<h4>class 字节码文件 字节码是部署Java代码的最小单位</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table">
+			<tr>
+				<td style="width:30%;background-color:lightgrey">字节码</td>
+				<td style="width:30%;background-color:lightgrey">类型</td>
+				<td style="width:30%;background-color:lightgrey">解释</td>
+			</tr>
+			<tr>
+				<td style="width:30%">B</td>
+				<td style="width:30%">byte</td>
+				<td style="width:30%">	signed byte</td>
+			</tr>
+			<tr>
+				<td style="width:30%">C</td>
+				<td style="width:30%">char</td>
+				<td style="width:30%">	Unicode character</td>
+			</tr>
+			<tr>
+				<td style="width:30%">D</td>
+				<td style="width:30%">double</td>
+				<td style="width:30%">	double-precision floating-point value</td>
+			</tr>
+			<tr>
+				<td style="width:30%">F</td>
+				<td style="width:30%">float</td>
+				<td style="width:30%">single-precision floating-point value</td>
+			</tr>
+			<tr>
+				<td style="width:30%">I</td>
+				<td style="width:30%">int</td>
+				<td style="width:30%">integer</td>
+			</tr>
+			<tr>
+				<td style="width:30%">J</td>
+				<td style="width:30%">long</td>
+				<td style="width:30%">	long integer</td>
+			</tr>
+			<tr>
+				<td style="width:30%">L</td>
+				<td style="width:30%">reference</td>
+				<td style="width:30%">类实例</td>
+			</tr>
+			<tr>
+				<td style="width:30%">S</td>
+				<td style="width:30%">short</td>
+				<td style="width:30%">	signed short</td>
+			</tr>
+			<tr>
+				<td style="width:30%">V</td>
+				<td style="width:30%">void </td>
+				<td style="width:30%">返回void类型</td>
+			</tr>
+			<tr>
+				<td style="width:30%">Z</td>
+				<td style="width:30%">boolean</td>
+				<td style="width:30%">	true or false</td>
+			</tr>
+			<tr>
+				<td style="width:30%">[</td>
+				<td style="width:30%">reference</td>
+				<td style="width:30%">one array dimension</td>
+			</tr>
+			<tr>
+				<td style="width:30%">[[</td>
+				<td style="width:30%">reference</td>
+				<td style="width:30%">two array dimension</td>
+			</tr>
+			<tr>
+				<td style="width:30%">代码前面数字</td>
+				<td style="width:30%">&nbsp;</td>
+				<td style="width:30%">字节偏移</td>
+			</tr>
+			<tr>
+				<td colspan="3" style="width:90%;text-align:center;background-color:lightgrey">例子</td>
+				
+			</tr>
+			<tr>
+				<td style="width:30%">double d[ ][ ][ ];</td>
+				
+				<td colspan="2" style="width:60%">[[[D</td>
+			</tr>
+			<tr>
+				<td style="width:30%">Object mymethod(int I, double d, Thread t)</td>
+				<td colspan="2" style="width:60%">(IDLjava/lang/Thread;)Ljava/lang/Object;</td>
+			</tr>
+			<tr>
+				<td colspan="3" style="width:90%;text-align:center;background-color:lightgrey">基本操作符</td>
+				
+			</tr>
+			<tr>
+				<td style="width:30%">invokeinterface</td>
+				<td colspan="2" style="width:60%">调用一个接口方法</td>
+			</tr>
+			<tr>
+				<td style="width:30%">invokespecial</td>
+				<td colspan="2" style="width:60%">调用一个初始化方法，私有方法或者父类的方法</td>
+			</tr>
+			<tr>
+				<td style="width:30%">invokestatic</td>
+				<td colspan="2" style="width:60%">调用静态方法</td>
+			</tr>
+			<tr>
+				<td style="width:30%">invokevirtual</td>
+				<td colspan="2" style="width:60%">调用实例方法</td>
+			</tr>
+		</table>
+		<br/><br/>	
+	</li>
+	<li>
+		Eclipse中打开String对象，显示String.class文件内容<br/><br/>
+//  (version 1.7 : 51.0, super bit)<br/>
+// Signature: Ljava/lang/Object;Ljava/io/Serializable;Ljava/lang/Comparable&lt;Ljava/lang/String;&gt;;Ljava/lang/CharSequence;<br/>
+<span style="background-color:lightgrey;">标识 实现3个类</span><br/>
+public final class java.lang.String implements java.io.Serializable, java.lang.Comparable, java.lang.CharSequence {
+
+<br/><br/>
+
+ // Field descriptor #85 [C<br/>
+ <span style="background-color:lightgrey;">字段 [C char[]</span><br/>
+  private final char[] value;<br/><br/>
+  
+  // Method descriptor #22 ()V<br/>
+   <span style="background-color:lightgrey;">方法 ()V  ()无入参 V返回为void</span><br/>
+  // Stack: 2, Locals: 1<br/>
+  public String();<br/>
+     0  aload_0 [this]<br/>
+     1  invokespecial java.lang.Object() [448]<br/>
+	  <span style="background-color:lightgrey;">初始化一个object</span><br/>
+     4  aload_0 [this]<br/>
+     5  iconst_0<br/>
+     6  putfield java.lang.String.hash32 : int [412]<br/>
+     9  aload_0 [this]<br/>
+    10  iconst_0<br/>
+    11  newarray char [5]<br/>
+    13  putfield java.lang.String.value : char[] [413]<br/>
+    16  return<br/>
+		<br/>
+		
+		<br/>	
+	</li>
+	
+</ul>
+
+</body>
+
+</html>

@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>parse</title>
+<style type="text/css">
+.c{cursor:hand}
+.m{color:blue}
+.t{color:#990000}
+.e{margin-left:1em;text-indent:-1em;margin-right:1em}
+.b{color:red;font-family:'Courier New';font-weight:bold;text-decoration:none}
+</style>
+</head>
+
+<body>
+<div><h2>parse</h2></div>
+<ul style="list-style:decimal">
+
+<li>
+获得.properties</br>
+			Properties properties = new Properties();</br>
+			InputStream is = Config.class.getClassLoader().getResourceAsStream("config.properties");</br>
+			properties.load(is);</br>
+			Iterator it = properties.keySet().iterator() ;</br>
+			while (it.hasNext()) {</br>
+				&nbsp;&nbsp;&nbsp;String key = (String)it.next() ;</br>
+				&nbsp;&nbsp;&nbsp;String value = properties.getProperty(key) ;</br>
+				&nbsp;&nbsp;&nbsp;map.put(key, value) ;</br>
+			}</br>
+			is.close();</br></br>
+</li>
+<li>
+dom4J解析xml格式</br>
+			URL url = new URL(link);</br>
+			SAXReader reader = new SAXReader();</br>
+			Document document = reader.read(url);</br>
+</br>
+			List<Node> list = document.<span style="color:red;">selectNodes</span>("//Profiles/Weather/*");<span style="color:red;">(xpath方式)</span></br>
+
+</li>
+
+</ul>
+
+
+
+
+
+
+</body>
+
+</html>

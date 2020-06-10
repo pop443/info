@@ -1,0 +1,184 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>js 插件</title>
+<style>
+div{
+	padding-left:3%;
+}
+
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+<script>
+function hoverhidden(obj){
+	//obj.nextSibling 获取下一个同辈元素
+	var nextObj = obj.nextSibling ;
+	if(nextObj.style.display=="block"){
+		nextObj.style.display = "" ;
+		obj.style.background = "#FFCC99"
+	}else{
+		nextObj.style.display = "block" ;
+		obj.style.background = "#99FFCC"
+	}
+}
+</script>
+</head>
+
+<body>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+js log 
+</div>
+<div class="divnext" >
+<br />
+	本地输出日志文件<br/>
+		调用时 会有ActiveX安全对话框 <span style=" color:red">未屏蔽</span>
+		<br />
+		<font SIZE="3" COLOR="#7f0055"><b>
+		var</b></font><font SIZE="3"> a = </font>
+		<font SIZE="3" COLOR="#7f0055"><b>new</b></font><font SIZE="3"> Logger(</font><font SIZE="3" COLOR="#2a00ff">&quot;test.log&quot;</font><font SIZE="3">) 
+		;
+		</font>
+		<br/>
+			<font SIZE="3">a.warn(</font><font SIZE="3" COLOR="#2a00ff">&quot;1&quot;</font><font SIZE="3">);
+		</font>
+		<br/>
+		<a href="../../other/Logger.js">下载Logger.js</a>
+	
+	<br /><br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+懒加载
+</div>
+<div class="divnext">
+
+<ul style="list-style-type: decimal;">
+<br />
+	<li>
+	
+	插件两个：<br/>下载<a href="../../other/jquery-1.7.2.js">jquery-1.7.2.js</a> :1.4版本没用 向上版本没试<br/>
+	 下载<a href="../../other/jquery.scrollLoading.js">jquery.scrollLoading.js</a>:
+	 
+	  <br /><br />
+	 </li>
+	
+	<li>页面使用：<br/>
+	
+	 <font SIZE="3" COLOR="#008080">
+	&lt;</font><font SIZE="3" COLOR="#3f7f7f">img</font><font SIZE="3">
+	</font><font SIZE="3" COLOR="#7f007f">class</font><font SIZE="3">=</font><font SIZE="3" COLOR="#2a00ff"><i>&quot;scrollLoading&quot;</i></font><font SIZE="3">
+	</font><font SIZE="3" COLOR="#7f007f">src</font><font SIZE="3">=</font><font SIZE="3" COLOR="#2a00ff"><i>&quot;</i></font><font SIZE="3" COLOR="#bf5f3f">&lt;%=</font><font SIZE="3">path</font><font SIZE="3" COLOR="#bf5f3f">%&gt;</font><font SIZE="3" COLOR="#2a00ff"><i>/images/default.png&quot;
+	</i></font>
+	
+	<font SIZE="3">
+	</font><font SIZE="3" COLOR="#7f007f"><br/><u>data-url</u></font><font SIZE="3">=</font><font SIZE="3" COLOR="#2a00ff"><i>&quot;</i></font><font SIZE="3" COLOR="#bf5f3f">&lt;%=</font><font SIZE="3">path</font><font SIZE="3" COLOR="#bf5f3f">%&gt;</font><font SIZE="3" COLOR="#2a00ff"><i>/images/a1.png&quot;</i></font><font SIZE="3">
+	</font><font SIZE="3" COLOR="#7f007f">width</font><font SIZE="3">=</font><font SIZE="3" COLOR="#2a00ff"><i>&quot;500&quot;</i></font><font SIZE="3">
+	</font><font SIZE="3" COLOR="#7f007f">height</font><font SIZE="3">=</font><font SIZE="3" COLOR="#2a00ff"><i>&quot;180&quot;
+	</i></font><font SIZE="3">
+	</font><br/>
+	
+	<font SIZE="3" COLOR="#7f007f">style</font><font SIZE="3">=&quot;</font><font SIZE="3" COLOR="#7f007f">background</font><font SIZE="3">:
+	</font><font SIZE="3" COLOR="#2a00e1"><i>no-repeat center</i></font><font SIZE="3">;&quot;
+	</font><font SIZE="3" COLOR="#008080">/&gt;
+	</font>
+	
+	<br/>
+	
+	<br/>
+	<font SIZE="3" COLOR="#008080">
+	&lt;</font><font SIZE="3" COLOR="#3f7f7f">script</font><font SIZE="3" COLOR="#008080">&gt;
+	</font><br/><font SIZE="3">
+	$(</font><font SIZE="3" COLOR="#2a00ff">&quot;.scrollLoading&quot;</font><font SIZE="3">).scrollLoading();
+	</font><font SIZE="3" COLOR="#008080"><br/>
+	&lt;/</font><font SIZE="3" COLOR="#3f7f7f">script</font><font SIZE="3" COLOR="#008080">&gt;
+	</font>
+
+	<br/>
+	说明 ：所有class为<font SIZE="3" COLOR="#2a00ff">scrollLoading</font>的进入异步加载
+	 <br/>
+	 src:默认的一个1*1的图片，进行预加载<br/>
+	data-url：为真正的图片路径<br/>
+	 height和width为必须的<br/>
+	 </li>
+	</ul>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+页面滚动
+</div>
+<div class="divnext">
+<ul style="list-style-type: decimal;">
+	<br/>
+	<li>
+	插件：<br/>下载<a href="../../other/explore.client.js">下载explore.client.js</a> <br/>
+	</li>
+	<li>
+	调用：var clientConfig = new CFG.Client(); <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	var boolean = clientConfig.isScroll(height) ;
+	</li>
+
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+js 正则
+</div>
+<div class="divnext">
+
+<ul style="list-style-type: decimal;">
+<br/>
+	<li>
+	插件：<br/>下载<a href="../../other/utils.js">下载utils.js</a> <br/>
+	</li>
+	<li>
+	&nbsp;&nbsp;&nbsp;&nbsp;--a:限制字符串长度，超出的以“...”表示 <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;--b:去除字符串首尾的空格<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;--c:是否是数字<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;--d:校验密码是否为6位数字<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;--e:将日期转换为数字格式<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;--f:html-string 互转<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;--g:是否邮箱<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;--h:是否存在特殊字符<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;--i:js  Map<br/>
+	java <br/>
+	//判断是否是移动号码<br/>
+	private boolean isNumber(String str) {<br/>
+		&nbsp;&nbsp;&nbsp;
+		return str.matches("13[4-9]{1}[0-9]{8}") || str.matches("15[012789]{1}[0-9]{8}")<br/>
+		   &nbsp;&nbsp;&nbsp;
+		   || str.matches("14[7]{1}[0-9]{8}") || str.matches("18[23478]{1}[0-9]{8}");<br/>
+	}<br/>
+	</li>
+
+</ul>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

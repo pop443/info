@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>http协议</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:10px;
+}
+.table tr .td1{
+	width:10%
+}
+.table tr .td2{
+	width:88%
+}
+
+</style>
+</head>
+
+<body>
+<a onclick="window.open('http://blog.csdn.net/hrbeuwhw/article/details/7531775')" href="javascript:void(0);">资料</a>
+
+<h4>请求格式</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table">
+			<tr>
+				<td colspan="2" style="width:98%;text-align:center;background-color:lightgrey"> 请求行</td>
+			</tr>
+			<tr>
+				<td class="td1">请求方法</td>
+				<td class="td2">GET </td>
+			</tr>
+			<tr>
+				<td class="td1">URL路径</td>
+				<td class="td2">/</td>
+			</tr>
+			<tr>
+				<td class="td1">HTTP版本号</td>
+				<td class="td2">HTTP/1.1</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:98%;text-align:center;background-color:lightgrey"> 头部行</td>
+			</tr>
+			<tr>
+				<td class="td1">User-Agent</td>
+				<td class="td2">客户端的浏览器信息</td>
+			</tr>
+			<tr>
+				<td class="td1">Connection</td>
+				<td class="td2">close表示使用短连接，Keep-Alive表示客户端支持持久连接</td>
+			</tr>
+			<tr>
+				<td class="td1">Date</td>
+				<td class="td2">消息产生的当前时间</td>
+			</tr>
+			<tr>
+				<td class="td1">Accept-Language</td>
+				<td class="td2">客户端支持的语言</td>
+			</tr>
+			<tr>
+				<td class="td1">Cache-Control</td>
+				<td class="td2">客户端是否支持cache。no-cache表示客户端不支持cache，如max-age=3600，告诉User Agent 该请求的响应结果在多长时间内有效，在有效期内，当用户再次需要访问时，直接从客户端本地提取，不需要访问服务器</td>
+			</tr>
+			<tr>
+				<td class="td1">Referer</td>
+				<td class="td2">Referer用以告诉服务器该请求来自于哪个URL，可以用追踪用户的WEB访问路径</td>
+			</tr>
+			<tr>
+				<td class="td1">If-Modified-Since</td>
+				<td class="td2">如果请求消息包含If-Modified-Since标题域，GET方法的语法就变成“条件GET”，即“（conditional GET）”。 条件GET方法可以对指定资源进行判断，如果它在If-Modified-Since标题域中的指定日期后发生了更新，才启动传输，否则不传输。这种条件GET允许被缓存的实体在不必经过多次请求或不必要的数据传输就能进行刷新，从而有助于降低网络负载</td>
+			</tr>
+			<tr>
+				<td class="td1">Last-Modified</td>
+				<td class="td2">Sun, 03 Dec 2008 23:52:56 GMT</td>
+			</tr>
+			<tr>
+				<td class="td1">ETag</td>
+				<td class="td2">“1cbf3-dfd-3a2adcd8″一般应用在文件下载上，用于标识响应内容的最后修改时间或内容较验码，当下一次User agent需要时，服务首先判断这二个值是否跟服务器上一致，一样则不需要返回内容</td>
+			</tr>
+			<tr>
+				<td class="td1">Expires</td>
+				<td class="td2">该请求的响应结果在什么时间失效，在没有失效之前，代理可直接从缓存中返回以前的响应结果</td>
+			</tr>
+			<tr>
+				<td class="td1">Host</td>
+				<td class="td2">指定请求资源的主机和端口号。HTTP/1.1请求必须指定Host，否则服务器会返回400状态码</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:98%;text-align:center;background-color:lightgrey"> 附属体（数据实体） 请求的附属体，GET不适用，POST方法提交数据时，用来存放请求的参数</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:98%;text-align:center;background-color:lightgrey"> 客户端传递参数方式</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:98%;"> GET方式传递，直接在URL后面</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:98%;"> POST方式传递，请求行告诉服务器参数长度，通过附属体独立传给服务器</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:98%;"> Cookie方式传递，不要忘记这种方式了，会话Session功能就是通过这种方式实现的哦</td>
+			</tr>
+		</table>
+
+	</li>
+	
+	
+</ul>
+
+<h4>响应格式</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table">
+			<tr>
+				<td colspan="2" style="width:98%;text-align:center;background-color:lightgrey"> 状态行</td>
+			</tr>
+			<tr>
+				<td class="td1">HTTP协议版本号</td>
+				<td class="td2">HTTP/1.1</td>
+			</tr>
+			<tr>
+				<td class="td1">状态码</td>
+				<td class="td2">
+					1. 1xx。信息，请求收到，继续处理。</br>
+					2. 2xx。成功。200请求成功；206断点续传。</br>
+					3. 3xx。重定向。一般跳转到新的地址。</br>
+					4. 4xx。客户端错误。404文件不存在</br>
+					5. 5xx。服务器错误。500内部错误。</br>
+					</td>
+			</tr>
+			<tr>
+				<td class="td1">状态码的文本描述信息</td>
+				<td class="td2">OK</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:98%;text-align:center;background-color:lightgrey"> 头部行</td>
+			</tr>
+			<tr>
+				<td class="td1">Set-Cookie</td>
+				<td class="td2">服务器设置客户端Cookie。设置格式是name=value，设置多个参数时中间用分号隔开。Set-Cookie时还会用到几个参数：PATH设置有效的路径，DOMAIN设置cookie生效的域名，Expire设置cookie的有效时间，0表示关闭浏览器就失效</td>
+			</tr>
+			<tr>
+				<td class="td1">Location</td>
+				<td class="td2">当服务器返回3xx重定向时，该参数实现重定向。广告链接的跳转就使用这种协议</td>
+			</tr>
+			<tr>
+				<td class="td1">Content-Length</td>
+				<td class="td2">附属体（数据实体）的长度</td>
+			</tr>
+		</table>
+
+	</li>
+	
+	
+</ul>
+
+
+<h4>http协议请求</h4>
+<ul style=" list-style-type: none;">
+	URL全称是资源描述符
+	<li>
+		
+		http1.1协议 请求类型分为8种：
+		<table class="table">
+			<tr>
+				<td class="td1">GET</td>
+				<td class="td2">资源请求</td>
+			</tr>
+			<tr>
+				<td class="td1">POST</td>
+				<td class="td2">对资源提交数据进行处理请求</td>
+			</tr>
+			<tr>
+				<td class="td1">PUT</td>
+				<td class="td2">向资源上传最新数据</td>
+			</tr>
+			<tr>
+				<td class="td1">DELETE</td>
+				<td class="td2">删除资源</td>
+			</tr>
+			<tr>
+				<td class="td1">HEAD</td>
+				<td class="td2">向服务器索要与GET请求相一致的响应，只不过响应体将不会被返回。这一方法可以在不必传输整个响应内容的情况下，就可以获取包含在响应消息头中的元信息</td>
+			</tr>
+			<tr>
+				<td class="td1">OPTIONS</td>
+				<td class="td2">返回服务器针对特定资源所支持的HTTP请求方法。也可以利用向Web服务器发送'*'的请求来测试服务器的功能性</td>
+			</tr>
+			<tr>
+				<td class="td1">TRACE</td>
+				<td class="td2">回显服务器收到的请求，主要用于测试或诊断</td>
+			</tr>
+			<tr>
+				<td class="td1">CONTENT</td>
+				<td class="td2">预留给能够将连接改为管道方式的代理服务器</td>
+			</tr>
+		</table>
+
+	</li>
+	
+	
+</ul>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1053 @@
+http://icekiller110.iteye.com/blog/1634766
+简介................................................................................
+什么是Ember.js.................................................................
+消除样板文件.....................................................................
+提供的架构........................................................................
+Ember与众不同在哪些地方....................................................
+Ember.js 概览..................................................................
+绑定：.............................................................................
+计算出的属性：..................................................................
+自动更新的模版：...............................................................
+入门指南..........................................................................
+Ember的对象模型..............................................................
+子类化类.........................................................................
+重新打开类和实例..............................................................
+计算出的属性(取值器).........................................................
+计算出的属性(设值器).........................................................
+监听器...........................................................................
+数组中的变化...................................................................
+绑定..............................................................................
+单向绑定.........................................................................
+什么时候使用....................................................................
+创建一个命名空间...............................................................
+使用Handlebars描述你的UI..................................................
+Handlebars.....................................................................
+Ember.view....................................................................
+Handlerbars基础..............................................................
+{{#if}}, {{else}},和 {{#unless}}.....................................
+{{#with}}.....................................................................
+使用{{bindAttr}}绑定元素属性.............................................
+使用{{bindAttr}}绑定类(css的类)名字....................................
+使用{{action}}处理事件.....................................................
+构建层级视图....................................................................
+{{view}}.......................................................................
+设置子视图模版.................................................................
+设置绑定.........................................................................
+修改视图的HTML...............................................................
+显示列表元素....................................................................
+书写自定义助手：...............................................................
+视图包含的控件..................................................................
+深入视图..........................................................................
+处理事件..........................................................................
+使用Ember.ContainerView人工管理视图..................................
+渲染管道..........................................................................
+定制HTML元素...................................................................
+视图上的属性绑定...............................................................
+Ember的可枚举的API.........................................................
+什么是可枚举的.................................................................
+Ember中可枚举的.............................................................
+可枚举接口......................................................................
+参数：...........................................................................
+第一个和最后一个..............................................................
+转换为数组......................................................................
+转换..............................................................................
+每个对象的设值器和取值器...................................................
+过滤..............................................................................
+汇总信息 (all 或 any).........................................................
+ 
+简介
+
+什么是Ember.js
+Ember是一个用来创建雄心勃勃的web应用程序的JS框架，它消除了样本文件并且提供一个标准的应用程序架构。
+消除样板文件
+对于每一个web应用程序都有一些通用的任务。例如：从服务器取得数据，渲染数据到屏幕上，然后当数据变更的时候更新显示信息。
+ 
+因为浏览器提供的做这件事情的工具很原始，你最终要一遍又一遍的编写相同的代码。Ember.js提供了一些工具，让你专注于你的应用程序，而不是书写100遍相同的代码。
+ 
+因为我们已经建立的许多我们自己的应用程序，我们已经超越了明显低级别的事件抽象驱动的抽象，消除大部分整个应用程序中传播变化的关联引用的样板文件,尤其是到DOM本身。
+ 
+为了辅助管理视图中的变化，Ember.js 带有一个模版引擎，当底层对象改变后可以自动的更新DOM。
+ 
+一个简单的例子，思考如下Person的模版。
+ 
+{{person.name}} is {{person.age}}.
+与任何模版系统一样，当模版初始化渲染后，它将反射出Person的当前状态。Ember.js 不仅消除了样板文件，还会在某人的姓名和年龄变化后自动的更新DOM。
+ 
+指定模版一次，Ember.js 就会保证它总是最新的。
+提供的架构
+由于应用程序是从Web页面(静态文件)演进来的，浏览器提供了仅仅够用的接口。
+ 
+Ember很容易将你的应用程序划分成原型、视图和控制器， 这提高了可测试性，使代码更加模块化，并帮助当前项目的新开发人员迅速理解项目是怎么在一起运作的。回调的日子结束了。
+ 
+Ember还提供内置支持的状态管理，所以你有一种方式来描述你的应用程序在各种嵌套状态的中的迅速转换。
+ 
+Ember与众不同在哪些地方
+传统的web应用程序让用户每次与服务器交互下载一个新的页面。这意味着每次交互都不会比你和用户的等待时间快，通常很慢。使用AJAX替换页面的一部分会有些许帮助，但是你的UI需要更新时候，仍然必须每次需要到Server的一次往返。还有，如果页面的多个部分需要一次更新多个部分，大多数开发人员只是再次重新加载页面一次，因为保持一切同步是很棘手的。
+ 
+Ember.js，像其他一些现代JavaScript框架差不多，略有差异。和大多数将逻辑放在服务器上的应用程序不同的是，Ember.js应用程序会在页面加载完毕后下载运行时需要的所有东西。那就意味着使用你的应用程序的用户从来不需要加载一个新的页面，并且你同他们交互的UI是快速的。
+ 
+这个架构的一个优势是，你的应用程序使用相同的REST API或是第三方客户端作为你的本地应用。后台开发人员可以专注于开发快速、可靠和安全的API服务端，并且不需要前端专家的参与。
+Ember.js 概览
+有三个特性，使得你乐于使用Ember：
+ 
+绑定
+计算出的属性
+模版自动更新
+绑定：
+使用绑定可以是两个不同对象的属性保持同步。你只需要声明一次绑定，然后Ember会确保变化在所有位置进行传播。
+ 
+以下是如何创建一个对于两个对象的绑定：
+
+MyApp.president = Ember.Object.create({
+  name: "Barack Obama"
+});
+MyApp.country = Ember.Object.create({
+  // Ending a property with 'Binding' tells Ember to
+  // create a binding to the presidentName property.
+  presidentNameBinding: 'MyApp.president.name'
+});
+// Later, after Ember has resolved bindings...
+MyApp.country.get('presidentName');
+// "Barack Obama"
+绑定允许你构建你的应用程序使用MVC模式，然后Rest很容易知道数据将一直正确的在层与层之间传输。
+计算出的属性：
+计算出的属性允许你像一个属性一样对待一个function：
+
+MyApp.president = Ember.Object.create({
+  firstName: "Barack",
+  lastName: "Obama",
+  fullName: function() {
+    returnthis.get('firstName') + '' + this.get('lastName');
+  // Call this flag to mark the function as a property
+  }.property()
+});
+MyApp.president.get('fullName');
+// "Barack Obama"
+计算出的属性是有用的，因为它们可以和binding一起协作，就像其他的属性一样。
+ 
+许多计算出的属性依赖于其他属性。例如，在上面的例子中，fullName属性依赖firstName和lastName来确定它的值。你可以告诉Ember关于这些依赖，像这样：
+ 
+
+MyApp.president = Ember.Object.create({
+  firstName: "Barack",
+  lastName: "Obama",
+  fullName: function() {
+    returnthis.get('firstName') + '' + this.get('lastName');
+  // Tell Ember that this computed property depends on firstName
+  // and lastName
+  }.property('firstName', 'lastName')
+});
+自动更新的模版：
+Ember使用Handlebars(一个语义化的模版库)。从你的JS 应用程序取得数据，然后把它带进DOM，创建一个<script>标签，把它放到你的HTML中任何你想要让你的值出现的地方：
+
+<script type="text/x-handlebars">
+  The President of the United States is {{MyApp.president.fullName}}.
+</script>
+这是最好的部分：模版是有意识的绑定。就是说，如果你曾经改变那些用来显示的属性的值，我们将为你自动更新它。因为你已经指定了依赖，改变这些属性也会被很好的反映出来。
+ 
+希望你可以看清这三个强大的工具是怎么在一起协作的：以一些原始属性开始，然后开始构建更复杂的属性和包含依赖的的计算出的属性。一旦你已经完成了数据的表示，你只需要说明他是如何展现一次的，然后Ember会关注剩下的。不管底层数据的如何变化，无论是来自XHR请求或用户执行操作，你的用户界面总是保持最新的。这就消除了开发人员每天都在努力的所有边缘情况的用例
+入门指南
+
+根据你的需求，这有几种方法来创建你的一个Ember.js 应用。
+ 
+如果你的需求简单或者你的兴趣只是玩一玩，你可以下载Ember.js的入门工具。它是基于HTML5 样板的，并且没有引入任何构建工具和其他依赖。首先，下载Starter Kit并且解压它，然后你可以直接在index.html文件中直接编辑Handlebars模版，Ember.js的应用程序本身是 javascripts/app.js.
+ 
+对于大型应用程序,你可能需要考虑使用Ruby on Rails。Rails能帮助您管理您的源代码和其它的资产，同时也提供你的应用程序之间通信使用的REST API。
+Ember的对象模型
+
+Ember增强了简单的JavaScript对象模型来支持绑定、监听器和支持一个强大的基于mixin的来共享代码的方法。
+ 
+作为最基本的，你使用Ember.Object的extend方法来创建一个Ember的类。
+
+Person = Ember.Object.extend({
+  say: function(thing) {
+    alert(thing);
+ }
+});
+一旦你构建了一个新的类，你可以使用create方法来创建类的实例。任何在类上定义的方法都可以在实例上使用。
+
+var person = Person.create();
+person.say("Hello") // alerts "Hello"
+当创建实例的时候，你也可以通过对象本身添加额外的属性到实例。
+
+var tom = Person.create({
+  name: "Tom Dale",
+  helloWorld: function() {
+    this.say("Hi my name is " + this.get('name'));
+  }
+});
+tom.helloWorld() // alerts "Hi my name is Tom Dale"
+因为Ember支持绑定和监听器，所以你总是可以使用get方法访问属性和使用set方法设置属性。
+ 
+当创建一个对象的实例的时候，你也可以覆盖类所定义的任何属性和方法。例如，这个例子中，你覆盖了来自Person类的say方法：
+
+var yehuda = Person.create({
+  name: "Yehuda Katz",
+  say: function(thing) {
+    var name = this.get('name');
+    this._super(name + " says: " + thing);
+  }
+});
+你可以使用对象的_super方法来调用被你覆盖的原始方法。(super是JS的保留字)
+ 
+子类化类
+你也可以使用extend方法创建类的子类。事实上，当我们调用Ember.Object的extend方法创建一个新的类，我们已经是Ember.Object的子类了。
+ 
+
+var LoudPerson = Person.extend({
+  say: function(thing) {
+    this._super(thing.toUpperCase());
+  }
+});
+当子类化的时候，你可以使用this._super来调用你要覆盖的父类方法。
+ 
+重新打开类和实例
+你不需要一下就定义好类的所有东西。你可以使用reopen方法重新打开类定义新属性。
+
+Person.reopen({
+  isPerson: true
+});
+Person.create().get('isPerson') // true
+当使用reopen的时候，你也可以使用this._super覆盖已经存在的方法。
+ 
+正如你看见的那样，reopen用来给一个实例添加属性和方法。但是当你需要创建类方法或者添加类属性，你可以使用reopenClass。
+
+Person.reopenClass({
+  createMan: function() {
+    return Person.create({isMan: true})
+  }
+});
+Person.createMan().get('isMan') // true
+计算出的属性(取值器)
+经常，你想要一个属性是基于其他属性计算来的。Ember的对象模型允许你在一个普通的类定义中很容易的定义计算出的属性。
+
+Person = Ember.Object.extend({
+  // these will be supplied by `create`
+  firstName: null,
+  lastName: null,
+  fullName: function() {
+    var firstName = this.get('firstName');
+    var lastName = this.get('lastName');
+   return firstName + '' + lastName;
+  }.property('firstName', 'lastName')
+});
+var tom = Person.create({
+  firstName: "Tom",
+  lastName: "Dale"
+});
+tom.get('fullName') // "Tom Dale"
+property方法定义function作为一个计算出的属性并且定义它的依赖。那些依赖将会再稍后我们讨论绑定和监听器的时候起作用。
+ 
+当子类化一个类或者创建一个类的实例的时候，你可以覆盖任何计算出的属性。
+ 
+计算出的属性(设值器)
+你也可以定义当设置一个计算出的属性的时候Ember可以做什么。如果你试图设置一个计算出的属性，它将在你设置它的时候带着它的key和value被调用。
+
+Person = Ember.Object.extend({
+  // these will be supplied by `create`
+  firstName: null,
+  lastName: null,
+  fullName: function(key, value) {
+    // getter
+    if (arguments.length === 1) {
+      var firstName = this.get('firstName');
+      var lastName = this.get('lastName');
+      return firstName + '' + lastName;
+    // setter
+    } else {
+      var name = value.split("");
+      this.set('firstName', name[0]);
+      this.set('lastName', name[1]);
+      return value;
+    }
+  }.property('firstName', 'lastName')
+});
+var person = Person.create();
+person.set('fullName', "Peter Wagenet");
+person.get('firstName') // Peter
+person.get('lastName') // Wagenet
+Ember将会同时调用计算出的属性的setters和getters，根据传进来的参数数目决定getter或是setter的调用。
+ 
+监听器
+Ember支持监听任何属性，包含计算出的属性。你可以使用addObserver方法来给一个对象添加监听器。
+
+Person = Ember.Object.extend({
+  // these will be supplied by `create`
+  firstName: null,
+  lastName: null,
+  fullName: function() {
+    var firstName = this.get('firstName');
+    var lastName = this.get('lastName');
+    return firstName + '' + lastName;
+  }.property('firstName', 'lastName')
+});
+var person = Person.create({
+  firstName: "Yehuda",
+  lastName: "Katz"
+});
+person.addObserver('fullName', function() {
+  // deal with the change
+});
+person.set('firstName', "Brohuda"); // observer will fire
+因为计算出的属性fullName依赖于firstName，所以更新firstName也会触发fullName的监听器。
+ 
+因为监听器很通用，Ember提供了一种内联在class定义上的定义方式。
+
+Person.reopen({
+  fullNameChanged: function() {
+    // this is an inline version of .addObserver
+  }.observes('fullName')
+});
+如果你使用Ember没有对原型进行扩展，可以使用Ember.observer方法定义内联监听器。
+
+Person.reopen({
+  fullNameChanged: Ember.observer(function() {
+    // this is an inline version of .addObserver
+  }, 'fullName')
+});
+数组中的变化
+经常，你可能有一个计算出的属性依赖于一个数组中的所有元素来确定它的值。例如，你可能想要统计一个控制器中的所有todo的元素来确定他们完成的多少。
+ 
+那个计算出的属性可能是如下：
+
+App.todosController = Ember.Object.create({
+  todos: [
+    Ember.Object.create({ isDone: false })
+  ],
+  remaining: function() {
+    var todos = this.get('todos');
+    return todos.filterProperty('isDone', false).get('length');
+  }.property('todos.@each.isDone')
+});
+注意：依赖的键(todos.@each.isDone)包含了特殊的键@each。这个会在以下四种事件中的一种发生后通知Ember.js更新绑定和触发监听器。
+ 
+todos数组中的任意个一个对象的isDone属性发生变化。
+一个元素被添加到todos数组。
+一个元素从todos数组被删除。
+控制器的todos属性改变成一个不同的数组。
+ 
+上面的例子中，remaining的统计值是1：
+
+App.todosController.get('remaining');
+// 1
+如果我们改变todo的isDone属性，remaining属性将被自动更新：
+
+var todos = App.todosController.get('todos');
+var todo = todos.objectAt(0);
+todo.set('isDone', true);
+App.todosController.get('remaining');
+// 0
+todo = Ember.Object.create({ isDone: false });
+todos.pushObject(todo);
+App.todosController.get('remaining');
+// 1
+绑定
+绑定是对两个属性建立一个连接，其中一个改变了另一个会自动的更新。绑定可以在相同的对象上连接属性，也可以贯穿两个不同的对象。与其他包含了某些绑定的实现的框架不同，Ember.js 的绑定可以用在任何对象，不只是视图和原型上。
+ 
+一种最简单的创建双向绑定的方式是创建一个以Binding字符串结尾属性，然后指定一个全局范围的内容路径：
+
+App.wife = Ember.Object.create({
+  householdIncome: 80000
+});
+App.husband = Ember.Object.create({
+  householdIncomeBinding: 'App.wife.householdIncome'
+});
+App.husband.get('householdIncome'); // 80000// Someone gets raise.
+App.husband.set('householdIncome', 90000);
+App.wife.get('householdIncome'); // 90000
+要注意一下绑定没有立即更新。Ember会一直等待直到你应用程序的所有代码都运行完成才会同步所作的改变，所以你可以改变一个bound属性任意多次，不用担心同步绑定值时候的瞬态的开销。
+单向绑定
+单向绑定只朝着一个方向传播变化的。通常单向绑定只是为了性能优化，你可以安全地更多地使用简单的双向绑定语法(当然，如果你只改变一方面的变化那么双向绑定事实上就是单向绑定)。
+
+App.user = Ember.Object.create({
+  fullName: "Kara Gates"
+});
+App.userView = Ember.View.create({
+  userNameBinding: Ember.Binding.oneWay('App.user.fullName')
+});
+// Changing the name of the user object changes// the value on the view.
+App.user.set('fullName', "Krang Gates");
+// App.userView.userName will become "Krang Gates"// ...but changes to the view don't make it back to// the object.
+App.userView.set('userName', "Truckasaurus Gates");
+App.user.get('fullName'); // "Krang Gates"
+什么时候使用
+有时候一个新的使用者会困扰于什么时候使用计算出的属性、绑定和监听器。以下是一些帮助指导：
+ 
+使用计算出的属性是为了构建一个需要合并其他属性的新属性。计算出的属性不应该包含应用程序的行为，并且当他被调用的时候不应该引起任何副作用(除了在罕见的情况)，对计算出的属性多次调用应总是保持相同的返回值(除了其依赖的属性发生了变化)。
+ 
+监听器应该包含反应其他属性变化的行为。监听器在一个绑定完成同步后你仍然需要执行一些行为的时候特别有用。
+ 
+绑定经常被用来确保两个不同层对象的同步。例如：你使用Handlebars绑定你的视图到你的控制器。你可能经常绑定同一个层的对象。例如：你可以有一个App.selectedContactController绑定它的selectedContact属性到App.contactsController。
+创建一个命名空间
+
+每个Ember应用应该有一个Ember.Application的实例。这个对象将作为全局访问你应用程序中所有的其他类和实例的命名空间服务。另外，它会设置页面的事件监听器，使得你的视图可以在用户与你的用户接口交互的时候接收到事件。
+ 
+这里有个应用程序的例子：
+ 
+window.App = Ember.Application.create();
+你可以命名成你想要的任意名称。但是为了使绑定能够找到它，你必须以大写字母开头。
+ 
+如果你嵌入一个Ember应用程序到一个已经存在的站点，你可以通过对已提供rootElement属性的指定来设置事件监听器：
+
+window.App = Ember.Application.create({
+  rootElement: '#sidebar'
+});
+ 
+使用Handlebars描述你的UI
+
+Handlebars
+Ember自带了Handlebars，一个语义话的模版语言。这些模版像是使用了嵌入表达式的有规律的HTML。
+ 
+你应该存储你的Handlebars模版到你应用程序的HTML文件中。在运行时，Ember将会编译这些模版，为此他们是在你的视图中是可使用的。
+ 
+为了马上插入一个模版到你的文档，放置一个<script>标签到你的<body>标签中:
+
+<html>
+  <body>
+    <script type="text/x-handlebars">
+      Hello, <b>{{MyApp.name}}</b>
+    </script>
+  </body>
+</html>
+为了使模版在后面的使用中被用到，给<script>标签一个指定data-template-name属性：
+
+<html>
+  <head>
+    <script type="text/x-handlebars" data-template-name="say-hello">
+      Hello, <b>{{MyApp.name}}</b>
+    </script>
+  </head>
+</html>
+Ember.view
+你可以使用Ember.view渲染一个Handlebars模版然后将其插入到DOM。
+ 
+为了告知视图要是用哪个模版，设置它的templateName属性。例如：你有一个这样的<script>标签：
+
+<html>
+  <head>
+    <script type="text/x-handlebars" data-template-name="say-hello">
+      Hello, <b>{{name}}</b>
+    </script>
+  </head>
+</html>
+我想设置templateName属性为'say-hello'。
+
+var view = Ember.View.create({
+  templateName: 'say-hello',
+  name: "Bob"
+});
+注意：在本向导的剩余部分，templateName属性将从大多数例子中被省略。你可以认为如果我们展示一个包含Ember.view和handlebars模版的代码事例，视图已经为展示这个模版使用templateName属性进行了配置。
+ 
+你可以通过调用appendTo追加视图到文档：
+ 
+  view.appendTo('#container');
+作为一个快捷方式，你可以调用append追加一个视图到文档的body：
+ 
+  view.append();
+从文档删除一个视图，调用remove：
+ 
+  view.remove();
+Handlerbars基础
+正如你上面所看到的，你可以使用一个Handler的标记来包起你的属性来输出它的值，或者一些列的括号，像这样
+ 
+My new car is {{color}}.
+这会查找并打印视图的color属性。
+ 
+例如：如果你的视图像这样：
+
+ 
+App.CarView = Ember.View.extend({
+  color: 'blue'
+});
+你的视图在浏览器中显示如下：
+ 
+My new car is blue.
+你也可以使用全局路径：
+ 
+My new car is {{App.carController.color}}.
+(Ember是通过检查首字母是否为大写来确定一个路径是全局的还是相对的，这就是为什么定义Ember应用程序的命名空间的名字必须以首字母大写开始的原因)
+ 
+本指南中所有被描述的特性都是有意识绑定的。也就是说，如果你的模版中用到的值被改变了，那么HTML将被自动的更新。像有魔力似的。
+ 
+当一个底层属性变化的时候，为了知道你HTML的哪个部分要被更新，Handlebars将插入一个带有独一无二ID的标记元素。如果你的程序运行的时候你观察过，你可能会注意到这些额外的元素：
+
+My new car is
+<scriptid="metamorph-0-start"type="text/x-placeholder"]]]]></script>
+blue
+<scriptid="metamorph-0-end"type="text/x-placeholder"]]]]></script>.
+因为为确保每个HTML标签在相同的块中，所有的Handlebars表达式被包装到这些标记中，所以你不能这样做：
+
+<!-- Don't do it! -->
+<div {{#if isUrgent}}class="urgent"{{/if}}>
+如果你想避免从这些封装的标记中获取属性输出，使用unbound 助手：
+ 
+My new car is {{unbound color}}.
+你的输出将是一个自由的标签，但是要小心，因为这个输出不会被自动的更新。
+ 
+ 
+My new car is blue.
+{{#if}}, {{else}},和 {{#unless}}
+有时你只想在一个属性存在时显示模版的一部分。例如：我们有一个包含person(一个包含firstName和lastName字段的对象)属性的视图。
+ 
+
+App.SayHelloView = Ember.View.extend({
+  person: Ember.Object.create({
+    firstName: "Joy",
+    lastName: "Clojure"
+  })
+});
+为了达到只有person对象存在的时候才会显示那部分视图的目的，我们可以使用{{#if}}助手来展现一个包含条件的块：
+
+{{#if person}}
+  Welcome back, <b>{{person.firstName}} {{person.lastName}}</b>!
+{{/if}}
+如果参数被计算为false、undefined、null或[]，Handlebars将不会展现块内容。
+ 
+如果表达式的值为false，我们还想更改模版的展现，则使用{{else}}：
+
+{{#if person}}
+  Welcome back, <b>{{person.firstName}} {{person.lastName}}</b>!
+{{else}}
+  Please log in.
+{{/if}}
+如果只想在值为falsy的时展现块内容，那么使用{{#unless}}：
+
+{{#unless hasPaid}}
+  You owe: ${{total}}
+{{/unless}}
+{{#if}}和{{#unless}}是块表达式的例子。他们可以在模版的一部分调用助手。块表达式除了他们在助手名字的前面包含一个#和需要一个闭合的表达式之外，看起来像普通的表达式一样。
+{{#with}}
+有时你可能想要调用不同于当前Ember.view上下文的一部分模版。例如：我们可以使用{{#with}}助手来修改上面的代码：
+
+{{#with person}}
+  Welcome back, <b>{{firstName}} {{lastName}}</b>!
+{{/with}}
+{{#with}}将上下文改变成你传进去的那个。上下文是指属性被查找出来时，其被引用的对象。默认，上下文是属于相应的模版的Ember.view.
+使用{{bindAttr}}绑定元素属性
+除了文字之外，你可能还想你的模块来决定你的HMTL元素的属性。例如：一个包含URL的视图：
+
+App.LogoView = Ember.View.extend({
+  logoUrl: 'http://www.mycorp.com/images/logo.png'
+});
+用Handlebars来展示这个图片最好的方式是这样的：
+
+<div id="logo">
+  <img {{bindAttr src="logoUrl"}} alt="Logo">
+</div>
+会生成如下HTML：
+
+<divid="logo"]]]]>
+  <imgsrc="http://www.mycorp.com/images/logo.png"alt="Logo"]]]]></div>
+如果你有个布尔值使用{{bindAttr}}，它将会添加或删除指定的属性。例如，如下Ember视图：
+
+App.InputView = Ember.View.extend({
+  isDisabled: true
+});
+模版：
+ 
+<input type="checkbox" {{bindAttr disabled="isDisabled"}}>
+Handlebars将生成如下的HTML：
+ 
+<inputtype="checkbox"disabled]]]]>
+使用{{bindAttr}}绑定类(css的类)名字
+类属性可以像其他属性一样被绑定，但是它也有一些特殊的行为。默认的行为像你期待的那样：
+
+App.AlertView = Ember.View.extend({
+  priority: "p4",
+  isUrgent: true
+});
+
+<div {{bindAttr class="priority"}}>
+  Warning!
+</div>
+模版将会发表成：
+
+<divclass="p4"]]]]>
+  Warning!
+</div>
+如果你的绑定值是一个一个布尔，那么经过dasherize处理后的属性版本将会被作为一个Class来使用。
+ 
+
+<div {{bindAttr class="isUrgent"}}>
+  Warning!
+</div>
+生成如下HTML：
+
+<divclass="is-urgent"]]]]>
+  Warning!
+</div>
+和其他属性不同的是，你也可以绑定多个类：
+
+<div {{bindAttr class="isUrgent priority"}}>
+  Warning!
+</div>
+你也可以指定进行替换的类名字，来代替刚刚的dasherizing版本：
+
+<div {{bindAttr class="isUrgent:urgent"}}>
+  Warning!
+</div>
+这个例子中，如果属性isUrgent是真值，类urgent将会被添加。如果它是假值，那么类urgent将会被删除。
+ 
+使用{{action}}处理事件
+使用{{action}}助手来附加你的视图类的一个元素的事件被触发时的一个处理。
+ 
+为当前视图附加一个元素的单击事件到编辑操作：
+ 
+<a href="#" {{action "edit" on="click"}}>Edit</a>
+默认的事件是单击，所以可以被简单的写成：
+ 
+<a href="#" {{action "edit"}}>Edit</a>
+包含{{action}}助手的视图作为默认的目标，也可以指向其他的视图：
+ 
+<a href="#" {{action "edit" target="parentView"}}>Edit</a>
+事件处理器可以随意接受一个jQuery的事件对象，它将会被扩展到包含的视图和上下文属性。这些属性会在将你的事件指向不同的视图时有用，例如：
+
+App.ListingView = Ember.View.extend({
+  templateName: 'listing',
+  edit: function(event) {
+    event.view.set('isEditing', true);
+  }
+});
+上面讨论的任意一个视图会生成的如下HTML元素：
+ 
+<ahref="#"data-ember-action="3"]]]]>Edit</a>
+Ember将会基于内部分配的’data-ember-action id‘委托你指定的事件到你的目标视图处理器。
+构建层级视图
+到目前为止，我们讨论了为单一视图书写模版。然而，随着你的应用程序的增长，你经常会在页面的不同地方创建一个有层次的视图。每个视图在处理事件上都是可靠的，并且会维护你需要展示的属性。
+{{view}}
+使用{{view}}助手添加一个子视图到父亲，将会把一个路径带到视图类。
+
+// Define parent view
+App.UserView = Ember.View.extend({
+  templateName: 'user',
+  firstName: "Albert",
+  lastName: "Hofmann"
+});
+// Define child view
+App.InfoView = Ember.View.extend({
+  templateName: 'info',
+  posts: 25,
+  hobbies: "Riding bicycles"
+});
+
+User: {{firstName}} {{lastName}}
+{{view App.InfoView}}
+
+<b>Posts:</b> {{posts}}
+<br>
+<b>Hobbies:</b> {{hobbies}}
+如果我们创建App.UserView的实例并且渲染它，将会得到一个这样的DOM展现：
+
+User: Albert Hofmann
+<div>
+  <b>Posts:</b> 25
+  <br>
+  <b>Hobbies:</b> Riding bicycles
+</div>
+相对路径
+ 
+并非一定要用绝对路径，你也可以指定相对于父视图的相对路径。例如：我们可以像这样内嵌上面的视图层：
+
+App.UserView = Ember.View.extend({
+  templateName: 'user',
+  firstName: "Albert",
+  lastName: "Hofmann",
+  infoView: Ember.View.extend({
+    templateName: 'info',
+    posts: 25,
+    hobbies: "Riding bicycles"
+  })
+});
+
+User: {{firstName}} {{lastName}}
+{{view infoView}}
+这样内嵌视图类的时候要确保使用小写字母，因为Ember将会把一个大写字母开头的属性解释为全局属性。
+设置子视图模版
+如果你想使用内联方式指定你的子视图模版，可以使用{{view}}助手的块结构。我们像这样重写上面的例子：
+
+App.UserView = Ember.View.extend({
+  templateName: 'user',
+  firstName: "Albert",
+  lastName: "Hofmann"
+});
+App.InfoView = Ember.View.extend({
+  posts: 25,
+  hobbies: "Riding bicycles"
+});
+
+User: {{firstName}} {{lastName}}
+{{#view App.InfoView}}
+  <b>Posts:</b> {{posts}}
+  <br>
+  <b>Hobbies:</b> {{hobbies}}
+{{/view}}
+把它作为赋值视图的部分页面时可能会有用。它允许你对页面上刚才的那部分的事件进行封装。
+设置绑定
+到目前为止的所有例子，我们都是直接在视图上设置静态的值。但是对于MVC架构最好的实现，事实上我们应该绑定我们的视图属性到控制器层。
+ 
+让我们设置一个控制器来展现我们的用户数据：
+
+App.userController = Ember.Object.create({
+  content: Ember.Object.create({
+    firstName: "Albert",
+    lastName: "Hofmann",
+    posts: 25,
+    hobbies: "Riding bicycles"
+  })
+});
+现在我们修改App.UserView为绑定到App.userController：
+
+App.UserView = Ember.View.extend({
+  templateName: 'user',
+  firstNameBinding: 'App.userController.content.firstName',
+  lastNameBinding: 'App.userController.content.lastName'
+});
+尽当我们有很少的绑定要配置的时候，像App.UserView似的，直接在模版中声明这些绑定才有用。你可以通过附加参数到{{#view}}助手。如果你要做的只是配置绑定，那么通常是创建一个新的子类而别无其他的方法。
+ 
+
+User: {{firstName}} {{lastName}}
+{{#view App.UserView postsBinding="App.userController.content.posts"
+        hobbiesBinding="App.userController.content.hobbies"}}
+  <b>Posts:</b> {{posts}}
+  <br>
+  <b>Hobbies:</b> {{hobbies}}
+{{/view}}
+注意：事实上你可以把任何属性作为一个参数传给{{view}}，而不仅仅是要绑定的。然而，一般来说如果你做了任何除了绑定的事情，创建一个子类是一个好主意。
+修改视图的HTML
+当你追加一个视图的时候，会保留它的内容创建一个新的HTML元素。如果你的视图没有任何子视图，他们也会作为父级HTML元素的孩子节点进行展示。
+ 
+默认：Ember.View的实例创建一个<div>元素。你可以通过使用tagName参数来覆盖：
+ 
+{{view App.InfoView tagName="span"}}
+你也可以通过一个ID参数来赋值一个ID属性到视图的HTML元素。
+ 
+{{view App.InfoView id="info-view"}}
+这样就会很容易的使用CSS的ID选择器来设置样式：
+
+/** Give the view a red background. **/
+  #info-view {
+    background-color: red;
+  }
+你同样可以赋值class的名称：
+ 
+{{view App.InfoView class="info urgent"}}
+你可以使用ClassBing来绑定类名称到一个视图的属性，而不是使用class。同样的行为在bindAttr的应用中进行了描述：
+
+App.AlertView = Ember.View.extend({
+  priority: "p4",
+  isUrgent: true
+});
+ 
+{{view App.AlertView classBinding="isUrgent priority"}}
+这个视图包装器的产出结果是这样：
+ 
+<divid="sc420"class="sc-view is-urgent p4"]]]]></div>
+显示列表元素
+如果你想迭代一个列表的所有对象，可以使用Handlebars的{{#each}}助手：
+
+App.PeopleView = Ember.View.extend({
+  people: [ { name: 'Yehuda' },
+            { name: 'Tom' } ]
+});
+
+<ul>
+  {{#each people}}
+    <li>Hello, {{name}}!</li>
+  {{/each}}
+</ul>
+将会输出一个list：
+
+<ul>
+  <li>Hello, Yehuda!</li>
+  <li>Hello, Tom!</li></ul>
+如果你想为列表中的每个元素都创建一个视图，你可以绑定视图的一个属性到当前上下文。例如，这个例子为每个元素创建了一个视图并且使用content属性设置它们：
+
+{{#each App.peopleController}}
+  {{#view App.PersonView contentBinding="this"}}
+    {{content.firstName}} {{content.lastName}}
+  {{/view}}
+{{/each}}
+书写自定义助手：
+有时，你可能会在你的应用程序里面多次使用一段相同的HTML。这种情况下，你可以注册一个自定义的助手，它可以在被任何模版调用。
+ 
+举个例子，你经常会使用带有自定义类的<span>标签包装某些值。你可以像这样在JS中注册一个助手：
+
+Handlebars.registerHelper('highlight', function(property) {
+  var value = Ember.getPath(this, property);
+  returnnew Handlebars.SafeString('<span class="highlight">'+value+'</span>');
+});
+如果想要从助手返回的HTML而不做任何转义，确保返回一个新的SafeString。
+ 
+在Handlebar模版的任何地方，你都可以调用这个助手：
+ 
+{{highlight name}}
+它会输出以下内容：
+ 
+<spanclass="highlight"]]]]>Peter</span>
+注意：助手函数中传递的参数作为名字，而不是它们持有的值。这允许你在值上随意设置监听器。想要取得当前参数的值，你就要像上面展示的那样使用Ember.getPath.
+视图包含的控件
+Ember自带了预包装的构建基本控件的视图集，内容输入框、复选框和选择列表等。
+EMBER.CHECKBOX
+ 
+
+    <label>
+      {{view Ember.Checkbox checkedBinding="content.isDone"}}
+      {{content.title}}
+    </label>
+EMBER.TEXTFIELD 
+
+
+    App.myText = Ember.TextField.extend({
+        formBlurredBinding: 'App.adminController.formBlurred',
+        change: function(evt) {
+          this.set('formBlurred', true);
+        }
+      });
+EMBER.SELECT
+
+
+    {{view Ember.Select viewName="select"
+                          contentBinding="App.peopleController"
+                          optionLabelPath="content.fullName"
+                          optionValuePath="content.id"
+                          prompt="Pick a person:"
+                          selectionBinding="App.selectedPersonController.person"}}
+EMBER.TEXTAREA
+
+
+    var textArea = Ember.TextArea.create({
+            valueBinding: 'TestObject.value'
+            });
+如果你想添加这些控件中的任何一个到你的视图，那么你最好继承这些控件。
+ 
+例如：
+
+App.myText = Ember.TextField.extend({
+    formBlurredBinding: 'App.adminController.formBlurred',
+    change: function(evt) {
+      this.set('formBlurred', true);
+    }
+  });
+然后你可以把它作为子视图来用，也可以捕捉事件。在下面的例子中，名称为Name的输入框的变化将会使表单失去焦点，然后出现保存按钮。
+
+<script id="formDetail" data-template-name='formDetail' type="text/x-handlebars">
+    <form>
+        <fieldset>
+           <legend>Info:</legend>                
+                   {{view App.myText name="Name" id="Name"  valueBinding="myObj.Name"}}
+                   <label for="Name">Name</label><br/>
+                   {{#if formBlurred}}
+                    <a href="#" {{action "syncData" on="click"}}>Save</a>
+                    {{/if}}
+        </fieldset>
+    </form>
+</script>
+ 
+深入视图
+
+现在你已经很熟练的使用Handlebars，让我们更深入怎么处理事件和定制所需视图。
+处理事件
+不用必须在你想要回应的元素上注册事件监听器，仅仅在实现一个响应这个事件的视图即可。
+ 
+例如，我们有一个这样的模版：
+
+{{#view App.ClickableView}}
+This is a clickable area!
+{{/view}}
+我们这样实现App.ClickableView，当它被单击的时候，一个alert被显示：
+
+App.ClickableView = Ember.View.extend({
+  click: function(evt) {
+    alert("ClickableView was clicked!");
+  }
+});
+事件会从目标视图连续冒泡到父视图，一直到根视图。这些值是只读的。如果你想使用JS人工管理视图(不使用Handlebars的{{#view}}助手来创建视图)，那么接着看下面的Ember.ContainerView文档。
+使用Ember.ContainerView人工管理视图
+通常，视图使用{{#view}}创建他们的子视图。有时使用人工管理一个视图的子视图也是有用的。如果你创建了Ember.ContainerView的实例，子视图数组就是可编辑的。你添加就会渲染到页面上，删除视图就会把它从DOM节点删除。
+
+var container = Ember.ContainerView.create();
+container.append();
+var coolView = App.CoolView.create(),
+    childViews = container.get('childViews');
+childViews.pushObject(coolView);
+作为一种快捷方式，你可以指定childViews作为属性，也可以把子视图们都作为键。当视图容器被创建后，这些视图将被实例化并且添加到子视图数组：
+
+var container = Ember.ContainerView.create({
+  childViews: ['firstView', 'secondView'],
+  firstView: App.FirstView,
+  secondView: App.SecondView
+});
+渲染管道
+在你的视图变成DOM元素之前，它们首先表现为字符串。视图展现时会顺序将他们的子视图变成字符串，然后拼接在一起。
+ 
+如果你想使用除了Handlebar以外的东西，那么你可以覆盖视图的render方法来来生成一个自定义HTML字符串。
+
+App.MyView = Ember.View.extend({
+  tagName: 'span'
+});
+这使得它很容易支持除了Handlebars以外的模版引擎。
+ 
+不过要注意，如果你覆盖渲染，值并不会自动更新。任何的更新都会是你要做的。
+定制HTML元素
+一个视图在页面上代表一个DOM元素。你可以通过改变TagName属性来改变元素的类型。
+
+App.MyView = Ember.View.extend({
+  tagName: 'span'
+});
+你也可以通过设置它的classNames为一个字符串数组来指定要应用到视图的类名字。
+
+App.MyView = Ember.View.extend({
+  classNames: ['my-view']
+});
+如果你想根据视图上属性的状态来确定class的名字，可以使用绑定类名字。如果绑定的属性是一个Boolean属性，类名字将会根据值或添加或删除属性。
+
+App.MyView = Ember.View.extend({
+  classNameBindings: ['isUrgent'],
+  isUrgent: true
+});
+生成以下视图：
+ 
+<divclass="ember-view is-urgent">
+如果isUrgent改变为false，那么is-urgent的类名字将会被删除。
+ 
+默认Boolean属性的名字是dasherized。你可以使用冒号作为分界符自定义类名字。
+
+App.MyView = Ember.View.extend({
+  classNameBindings: ['isUrgent:urgent'],
+  isUrgent: true
+});
+生成以下HTML：
+ 
+<divclass="ember-view urgent">
+如果被限制的值是一个字符串，那么它就原封不动被追加到类的名字中。
+视图上的属性绑定
+可以在展现视图的时候使用attributeBindings给DOM元素绑定属性。
+
+App.MyView = Ember.View.extend({
+  tagName: 'a',
+  attributeBindings: ['href'],
+  href: "http://emberjs.com"
+});
+Ember的可枚举的API
+
+什么是可枚举的
+在Ember中，可以是一个包含一组子对象的任何对象，允许你在这些子对象上使用可枚举的接口。最基本的可枚举对象是JS内建的Array。
+举个例子来说，所有的可枚举对象都支持标准的forEach方法。
+
+[1,2,3].forEach(function(item) {
+  console.log(item);
+});
+通常来说，枚举方法，例如forEach，会有一个附加的第二参数，它将成为回调函数中this的值(译者添加：和上下文的作用差不多)。
+
+var array = [1,2,3];
+array.forEach(function(item) {
+  console.log(item, this.indexOf(item));
+}, array)
+众多原因之中，你将会发现当使用另外一个可枚举方法作为回调给forEach的时候它会有用：
+
+var array = [1,2,3];
+array.forEach(array.removeObject, array);
+注意：用这个方式来使用第二个参数有助于解决JS中使用this的值设置给window的限制。
+Ember中可枚举的
+通常，展现成列表的Ember对象实现可枚举接口。一些例子：
+ 
+Array：Ember用可枚举接口扩展了JS的原生数组。
+ArrayProxy：一个包装了原生数组并且为视图层添加了额外的功能。
+Set：一个能快速响应它是否包含了某一对象的对象。
+可枚举接口
+参数：
+ 
+可枚举方法的回调函数包含三个参数：
+item：当前迭代的元素。
+index：一个整数，从0开始累加。
+self：枚举器本身。
+ 
+枚举一个可枚举对象的所有值使用forEach方法：
+
+enumerable.forEach(function(item, index, self) {
+  console.log(item);
+});
+调用枚举对象的每个元素的一些方法，使用invoke方法。
+
+Person = Ember.Object.extend({
+  sayHello: function() {
+    console.log("Hello from " + this.get('name'));
+  }
+});
+var people = [
+  Person.create({ name: "Juan" }),
+  Person.create({ name: "Charles" }),
+  Person.create({ name: "Majd" })
+]
+people.invoke('sayHello');
+// Hello from Juan// Hello from Charles// Hello from Majd
+第一个和最后一个
+ 
+你可以使用get('firstObject')或get('lastObject')来取得第一个或最后一个元素。
+
+[1,2,3].get('firstObject') // 1
+[1,2,3].get('lastObject')  // 3
+转换为数组
+这很简单，将一个枚举对象转换成一个数组只需要调用它的toArray方法即可。
+转换
+你可以使用map方法转换一个可枚举对象为一个衍生数组：
+
+['Goodbye', 'cruel', 'world'].map(function(item, index, self) {
+  return item + "!";
+});
+// returns ["Goodbye!", "cruel!", "world!"]
+每个对象的设值器和取值器
+在使用forEach和map时经常会取得或者设置每个元素的一个属性。你可以使用getEach或者setEach来做。
+
+var arr = [Ember.Object.create(), Ember.Object.create()];
+// we now have an Array containing two Ember.Objects
+arr.setEach('name', 'unknown');
+arr.getEach('name') // ['unknown', 'unknown']
+过滤
+另外一个可枚举对象经常执行的任务是把枚举对象作为输入，基于一些条件对它进行过滤，然后返回一个新数组
+ 
+对于任意的过滤，使用filter方法。filter方法期望如果想在最终的数组中包含它则在回调中返回真值，不希望包含则返回假值。
+
+var arr = [1,2,3,4,5];
+arr.filter(function(item, index, self) {
+  if (item < 4) { returntrue; }
+})
+// returns [1,2,3]
+和一个Ember对象集合进行协作的时候，你经常想基于一些属性过滤一个对象集。filterProperty方法是一个快捷方式。
+
+Todo = Ember.Object.extend({
+  title: null,
+  isDone: false
+});
+todos = [
+  Todo.create({ title: 'Write code', isDone: true }),
+  Todo.create({ title: 'Go to sleep' })
+];
+todos.filterProperty('isDone', true);
+// returns an Array containing just the first item
+如果你只想返回第一个匹配值，而不是所有的值，使用findProperty，它就像你使用了filter和filterProperty，但是只返回了一个元素。
+汇总信息 (all 或 any)
+如果你想找出可枚举对象中的每个元素是否都匹配一些条件，可以使用every方法。
+
+Person = Ember.Object.extend({
+  name: null,
+  isHappy: false
+});
+var people = [
+  Person.create({ name: 'Yehuda', isHappy: true }),
+  Person.create({ name: 'Majd', isHappy: false })
+];
+people.every(function(person, index, self) {
+  if(person.get('isHappy')) { returntrue; }
+});
+// returns false
+如果你想找出可枚举对象中的至少有一个元素是否都匹配一些条件，可以使用some方法。
+
+people.some(function(person, index, self) {
+  if(person.get('isHappy')) { returntrue; }
+});
+// returns true
+就像filter方法一样，every和some方法有类似的everyProperty和someProperty方法。
+
+people.everyProperty('isHappy', true) // false
+people.someProperty('isHappy', true)  // true

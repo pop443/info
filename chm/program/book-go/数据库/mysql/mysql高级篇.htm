@@ -1,0 +1,293 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>mysql</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+索引
+</div>
+<div class="divnext" >
+
+<ul style=" list-style-type: decimal;">
+	<li>
+		普通索引index :加速 查找<br/>
+	</li>
+	<li>
+		唯一索引<br/>
+		<ul>
+			<li>
+				主键索引：primary key
+			</li>
+			<li>
+				唯一索引：unique：加速查找+约束 （唯一）
+			</li>
+		
+		</ul>
+	</li>
+	<li>
+		联合索引<br/>
+		<ul>
+			<li>
+				-primary key(id,name):联合主键索引
+			</li>
+			<li>
+				-unique(id,name):联合唯一索引
+			</li>
+		<li>
+				-index(id,name):联合普通索引
+			</li>
+		</ul>
+	</li>
+	<li>
+		全文索引fulltext :用于搜索很长一篇文章的时候，效果最好<br/>
+	</li>
+	<li>
+		空间索引spatial<br/>
+	</li>
+</ul>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+索引引擎
+</div>
+<div class="divnext" >
+
+<ul style=" list-style-type: decimal;">
+	
+	<li>
+		MyISAM<br/>
+		<ul>
+			<li>
+				MyISAM(My Index Sequential Access Mode)索引循序存取法，MyISAM可压缩，读取效率高，所以经常把MyISAM用于slave层，或无写操作的表，供客户端去读取，而myisam在写库操作的时候会产生排他锁（表锁），即隔离级别为最高级别。不支持事物，也不支持传播特性（外键约束）。
+			</li>
+			<li>
+				
+			</li>
+		
+		</ul>
+	</li>
+	<li>
+		Innodb<br/>
+		<ul>
+			<li>
+				Innodb读取效率没有MyISAM高，但它支持事物，隔离级别可设定。支持行锁，对更新操作更灵活。所以通常我们见到的表都是Innodb
+			</li>
+			<li>
+				
+			</li>
+		
+		</ul>
+	</li>
+	<li>
+		MEMORY<br/>
+		<ul>
+			<li>
+				为得到最快的响应时间，采用的逻辑存储介质是系统内存
+			</li>
+			<li>
+				当mysqld守护进程崩溃时，所有的Memory数据都会丢失；不能使用BLOB和TEXT这样的长度可变的数据类型
+			</li>
+		<li>
+				用于临时表
+			</li>
+		</ul>
+	</li>
+	<li>
+		MERGE<br/>
+		<ul>
+			<li>
+				是MyISAM类型的一种变种。合并表是将几个相同的MyISAM表合并为一个虚表
+			</li>
+			<li>
+				常应用于日志和数据仓库
+			</li>
+		
+		</ul>
+	</li>
+	<li>
+		ARCHIVE<br/>
+		<ul>
+			<li>
+				归档的意思，支持索引，拥有很好的压缩机制
+			</li>
+			<li>
+				仅支持插入和查询功能
+			</li>
+		<li>
+				经常被用来当做仓库使用
+			</li>
+		</ul>
+	</li>
+	
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+执行计划
+</div>
+<div class="divnext">
+<h5>调用方式</h5>
+<ul style=" list-style-type: decimal;">
+	<li>
+		EXPLAIN SELECT<br/>
+	</li>
+	<li>
+		EXPLAIN EXTENDED SELECT   ; show warnings ;优化器重写之后的sql<br/>
+	</li>
+	<li>
+		EXPLAIN PARTITIONS SELECT ;分区表的执行计划<br/>
+	</li>
+</ul>
+
+<h5>包含内容</h5>
+<ul style=" list-style-type: decimal;">
+	<li>
+		id ：包含一组数字，表示查询中执行select子句或操作表的顺序（id相同，执行顺序由上至下 子查询） <br/>
+	</li>
+	<li>
+		select_type：示查询中每个select子句的类型<br/>
+		<ul>
+			<li>查询中不包含子查询或者UNION被标记为：SIMPLE</li>
+			<li>查询中若包含任何复杂的子部分，最外层查询则被标记为：PRIMARY</li>
+			<li>在SELECT或WHERE列表中包含了子查询，该子查询被标记为：SUBQUERY</li>
+			<li>在FROM列表中包含的子查询被标记为：DERIVED（衍生）用来表示包含在from子句中的子查询的select，mysql会递归执行并将结果放到一个临时表中。服务器内部称为"派生表"，因为该临时表是从子查询中派生出来的</li>
+			<li>若第二个SELECT出现在UNION之后，则被标记为UNION；若UNION包含在FROM子句的子查询中，外层SELECT将被标记为：DERIVED</li>
+			<li>从UNION表获取结果的SELECT被标记为：UNION RESULT</li>
+			<li>SUBQUERY和UNION还可以被标记为DEPENDENT和UNCACHEABLE。</li>
+			<li>DEPENDENT意味着select依赖于外层查询中发现的数据。</li>
+			<li>UNCACHEABLE意味着select中的某些 特性阻止结果被缓存于一个item_cache中。</li>
+		</ul>
+	</li>
+	<li>
+		table <br/>
+	</li>
+	<li>
+		type:访问类型<br/>
+		<ul>
+			<li>ALL：Full Table Scan， MySQL将遍历全表以找到匹配的行<br/>
+				explain select * from t1
+				</li>
+			<li>index：Full Index Scan，index与ALL区别为index类型只遍历索引树<br/>
+				explain select id from t1;
+			</li>
+			<li>range:索引范围扫描，对索引的扫描开始于某一点，返回匹配值域的行。显而易见的索引范围扫描是带有between或者where子句里带有<, >查询。当mysql使用索引去查找一系列值时，例如IN()和OR列表，也会显示range（范围扫描）,当然性能上面是有差异的。<br/>
+				explain select * from t1 where id in (1,4);<br/>
+				explain select * from t1 where id=1 or id=4;  <br/>
+			</li>
+			<li>ref：使用非唯一索引扫描或者唯一索引的前缀扫描，返回匹配某个单独值的记录行<br/>
+				explain select * from t1 where name='yayun';
+			</li>
+			<li> eq_ref：类似ref，区别就在使用的索引是唯一索引，对于每个索引键值，表中只有一条记录匹配，简单来说，就是多表连接中使用primary key或者 unique key作为关联条件<br/>
+				explain select t1.name from t1, t2 where t1.id=t2.id;
+			</li>
+			<li>const、system：当MySQL对查询某部分进行优化，并转换为一个常量时，使用这些类型访问。如将主键置于where列表中，MySQL就能将该查询转换为一个常量。注：system是const类型的特例，当查询的表只有一行的情况下，使用system<br/>
+				explain select * from ( select * from t1 where id=1)b1;
+			</li>
+			<li>
+			NULL：MySQL在优化过程中分解语句，执行时甚至不用访问表或索引，例如从一个索引列里选取最小值可以通过单独索引查找完成。<br/>
+				explain select * from t1 where id = (select min(id) from t2);
+			
+			</li>
+			
+		</ul>
+	</li>
+	<li>
+		possible_keys:指出MySQL能使用哪个索引在表中找到记录，查询涉及到的字段上若存在索引，则该索引将被列出，但不一定被查询使用<br/>
+	</li>
+	<li>
+		key:显示MySQL在查询中实际使用的索引，若没有使用索引，显示为NULL<br/>
+	</li>
+	<li>
+		key_len:表示索引中使用的字节数，可通过该列计算查询中使用的索引的长度（key_len显示的值为索引字段的最大可能长度，并非实际使用长度，即key_len是根据表定义计算而得，不是通过表内检索出的）<br/>
+	</li>
+	<li>
+		ref:表示上述表的连接匹配条件，即哪些列或常量被用于查找索引列上的值<br/>
+	</li>
+	<li>
+		rows:表示MySQL根据表统计信息及索引选用情况，估算的找到所需的记录所需要读取的行数<br/>
+	</li>
+	<li>
+		filtered:估算结果的占比<br/>
+	</li>
+	<li>
+		Extra:包含不适合在其他列中显示但十分重要的额外信息<br/>
+		<ul>
+			<li>Using index：
+			该值表示相应的select操作中使用了覆盖索引（Covering Index）
+			<li>Using where：
+			表示mysql服务器将在存储引擎检索行后再进行过滤。许多where条件里涉及索引中的列，当（并且如果）它读取索引时，就能被存储引擎检验，因此不是所有带where字句的查询都会显示"Using where"。有时"Using where"的出现就是一个暗示：查询可受益与不同的索引。
+			</li>
+			<li>Using temporary：
+			表示MySQL需要使用临时表来存储结果集，常见于排序和分组查询<br/>
+
+这个值表示使用了内部临时(基于内存的)表。一个查询可能用到多个临时表。有很多原因都会导致MySQL在执行查询期间创建临时表。两个常见的原因是在来自不同表的上使用了DISTINCT,或者使用了不同的ORDER BY和GROUP BY列。可以强制指定一个临时表使用基于磁盘的MyISAM存储引擎。这样做的原因主要有两个：<br/>
+1)内部临时表占用的空间超过min(tmp_table_size，max_heap_table_size)系统变量的限制<br/>
+2)使用了TEXT/BLOB 列<br/>
+			</li>
+			<li>Using filesort:
+			MySQL中无法利用索引完成的排序操作称为“文件排序”
+			</li>
+			<li> Using join buffer:
+			改值强调了在获取连接条件时没有使用索引，并且需要连接缓冲区来存储中间结果。如果出现了这个值，那应该注意，根据查询的具体情况可能需要添加索引来改进能。
+			</li>
+			<li>Impossible where:这个值强调了where语句会导致没有符合条件的行。
+			</li>
+			<li>
+			Select tables optimized away:这个值意味着仅通过使用索引，优化器可能仅从聚合函数结果中返回一行
+			
+			</li>
+			<li>
+			 Index merges:当MySQL 决定要在一个给定的表上使用超过一个索引的时候，就会出现以下格式中的一个，详细说明使用的索引以及合并的类型。<br/>
+Using sort_union(...)<br/>
+Using union(...)<br/>
+Using intersect(...)<br/>
+			
+			</li>
+			
+		</ul>
+	</li>
+</ul>
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

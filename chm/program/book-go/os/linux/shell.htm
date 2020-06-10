@@ -1,0 +1,173 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>shell编程</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+<h4>shell语法 </h4>
+<ul style=" list-style-type: decimal;">
+	<li>设置类型<br/>
+	#!/usr/bin/env bash<br/>
+	#!/bin/bash<br/><br/>
+	</li>
+	
+	<li>设置文件格式<br/>
+	:set ff=unix<br/><br/>
+	</li>
+	<li>设置字符集<br/>
+	export LANG="en_US.UTF-8"<br/>
+	</li>
+	<br/>
+	<li>运行前传参<br/>
+	./xx.sh arg1 arg2<br/>
+	使用$1 $2 代表参数<br/>
+	arg1=$1 <br/>
+	</li>
+	<br/>
+	<li>特定变量<br/>
+	$# 传递参数个数;<br/>
+	$$ 脚本运行进程号 ;<br/>
+	$! Shell最后运行的后台Process的PID<br/>
+	$* 以字符串显示所有参数;"$1 $2 $n"<br/>
+	$@ 以字符串显示所有参数;"$1" "$2" "$n"<br/>
+	$? 上条语句退出状态（返回值） 0正常 1有错<br/>
+	</li>
+
+	<br/>
+	<li>字符串的处理<br/>
+	JJ="/MMM" 绑定变量<br/>
+	unset JJ 解绑<br/>
+	echo ${JJ:-"/hhhh"} 如果JJ没有绑定变量 赋值/hhhh<br/>
+	${arg1:1} --- arg1.substr(1)<br/>
+	使用$((${arg1:1}+1)) 重新赋值<br/>
+	</li>
+	<br/>
+	<li>
+		字符串比较 = 、!= 、-z 、-n    //防止出现 空=""的情况 使用 "x$contants" = "x" 方式<br/>
+		数值比较 -eq 、-ne 、-gt 、-le、-ge、-le <br/>
+		<br/>
+		[ if -d file ]：判断制定的是否为目录<br/>
+		[ if -z file ]：判断制定的变量是否为空<br/>
+		[ if -f file ]：判断制定的是否为文件<br/>
+		[ if -L file ]:判断制定的是否为符号链接<br/>
+		[ if -r file ]：判断制定的是否可读<br/>
+		[ if -s file ]:判断存在的对象长度是否为0<br/>
+		[ if -w file ]:判断制定的是否可写<br/>
+		[ if -x file ]：判断存在的对象是否可以执行<br/>
+
+	</li>
+	<br/>
+	<li>#while 循环与if判断<br/>
+	<span style="color:red;">所有判断使用[]的 必须在字符前后加空格</span><br/>
+	while [ $ifarg -le 20 ]<br/>
+	do<br/>
+	#if 判断<br/>
+	if [ $ifarg -lt 5 ] ;then <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;	ifarg=$(($ifarg+2))<br/>
+	elif [ $ifarg -gt 5 ] ;then <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;	ifarg=$(($ifarg+3))<br/>
+	else : --什么都不做<br/>
+	fi<br/>
+	echo "--while--"$ifarg<br/>
+	done<br/>
+	</li>
+	<br/>
+	<li>#for 循环 <br/>
+	for((i=1;i<=4;i++))<br/>
+	do<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;	ifarg=$(($ifarg-$i))<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;	echo "--for--"$ifarg<br/>
+	done<br/>
+	</li>
+	<br/>
+	<li>`` 符号<br/>
+	相当于procedure中execute immediately<br/>
+	BEGIN_TIME=`date '+%s'` <br/>
+	END_TIME=`date '+%s'`<br/>
+	echo "$(($END_TIME-$BEGIN_TIME))秒"<br/>
+	</li>
+	<br/>
+	<li>hive+shell<br/><br/>
+	#单行<br/>
+	hivesql=`hive -e "select concat_ws('-','1','2') ;"`<br/>
+	执行结果为1-2<br/>
+	array=(${hivesql//-/ })<br/>
+	for i in ${array[@]}<br/>
+	do<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;	echo "单行循环"$i<br/>
+	done<br/><br/>
+	#多行中直接取值都是以 空格 分割<br/>
+	hivesql2=`hive -e "select '3A','3B' union all select '4A','4B' union all select '5A','5B' ;"`<br/>
+	echo "多行字符串"$hivesql2<br/>
+	array2=(${hivesql2// / })<br/>
+	for i in ${array2[@]}<br/>
+	do<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;	echo "多行循环"$i<br/>
+	done<br/>
+	</li>
+</ul>
+
+<h4>shell样例</h4>
+<ul style=" list-style-type: decimal;">
+	<li>简单样例<br/>
+	<a href="../../other/shell/study.sh">示例</a><br/>
+	</li>
+	<br/>
+	<li>修改用户uid小于500为>1000 并修改所属文件uid<br/>
+	<a href="../../other/shell/initUser.sh">示例</a><br/>
+	</li>
+	<br/>
+	<li>记录日志<br/>
+	<a href="../../other/shell/log.sh">示例</a><br/>
+	</li>
+	<br/>
+
+</ul>
+
+
+
+<h4>函数实例</h4>
+<ul style=" list-style-type: decimal;">
+	<li>创建函数 hello.main<br/>
+	#!/bin/sh  <br/>
+	function hello(){<br/>
+        echo hello$1<br/>
+	}<br/>
+	</li>
+	<br/>
+	<li>定位文件<br/>
+	. hello.main 如果返回 file not found 执行下一句<br/>
+	. /hello.main <br/>
+	</li>
+	<br/>
+	<li>检查载入<br/>
+	命令行 set 可以看到这个函数载入shell了<br/>
+	. /hello.main <br/>
+	</li>
+	<br/>
+	<li>函数下线<br/>
+	unset $functionname<br/>
+	<br/>
+	</li>
+	<br/>
+</ul>
+
+</body>
+
+</html>

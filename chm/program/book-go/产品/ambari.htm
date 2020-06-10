@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>ambari</title>
+<script type="text/javascript" src="../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../other/css.js"/></script>
+<style>
+.table{
+	width:100%;
+	margin-left:-10px;
+}
+.table tr td{
+	border:1px solid black;
+	text-align:left;
+	padding-left:20px;
+}
+.table2{
+	width:100%;
+	margin-left:-10px;
+}
+.table2 tr td{
+	border:1px solid ;
+	text-align:center;
+}
+
+
+.style1 {
+	color: #008000;
+}
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+网址
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			官网
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			https://hortonworks.com/
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			官网doc
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			https://docs.hortonworks.com/
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			wiki
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			https://cwiki.apache.org/confluence/display/AMBARI/Ambari
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			工具集
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			https://github.com/hortonworks/HDP-Public-Utilities 
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			调优脚本 需要找每个版本对应的
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			wget http://public-repo-1.hortonworks.com/HDP/tools/2.6.1.0/hdp_manual_install_rpm_helper_files-2.6.1.0.129.tar.gz
+			</td>
+		</tr>
+		
+		
+		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+编译
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="10" rowspan="1" style="width:100%;background-color:lightgray"> 
+			下载对应源码 并修改
+			</td>
+			
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			ambari-metrics: pom.xml 修改 针对ambari-metrics-collect和grafana的tar包 放入http资源上
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			hbase.tar、hadoop.tar、grafana.tar、phoenix.tar
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			ambari-metrics-storm-sink: pom.xml 修改storm版本 
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			storm.version=1.1.0 去掉snap-shot
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" rowspan="1" style="width:100%;background-color:lightgray"> 
+			准备环境 nodejs npm git maven Python 2.6 rpmbuild g++ 等
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			ambari-web:官网npm包下载不了，增加淘宝源
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			npm config set registry https://registry.npm.taobao.org
+			</td>
+		</tr>
+		<tr>
+			<td colspan="10" rowspan="1" style="width:100%;background-color:lightgray"> 
+			编译参考 <a href="https://cwiki.apache.org/confluence/display/AMBARI/Ambari+Development" target="x">https://cwiki.apache.org/confluence/display/AMBARI/Ambari+Development </a>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			全量编译除了（ambari-metrics）
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			mvn versions:set -DnewVersion=${AMBARI_VERSION}</br>
+			</br>
+			pushd ambari-metrics</br>
+			mvn versions:set -DnewVersion=${AMBARI_VERSION}</br>
+			popd</br>
+			</br>
+			mvn -X -B -e clean install package rpm:rpm -DskipTests -Dpython.ver="python >= 2.6"</br>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%"> 
+			ambari-metrics 
+			</td>
+			<td colspan="7" rowspan="1" style="width:80%">
+			cd ambari-metrics/</br>
+			
+			mvn versions:set -DnewVersion=${AMBARI_VERSION}</br></br>
+			mvn clean package -Dbuild-rpm -DskipTests
+			</br>
+			
+			</td>
+		</tr>
+</table>
+</div>
+
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

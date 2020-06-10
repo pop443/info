@@ -1,0 +1,896 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>oracle</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+SQL基础
+</div>
+<div class="divnext" >
+	<br />
+	--重命名表 <br />
+	ALTER TABLE 表名 rename to  新表名<br />
+	--创建相同表<br />
+	create table  表b as  select * from 表a<br />
+	<br />
+	--增加字段<br />
+	alter table AQSIQ_XTGL_TELRECORD add HFTEL_GDDH VARCHAR2(100);<br />
+	alter table AQSIQ_XTGL_TELRECORD add HFTEL_GDDH VARCHAR2(100) default 0;<br />
+	--删除字段<br />
+	alter table AQSIQ_XTGL_TELRECORD drop column HFTEL_GDDH;<br />
+	--修改字段长度<br />
+	alter table aqsiq_dbgl_zygz modify (BLQK varchar2(4000));<br />
+	--解锁用户<br />
+	alter user scott account unlock;<br />
+	--表中每一个字段的属性<br />
+	select * from all_tab_columns where table_name=&#39;EMP&#39;;<br />
+	--查询表的备注信息<br />
+	SELECT TABLE_NAME,TABLE_TYPE,COMMENTS FROM USER_TAB_COMMENTS t<br />
+	--查询字段的备注信息<br />
+	SELECT TABLE_NAME,COLUMN_NAME,COMMENTS FROM USER_COL_COMMENTS t
+<br />--单表merge into<br />
+	merge into emp2 t <br />
+	using dual<br />
+	on (t.empno=&#39;1&#39;)<br />
+	when matched then <br />
+	update set t.ename=&#39;ii&#39; where t.empno=&#39;1&#39; <br />
+	when not matched then <br />
+	insert (t.empno) values (&#39;1&#39;)<br /><br /><br />
+
+
+	<span style=" color: #CC33FF;font-size:large">函数一</span><br />
+	INITCAP('SQL Course') 首字母大写 其他小写<br />
+	CONCAT('Hello', 1) 连接两个对象<br />
+	LPAD('1',10,'*') '1'前补齐* 共10位<br />
+	RPAD('1', 10, '*') '1'后补齐* 共10位<br />
+	TRIM('H' FROM 'HelloWorld') 去掉其中H<br />
+	<br />
+	 ROUND(45.926, 2) 四舍五入 2位精度<br />
+	 TRUNC(45.926, 2) 截断成整数 精度2 <br />
+<br />
+	 NVL(colName,0) 空值转换为0<br />
+	NVL2(表达式,不为空设值,为空设值) <br />
+	 NULLIF（表达式1，表达式2）如果表达式1和表达式2相等则返回空值，如果表达式1和表达式2不相等则返回表达式1的结果 表达式1不能用字符null<br />
+	 coalesce(exp1,exp2,exp3,设值) 如果exp1为空 看exp2 知道最后一个exp 如果最后一个还为空 显示设值  表达式及设值类型必须一样 <br />
+
+<br /><br />
+	<span style=" color: #CC33FF;font-size:large">函数二</span><br />
+
+	1.decode<br />
+	select * from table_subject order by decode(subject_name, '语文', 1, '数学', 2, , '外语',3) <br />
+	decode(value,if1,result1,if2,result2,if3,result3,<span style="color:red">deault</span>);<br />
+	比如：select * from table_subject order by decode(subject_name, '语文', 1, '数学', 5, , '外语',4,2)<br />
+	顺序为语文、其他学科、外语、数学。deault相当于else<br />
+	2.to_date<br />
+	select to_date('2014-02-26 14:00:00','yyyy-mm-dd hh24:mi:ss') from dual <span style="color:red">时间相减精度为天</span><br />
+	3.EXECUTE IMMEDIATE<br />
+	执行过程的时候，可以不依赖 过程的对错（未验证）<br />
+	4.connect by prior 层级递归查询<br/>
+	
+	select t.treeid,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.parenttreeid,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.treename,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.sh,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sys_connect_by_path(t.treename, 
+	&#39;-&#39;) treename <br />
+	from tree t<br />
+	<span style="color:red">start with</span> t.treename = &#39;中国&#39;<br />
+	<span style="color:red">connect by t.parenttreeid = prior t.treeid</span><br/>
+
+
+	
+<br />
+
+			
+	
+	<br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+分区表
+</div>
+<div class="divnext">
+<span style=" color: #CC33FF;font-size:large">范围分区 range</span><br />
+create table rangeTable (tid number,ttime date) partition by range (ttime)<br />
+(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p1 values less than (to_date('2010-10-01','yyyy-mm-dd')),<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p2 values less than (to_date('2011-10-01','yyyy-mm-dd')),<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p3 values less than (maxvalue)<br />
+);<br /><br />
+<span style=" color: #CC33FF;font-size:large">散列分区 hash</span><br />
+create table hashTable (tid number,ttime date) partition by hash (tid)<br />
+(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p1 tablespace DATA_TS,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p2 tablespace DATA_TS,<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p3 tablespace DATA_TS<br />
+);<br /><br />
+<span style=" color: #CC33FF;font-size:large">列表分区 list</span><br />
+create table listTable (tid number,ttime date) partition by list (tid)<br />
+(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p1 values (1,2),<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p2 values (3,4),<br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition p3 values (default)<br />
+);<br /><br />
+<span style=" color: #CC33FF;font-size:large">范围-散列分区 range-hash</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition by range subpartition by hash<br /><br />
+<span style=" color: #CC33FF;font-size:large">范围-列表分区 range-list</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;partition by range subpartition by list<br /><br />
+
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+分析函数、窗口函数
+</div>
+<div class="divnext">
+<span style=" color: #CC33FF;font-size:large">over</span><br />
+1. 函数() over(pertion by 字段 order by 字段);<br />
+	&nbsp;&nbsp;&nbsp;
+	Pertion 按照某个字段分区<br />
+&nbsp;&nbsp;&nbsp;
+Order 按照勒个字段排序<br />
+	select distinct to_char(t.filltime,'yyyy-mm-dd') ,sum(1) over(partition by to_char(t.filltime,'yyyy-mm-dd') ) from t_c_magent_chatflag t
+<br />
+	<br />
+	例子：<br />
+
+	<font size="2">select deptno,ename,sal,<br />
+&nbsp;sum(sal) over (order by ename) 连续求和,<br />
+&nbsp;sum(sal) over () 总和,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+-- 此处sum(sal) over () 等同于sum(sal)<br />
+&nbsp;100*round(sal/sum(sal) over (),4) &quot;份额(%)&quot;<br />
+&nbsp;from emp<br />
+<br />
+<br />
+&nbsp;&nbsp;&nbsp; DEPTNO ENAME&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+SAL&nbsp;&nbsp; 连续求和&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 总和&nbsp;&nbsp;&nbsp; 
+份额(%)<br />
+---------- ---------- ---------- ---------- ---------- ----------<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 20 ADAMS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1100&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3.79<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30 ALLEN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1600&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2700&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5.51<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30 BLAKE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+2850&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 5550&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 9.82<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10 CLARK&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+2450&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 8.44<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 20 FORD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+3000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 11000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+10.34<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30 JAMES&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+950&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 11950&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+3.27<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 20 JONES&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+2975&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 14925&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+10.25<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10 KING&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+5000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 19925&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+17.23<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30 MARTIN&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1250&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 21175&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+4.31<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 10 MILLER&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1300&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 22475&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+4.48<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 20 SCOTT&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+3000&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 25475&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+10.34<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 20 SMITH&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+800&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 26275&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+2.76<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30 TURNER&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1500&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 27775&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+5.17<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 30 WARD&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+1250&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 29025&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+4.31<br />
+<br />
+</font>
+	
+	<br />
+
+	<span style=" color: #CC33FF;font-size:large">row_number()  窗口分页函数</span><br />
+	1.普通分页 <br/>
+	select * from (<br />
+&nbsp;&nbsp;&nbsp; select t1.*, rownum r from (<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select * from 
+t_1448_jiekou t order by t.f_jiekoucode desc<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) t1<br />
+&nbsp;&nbsp;&nbsp; where rownum &lt; 5<br />
+&nbsp;) t2 where t2.r &gt; 2; <br />
+<br/>
+
+	2.row_number()窗口分页<br/>
+	select * from (<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select t.*, row_number() over(order 
+by t.f_jiekoucode desc) r from t_1448_jiekou t<br />
+) t1 where t1.r between 3 and 4<br />
+<br />
+
+	
+
+	<span style=" color: #CC33FF;font-size:large">行列转换 分析函数实例</span><br />
+	&nbsp;select &#39;日期&#39;,&#39;扬州&#39;,&#39;盐城&#39;,&#39;累计&#39; from dual union all<br />
+(<br />
+&nbsp;&nbsp;&nbsp; select t2.dates,<br />
+&nbsp;&nbsp;&nbsp; to_char(sum(decode(t2.area,&#39;23&#39;,t2.counts))),<br />
+&nbsp;&nbsp;&nbsp; to_char(sum(decode(t2.area,&#39;22&#39;,t2.counts))),<br />
+&nbsp;&nbsp;&nbsp; to_char(sum(t2.counts))<br />
+from (<br />
+&nbsp;&nbsp;&nbsp; select t1.dates,t1.area,count(1) counts from<br />
+&nbsp;&nbsp;&nbsp; (<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select distinct t.f_usernumber num ,substr(t.f_opertime,0,8) 
+dates,t.f_aream area from t_1432_exchange_win_log t where<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.f_exchange_state=&#39;1&#39;<br />
+&nbsp;&nbsp;&nbsp; ) t1 group by t1.dates,t1.area<br />
+) t2 <span style="color:red">group by t2.dates </span>)<br />
+	<br />
+	<span style=" color: #CC33FF;font-size:large">rank() over()  排序函数</span><br />
+select t.*,rank() over(partition by t.deptno order by sal) no from emp2 t<br />
+<br />
+<span style=" color: #CC33FF;font-size:large">sum() over() 累加函数</span><br />
+select t.*,sum(sal) over(partition by t.deptno order by sal) no from emp2 t <br /><br />
+
+	
+	<span style=" color: #CC33FF;font-size:large">常用分析函数</span><br />
+	1、row_number() over(partition by ... order by ...)<br />
+2、rank() over(partition by ... order by ...)<br />
+3、dense_rank() over(partition by ... order by ...)<br />
+4、count() over(partition by ... order by ...)<br />
+5、max() over(partition by ... order by ...)<br />
+6、min() over(partition by ... order by ...)<br />
+7、sum() over(partition by ... order by ...)<br />
+8、avg() over(partition by ... order by ...)<br />
+9、first_value() over(partition by ... order by ...)<br />
+10、last_value() over(partition by ... order by ...)<br />
+11、lag() over(partition by ... order by ...)<br />
+12、lead() over(partition by ... order by ...)<br />
+
+
+</div>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+存储过程
+</div>
+<div class="divnext">
+	<a href="../other/Procedures.sql">Procedures.sql</a>
+	<br/>
+	<span style=" color: #CC33FF;font-size:large">update or insert 固定写法</span>
+	<br />
+	   update t_c_magent_chatflag t set t.flag='2' where t.sessionid ='11';<br/>
+   if SQL%ROWCOUNT = 0 then <br/>
+   insert into   t_c_magent_chatflag t (t.sessionid,t.flag) values ('11','2'); <br/>
+   end if; <br/><br/>
+	<span style=" color: #CC33FF;font-size:large">procedure固定格式</span> <br />
+	
+	CREATE OR REPLACE PROCEDURE p_flag(<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; i_flag     IN VARCHAR2,  ------入参 
+	<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o_ret      OUT   NUMBER  -----出参
+ 
+	<br />
+		)
+<br />
+		IS
+BEGIN
+  <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --程序块 <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o_ret := 0;
+
+<br />
+		EXCEPTION
+  <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --异常
+  <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WHEN OTHERS THEN
+    <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BEGIN
+      <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ROLLBACK;
+	<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; o_ret := 1;
+    <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END;
+	<br />
+	END p_flag;<br />
+	<br />
+	<br />
+<span style=" color: #CC33FF;font-size:large">cursor</span> <br />
+	1.隐式游标 ：<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1).对于<span style="color:red">Select 
+	…INTO…</span>语句，一次只能从数据库中获取到一条数据，对于这种类型的DML Sql语句，就是隐式Cursor。例如：Select /Update / 
+	Insert/Delete操作。 <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+	2)作用：可以通过隐式Cusor的属性来了解操作的状态和结果，从而达到流程的控制。Cursor的属性包含： <br />
+	SQL%ROWCOUNT 整型 代表DML语句成功执行的数据行数 <br />
+	SQL%FOUND&nbsp; 布尔型&nbsp; 值为TRUE代表插入、删除、更新或单行查询操作成功 <br />
+	SQL%NOTFOUND 布尔型 与SQL%FOUND属性返回值相反 <br />
+	SQL%ISOPEN 布尔型 DML执行过程中为真，结束后为假 <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 3) 隐式Cursor是系统自动打开和关闭Cursor. <br />
+	<br />
+	2.显式游标 ：<br />
+	（1） 对于从数据库中提取多行数据，就需要使用显式Cursor。显式Cursor的属性包含： <br />
+	游标的属性&nbsp;&nbsp; 返回值类型&nbsp;&nbsp; 意&nbsp;&nbsp;&nbsp; 义&nbsp; <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; %ROWCOUNT&nbsp;&nbsp; 整型&nbsp; 获得FETCH语句返回的数据行数&nbsp;
+	<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; %FOUND&nbsp; 布尔型 最近的FETCH语句返回一行数据则为真，否则为假&nbsp;
+	<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; %NOTFOUND&nbsp;&nbsp; 布尔型 与%FOUND属性返回值相反&nbsp; <br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; %ISOPEN 布尔型 游标已经打开时值为真，否则为假&nbsp; <br />
+	<br />
+	（2） 对于显式游标的运用分为四个步骤： <br />
+	<span lang="zh-cn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; √</span> &nbsp;&nbsp;&nbsp;&nbsp; 定义游标---Cursor&nbsp; [Cursor Name]&nbsp; IS; <br />
+	<span lang="zh-cn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; √&nbsp;&nbsp;&nbsp;&nbsp; </span>&nbsp;打开游标---Open&nbsp; [Cursor Name]; <br />
+	<span lang="zh-cn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; √</span> &nbsp;&nbsp;&nbsp;&nbsp; 操作数据---Fetch&nbsp; [Cursor name] <br />
+	<span lang="zh-cn">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; √</span> &nbsp;&nbsp;&nbsp;&nbsp; 关闭游标---Close [Cursor Name],这个Step绝对不可以遗漏。 <br />
+	（3）以下是三种常见显式Cursor用法。<br />
+	
+<font SIZE="2" COLOR="#008080">
+create</font><font SIZE="2"> </font><font SIZE="2" COLOR="#008080">or</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">replace</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">procedure</font><font SIZE="2"> test</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2">i_flag
+</font><font SIZE="2" COLOR="#008080">in</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">varchar2</font><font SIZE="2" COLOR="#000080">,</font><font SIZE="2"> 
+o_ret </font><font SIZE="2" COLOR="#008080">out</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">varchar2</font><font SIZE="2" COLOR="#000080">)</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">is<br>
+&nbsp;&nbsp;&nbsp; cursor</font><font SIZE="2"> cur </font>
+<font SIZE="2" COLOR="#008080">is select</font><font SIZE="2"> t.</font><font SIZE="2" COLOR="#000080">*</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">from</font><font SIZE="2"> 
+t_c_magent_chatflag t</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; cursor</font><font SIZE="2"> cur2
+</font><font SIZE="2" COLOR="#008080">is select</font><font SIZE="2"> t.</font><font SIZE="2" COLOR="#000080">*</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">from</font><font SIZE="2"> 
+t_c_magent_chatflag t</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; cursor</font><font SIZE="2"> cur3
+</font><font SIZE="2" COLOR="#008080">is select</font><font SIZE="2"> t.</font><font SIZE="2" COLOR="#000080">*</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">from</font><font SIZE="2"> 
+t_c_magent_chatflag t</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+curinfo cur</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">rowtype</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+v_sessionid t_c_magent_chatflag.sessionid</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">type</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+v_filltime t_c_magent_chatflag.filltime</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">type</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+v_flag t_c_magent_chatflag.flag</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">type</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">
+begin<br>
+</font><font SIZE="2" COLOR="#ff0000"><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- -- -- -- -- --loop 循环 对象赋值 -- -- 
+-- -- -- --<br>
+</i></font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; open</font><font SIZE="2"> cur</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; loop<br>
+</font><font SIZE="2" COLOR="#ff0000"><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --对象赋值<br>
+</i></font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fetch</font><font SIZE="2"> cur<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; into</font><font SIZE="2"> curinfo</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#ff0000"><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --当无数据时推出循环<br>
+</i></font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">when</font><font SIZE="2"> cur</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">notfound</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+dbms_output.put_line</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2" COLOR="#0000ff">&#39;1111-----&#39;</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#000080">||</font><font SIZE="2"> curinfo.sessionid</font><font SIZE="2" COLOR="#000080">);<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">loop</font><font SIZE="2" COLOR="#000080">;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font SIZE="2" COLOR="#008080">close</font><font SIZE="2"> cur</font>;<br>
+</font><font SIZE="2" COLOR="#ff0000"><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- -- -- -- -- -- loop循环 字段赋值 -- -- 
+-- -- -- --<br>
+</i></font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; open</font><font SIZE="2"> cur2</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; loop<br>
+</font><font SIZE="2" COLOR="#ff0000"><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --字段赋值<br>
+</i></font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fetch</font><font SIZE="2"> cur2<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; into</font><font SIZE="2"> v_sessionid</font><font SIZE="2" COLOR="#000080">,</font><font SIZE="2"> 
+v_filltime</font><font SIZE="2" COLOR="#000080">,</font><font SIZE="2"> v_flag</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">when</font><font SIZE="2"> cur2</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">notfound</font><font SIZE="2" COLOR="#000080">;<br>
+</font>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font SIZE="2">&nbsp;dbms_output.put_line</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2" COLOR="#0000ff">&#39;2222-----&#39;</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#000080">||</font><font SIZE="2"> v_sessionid
+</font><font SIZE="2" COLOR="#000080">||</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#0000ff">&#39;----&#39;</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#000080">||</font><font SIZE="2">v_filltime </font><font SIZE="2" COLOR="#000080">||</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#0000ff">&#39;----&#39;</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#000080">||</font><font SIZE="2"> v_flag</font><font SIZE="2" COLOR="#000080">);<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">loop</font><font SIZE="2" COLOR="#000080">;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font SIZE="2" COLOR="#008080">close</font><font SIZE="2"> cur2</font>;<br>
+</font><font SIZE="2" COLOR="#ff0000"><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- -- -- -- -- -- for循环 对象赋值 -- -- 
+-- -- -- --<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -- !important for 方式的循环 是不用 开关 游标的 
+--<br>
+</i></font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for</font><font SIZE="2"> cur3_result
+</font><font SIZE="2" COLOR="#008080">in</font><font SIZE="2"> cur3 </font>
+<font SIZE="2" COLOR="#008080">loop<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; begin<br>
+</font><font SIZE="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+dbms_output.put_line</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2" COLOR="#0000ff">&#39;3333----&#39;</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#000080">||</font><font SIZE="2"> 
+cur3_result.sessionid</font><font SIZE="2" COLOR="#000080">);<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; end</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">loop</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+o_ret </font><font SIZE="2" COLOR="#000080">:=</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#0000ff">0</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">
+exception<br>
+&nbsp;&nbsp;&nbsp; when</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">others</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">then<br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+o_ret </font><font SIZE="2" COLOR="#000080">:=</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#0000ff">1</font><font SIZE="2" COLOR="#000080">;<br>
+</font>&nbsp;&nbsp;&nbsp; <font SIZE="2">
+dbms_output.put_line</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2" COLOR="#0000ff">&#39;3333-----&#39;</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#000080">||</font><font SIZE="2"> o_ret</font><font SIZE="2" COLOR="#000080">);<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; if</font><font SIZE="2"> cur</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">isopen</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; close</font><font SIZE="2"> cur</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; end</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">if</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2">
+<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; if</font><font SIZE="2"> cur2</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">isopen</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; close</font><font SIZE="2"> cur2</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; end</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">if</font><font SIZE="2" COLOR="#000080">;<br>
+</font><font SIZE="2" COLOR="#008080">
+end</font><font SIZE="2"> test</font><font SIZE="2" COLOR="#000080">;<br>
+</font>3.<span lang="zh-cn">动态</span>游标 ：<br />
+	1） 与隐式Cursor,显式Cursor的区别：Ref 
+	Cursor是可以通过在运行期间传递参数来获取数据结果集。而另外两种Cursor，是静态的，在编译期间就决定数据结果集。 <br />
+	2） Ref cursor的使用: <br />
+	&nbsp;&nbsp;&nbsp;
+	√  Type [Cursor type name] is ref cursor <br />
+	&nbsp;&nbsp;&nbsp;
+	√  Define 动态的Sql语句 <br />
+	&nbsp;&nbsp;&nbsp;
+	√  Open cursor <br />
+	&nbsp;&nbsp;&nbsp;
+	√  操作数据---Fetch&nbsp; [Cursor name] <br />
+	&nbsp;&nbsp;&nbsp;
+	√  Close Cursor <br />
+
+
+
+<font SIZE="2" COLOR="#008080">
+create</font><font SIZE="2"> </font><font SIZE="2" COLOR="#008080">or</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">replace</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">procedure</font><font SIZE="2"> testB</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2"><br />
+	o_ret
+</font><font SIZE="2" COLOR="#008080">out</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">varchar2</font><font SIZE="2" COLOR="#000080"><br />
+	)</font><font SIZE="2">
+<br />
+</font><font SIZE="2" COLOR="#008080">is</br>
+&nbsp;&nbsp;&nbsp; type</font><font SIZE="2"> cur_type
+</font><font SIZE="2" COLOR="#008080">is</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">ref</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">cursor</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+cur cur_type</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+v_sql </font><font SIZE="2" COLOR="#008080">varchar2</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2" COLOR="#0000ff">2000</font><font SIZE="2" COLOR="#000080">);</br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+cur_row t_c_magent_chatflag</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">rowtype</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+v_flag </font><font SIZE="2" COLOR="#008080">varchar2</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2" COLOR="#0000ff">10</font><font SIZE="2" COLOR="#000080">);</br>
+</font><font SIZE="2" COLOR="#008080">
+begin</br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+v_flag </font><font SIZE="2" COLOR="#000080">:=</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#0000ff">&#39;1&#39;</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+v_sql </font><font SIZE="2" COLOR="#000080">:=</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#0000ff">&#39;select * from t_c_magent_chatflag t where t.flag 
+= :v_flag &#39;</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; open</font><font SIZE="2"> cur </font>
+<font SIZE="2" COLOR="#008080">for</font><font SIZE="2"> v_sql
+</font><font SIZE="2" COLOR="#008080">using</font><font SIZE="2"> v_flag</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; loop</br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fetch</font><font SIZE="2"> cur </font>
+<font SIZE="2" COLOR="#008080">into</font><font SIZE="2"> cur_row</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exit</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">when</font><font SIZE="2"> cur</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">notfound</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+dbms_output.put_line</font><font SIZE="2" COLOR="#000080">(</font><font SIZE="2">cur_row.sessionid</font><font SIZE="2" COLOR="#000080">);</br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; end</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">loop</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2" COLOR="#008080">&nbsp;&nbsp;&nbsp; close</font><font SIZE="2"> cur</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2">
+&nbsp;&nbsp;&nbsp;
+o_ret </font><font SIZE="2" COLOR="#000080">:=</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#0000ff">0</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2" COLOR="#008080">exception</br>
+when</font><font SIZE="2"> </font><font SIZE="2" COLOR="#008080">others</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">then</font><font SIZE="2"> <br />
+&nbsp;&nbsp;&nbsp; o_ret </font>
+<font SIZE="2" COLOR="#000080">:=</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#0000ff">1</font><font SIZE="2" COLOR="#000080">;</font><font SIZE="2">
+	<br />
+&nbsp;&nbsp;&nbsp;
+</font><font SIZE="2" COLOR="#008080">if</font><font SIZE="2"> cur</font><font SIZE="2" COLOR="#000080">%</font><font SIZE="2" COLOR="#008080">isopen</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">then</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; close</font><font SIZE="2"> cur</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2" COLOR="#008080">
+&nbsp;&nbsp;&nbsp;
+end</font><font SIZE="2"> </font><font SIZE="2" COLOR="#008080">if</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2" COLOR="#008080">
+end</font><font SIZE="2"> testB</font><font SIZE="2" COLOR="#000080">;</font><br />
+	<br />
+	<span lang="zh-cn">游标作为出参：<br />
+	1.建包类型<br />
+
+<font SIZE="2" COLOR="#008080">
+CREATE</font><font SIZE="2"> </font><font SIZE="2" COLOR="#008080">OR</font><font SIZE="2">
+</font><font SIZE="2" COLOR="#008080">REPLACE</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">PACKAGE</font><font SIZE="2"> Pack_test </font>
+<font SIZE="2" COLOR="#008080">IS</br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TYPE</font><font SIZE="2"> t_test
+</font><font SIZE="2" COLOR="#008080">IS</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">REF</font><font SIZE="2"> </font>
+<font SIZE="2" COLOR="#008080">CURSOR</font><font SIZE="2" COLOR="#000080">;</br>
+</font><font SIZE="2" COLOR="#008080">
+END</font><font SIZE="2"> Pack_test</font><font SIZE="2" COLOR="#000080">;<br />
+	2.作为出参<br />
+
+<font SIZE="3" COLOR="#000080">
+<font SIZE="3" COLOR="#008080">
+create</font><font SIZE="3"> </font><font SIZE="3" COLOR="#008080">or</font><font SIZE="3">
+</font><font SIZE="3" COLOR="#008080">replace</font><font SIZE="3"> </font>
+<font SIZE="3" COLOR="#008080">procedure</font><font SIZE="3"> testC</font>(<font SIZE="3"><br />
+&nbsp;&nbsp;&nbsp; o_cur
+</font><font SIZE="3" COLOR="#008080">OUT</font><font SIZE="3"> PACK_test.t_test</font>,<font SIZE="3"><br />
+&nbsp;&nbsp;&nbsp; o_ret
+</font><font SIZE="3" COLOR="#008080">out</font><font SIZE="3"> </font>
+<font SIZE="3" COLOR="#008080">varchar2<br />
+	</font>)<font SIZE="3">
+</font><font SIZE="3" COLOR="#008080">is</br>
+</font><font SIZE="3">
+&nbsp;&nbsp;&nbsp;
+v_sql </font><font SIZE="3" COLOR="#008080">varchar2</font>(<font SIZE="3" COLOR="#0000ff">200</font>)<font SIZE="3">
+</font>;</br>
+	<font SIZE="3">
+&nbsp;&nbsp;&nbsp;
+v_code </font><font SIZE="3" COLOR="#008080">varchar2</font>(<font SIZE="3" COLOR="#0000ff">200</font>)<font SIZE="3">
+</font>;</br>
+	<font SIZE="3" COLOR="#008080">
+begin</font><font SIZE="3"></br>
+&nbsp;&nbsp;&nbsp;
+v_code </font>:=<font SIZE="3"> </font>
+<font SIZE="3" COLOR="#0000ff">&#39;14100000&#39;</font>;</br>
+	<font SIZE="3">
+&nbsp;&nbsp;&nbsp;
+v_sql </font>:=<font SIZE="3"> </font>
+<font SIZE="3" COLOR="#0000ff">&#39;select * from t_ucp_cityinfo where 1=1 &#39;</font><font SIZE="3">
+</font>;</br>
+	<font SIZE="3" COLOR="#008080">&nbsp;&nbsp;&nbsp; if</font><font SIZE="3"> </font>
+	(<font SIZE="3">v_code </font>
+<font SIZE="3" COLOR="#008080">is</font><font SIZE="3"> </font>
+<font SIZE="3" COLOR="#008080">not</font><font SIZE="3"> </font>
+<font SIZE="3" COLOR="#008080">null</font>)<font SIZE="3">
+</font><font SIZE="3" COLOR="#008080">then</font><font SIZE="3"> </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+v_sql </font>:=<font SIZE="3"> v_sql</font>||<font SIZE="3" COLOR="#0000ff">&#39;and 
+orgaid like &#39;&#39;%&#39;&#39; ||:v_code|| &#39;&#39;%&#39;&#39;&#39;</font><font SIZE="3"> </font>
+	;</br>
+	<font SIZE="3" COLOR="#008080">&nbsp;&nbsp;&nbsp; else</br>
+</font><font SIZE="3">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+v_sql </font>:=<font SIZE="3"> v_sql</font>||<font SIZE="3" COLOR="#0000ff">&#39;and 
+&#39;&#39;1&#39;&#39; = :v_code&#39;</font><font SIZE="3"> </font>;</br>
+	<font SIZE="3">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+v_code </font>:=<font SIZE="3"> </font>
+<font SIZE="3" COLOR="#0000ff">&#39;1&#39;</font><font SIZE="3"> </font>
+	;</br>
+	<font SIZE="3" COLOR="#008080">&nbsp;&nbsp;&nbsp; end</font><font SIZE="3"> </font>
+<font SIZE="3" COLOR="#008080">if</font><font SIZE="3"> </font>
+	;</br>
+	<font SIZE="3" COLOR="#008080">&nbsp;&nbsp;&nbsp; open</font><font SIZE="3"> o_cur </font>
+<font SIZE="3" COLOR="#008080">for</font><font SIZE="3"> v_sql </font>
+<font SIZE="3" COLOR="#008080">using</font><font SIZE="3"> v_code </font>
+	;</br>
+	<font SIZE="3">
+&nbsp;&nbsp;&nbsp;
+o_ret </font>:=<font SIZE="3"> </font>
+<font SIZE="3" COLOR="#0000ff">0</font><font SIZE="3"> </font>
+	;</br>
+	<font SIZE="3" COLOR="#008080">
+exception</br>
+&nbsp;&nbsp;&nbsp; when</font><font SIZE="3"> </font>
+<font SIZE="3" COLOR="#008080">others</font><font SIZE="3"> </font>
+<font SIZE="3" COLOR="#008080">then</font><font SIZE="3"> </br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+o_ret </font>:=<font SIZE="3"> </font>
+<font SIZE="3" COLOR="#0000ff">1</font><font SIZE="3"> </font>
+	;</br>
+	<font SIZE="3">
+</br>
+</font><font SIZE="3" COLOR="#008080">
+end</font><font SIZE="3"> testC</font>;</br>
+	</font>
+
+	</font></span>
+	<br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+建用户、表空间
+</div>
+<div class="divnext">
+	--创建表空间<br />
+	create tablespace $tablespaceName datafile 'F:\ORACLE\ORACLE11\ORADATA\ORCL\$tablespaceName.dbf' size 20m autoextend on;<br />
+	--查看表空间<br />
+	select * from dba_data_files t where t.tablespace_name='$tablespaceName'<br />
+	select * from dba_tablespaces t where t.tablespace_name='$tablespaceName'<br />
+	<br />
+	--创建用户<br />
+	create user $user identified by $pwd<br />
+	default tablespace $tablespaceName<br />
+	temporary tablespace temp<br />
+	profile DEFAULT;<br />
+	--查看用户<br />
+	select * from dba_users t where t.username='$user';<br />
+	
+	<br />
+	--授权<br />
+grant connect to $user; <br />
+grant resource to $user;<br />
+grant create session, alter session,create cluster,create procedure,create synonym,create sequence,create snapshot,create table,create trigger,create type, execute any type,create view,select any table,execute any procedure, force transactionto $user;
+grant execute on dbms_random to $user;<br />
+grant execute on dbms_job to $user;<br />
+grant unlimited tablespace to $user;<br />
+	<br />
+	
+</div>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+编译失效对象
+</div>
+<div class="divnext"><br />
+	--3.重编译所有失效的存储过程、包、触发器、视图、函数....<br />
+	<br />
+	prompt --3 重编译所有失效的存储过程、包、触发器、视图、函数....<br />
+	set serveroutput on;<br />
+	DECLARE<br />
+	v_oldInvalidNum NUMBER(10) := 0;<br />
+	v_newInvalidNum NUMBER(10) := 0;<br />
+	BEGIN<br />
+	<br />
+	--自动编译包头<br />
+	LOOP<br />
+	SELECT COUNT(*)<br />
+	INTO v_newInvalidNum<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;PACKAGE&#39;;<br />
+	EXIT WHEN v_oldInvalidNum = v_newInvalidNum;<br />
+	v_oldInvalidNum := v_newInvalidNum;<br />
+	FOR r IN (SELECT Object_Name<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;PACKAGE&#39;)<br />
+	LOOP<br />
+	BEGIN<br />
+	EXECUTE IMMEDIATE &#39;alter PACKAGE &#39; || r.Object_Name || &#39; Compile &#39;;<br />
+	EXCEPTION<br />
+	WHEN OTHERS THEN<br />
+	dbms_output.put_line(&#39;compilie PACKAGE &#39; || r.Object_Name ||<br />
+	&#39; ERROR!&#39;);<br />
+	END;<br />
+	END LOOP;<br />
+	<br />
+	END LOOP;<br />
+	<br />
+	--自动重编译包体<br />
+	<br />
+	v_oldInvalidNum := 0;<br />
+	v_newInvalidNum := 0;<br />
+	LOOP<br />
+	SELECT COUNT(*)<br />
+	INTO v_newInvalidNum<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;PACKAGE BODY&#39;;<br />
+	EXIT WHEN v_oldInvalidNum = v_newInvalidNum;<br />
+	v_oldInvalidNum := v_newInvalidNum;<br />
+	FOR r IN (SELECT Object_Name<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;PACKAGE BODY&#39;)<br />
+	LOOP<br />
+	BEGIN<br />
+	EXECUTE IMMEDIATE &#39;alter PACKAGE &#39; || r.Object_Name ||<br />
+	&#39; Compile BODY &#39;;<br />
+	EXCEPTION<br />
+	WHEN OTHERS THEN<br />
+	dbms_output.put_line(&#39;compilie PACKAGE BODY &#39; || r.Object_Name ||<br />
+	&#39; ERROR!&#39;);<br />
+	END;<br />
+	END LOOP;<br />
+	<br />
+	END LOOP;<br />
+	<br />
+	--自动重编译触发器<br />
+	v_oldInvalidNum := 0;<br />
+	v_newInvalidNum := 0;<br />
+	LOOP<br />
+	SELECT COUNT(*)<br />
+	INTO v_newInvalidNum<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;TRIGGER&#39;;<br />
+	EXIT WHEN v_oldInvalidNum = v_newInvalidNum;<br />
+	v_oldInvalidNum := v_newInvalidNum;<br />
+	FOR r IN (SELECT Object_Name<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;TRIGGER&#39;)<br />
+	LOOP<br />
+	BEGIN<br />
+	EXECUTE IMMEDIATE &#39;alter TRIGGER &#39; || r.Object_Name || &#39; Compile &#39;;<br />
+	EXCEPTION<br />
+	WHEN OTHERS THEN<br />
+	dbms_output.put_line(&#39;compilie TRIGGER &#39; || r.Object_Name ||<br />
+	&#39; ERROR!&#39;);<br />
+	END;<br />
+	END LOOP;<br />
+	END LOOP;<br />
+	<br />
+	--自动重编译视图<br />
+	v_oldInvalidNum := 0;<br />
+	v_newInvalidNum := 0;<br />
+	LOOP<br />
+	SELECT COUNT(*)<br />
+	INTO v_newInvalidNum<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;VIEW&#39;;<br />
+	<br />
+	EXIT WHEN v_oldInvalidNum = v_newInvalidNum;<br />
+	v_oldInvalidNum := v_newInvalidNum;<br />
+	FOR r IN (SELECT Object_Name<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;VIEW&#39;)<br />
+	LOOP<br />
+	BEGIN<br />
+	EXECUTE IMMEDIATE &#39;alter VIEW &#39; || r.Object_Name || &#39; Compile &#39;;<br />
+	EXCEPTION<br />
+	WHEN OTHERS THEN<br />
+	dbms_output.put_line(&#39;compilie VIEW &#39; || r.Object_Name ||<br />
+	&#39; ERROR!&#39;);<br />
+	END;<br />
+	END LOOP;<br />
+	<br />
+	END LOOP;<br />
+	<br />
+	--自动重编译函数<br />
+	v_oldInvalidNum := 0;<br />
+	v_newInvalidNum := 0;<br />
+	LOOP<br />
+	SELECT COUNT(*)<br />
+	INTO v_newInvalidNum<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;FUNCTION&#39;;<br />
+	<br />
+	EXIT WHEN v_oldInvalidNum = v_newInvalidNum;<br />
+	v_oldInvalidNum := v_newInvalidNum;<br />
+	FOR r IN (SELECT Object_Name<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;FUNCTION&#39;)<br />
+	LOOP<br />
+	BEGIN<br />
+	EXECUTE IMMEDIATE &#39;alter FUNCTION &#39; || r.Object_Name || &#39; Compile &#39;;<br />
+	EXCEPTION<br />
+	WHEN OTHERS THEN<br />
+	dbms_output.put_line(&#39;compilie FUNCTION &#39; || r.Object_Name ||<br />
+	&#39; ERROR!&#39;);<br />
+	END;<br />
+	END LOOP;<br />
+	<br />
+	END LOOP;<br />
+	<br />
+	--自动重编译存储过程<br />
+	v_oldInvalidNum := 0;<br />
+	v_newInvalidNum := 0;<br />
+	LOOP<br />
+	SELECT COUNT(*)<br />
+	INTO v_newInvalidNum<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;PROCEDURE&#39;;<br />
+	<br />
+	EXIT WHEN v_oldInvalidNum = v_newInvalidNum;<br />
+	v_oldInvalidNum := v_newInvalidNum;<br />
+	FOR r IN (SELECT Object_Name<br />
+	FROM user_objects<br />
+	WHERE Status = &#39;INVALID&#39; AND OBJECT_TYPE = &#39;PROCEDURE&#39;)<br />
+	LOOP<br />
+	BEGIN<br />
+	EXECUTE IMMEDIATE &#39;alter procedure &#39; || r.Object_Name ||<br />
+	&#39; Compile &#39;;<br />
+	EXCEPTION<br />
+	WHEN OTHERS THEN<br />
+	dbms_output.put_line(&#39;compilie PROCEDURE &#39; || r.Object_Name ||<br />
+	&#39; ERROR!&#39;);<br />
+	END;<br />
+	END LOOP;<br />
+	<br />
+	END LOOP;<br />
+	<br />
+	dbms_output.put_line(&#39;======================&#39;);<br />
+	EXCEPTION<br />
+	WHEN OTHERS THEN<br />
+	dbms_output.put_line(&#39;error!&#39;);<br />
+	END;<br />
+	/<br />
+	<br />
+	<br />
+	prompt 打印失效对象<br />
+	<br />
+	SELECT T.OBJECT_NAME, T.OBJECT_ID, T.OBJECT_TYPE<br />
+	FROM USER_OBJECTS T<br />
+	WHERE T.STATUS = &#39;INVALID&#39;;<br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+plsql
+</div>
+<div class="divnext">
+--设置 plsql 字符集<br />
+set NLS_LANG=SIMPLIFIED CHINESE_CHINA.ZHS16GBK<br />
+--cmd 启动 plsql
+"F:\Oracle\PLSQL Developer\plsqldev.exe"
+<br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

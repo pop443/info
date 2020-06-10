@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>oracle工具篇</title>
+</head>
+<script language="javascript">
+</script>
+<body>
+<h4>oracle工具篇</h4>
+<ul style=" list-style-type: decimal;">
+
+
+	<li>
+		系统视图一般有三种表 user/all/dba <br/>
+		--查询所有表名<br/>
+	select t.table_name from user_tables/all_tables/dba_tables t order by t.table_name<br/>
+	--查询所有索引<br/>
+	select t.table_name from user_indexs/all_indexs/dba_indexs t<br/>
+	--查询所有对象<br/>
+	select t.table_name from user_objects/all_objects/dba_objects t<br/>
+
+	--一般不准确&nbsp; oracle 有定时任务刷新这些数据<br/>
+	--手动收集<br/>
+	
+	begin<br/>
+&nbsp;&nbsp;&nbsp; dbms_stats.gather_schema_stats(&#39;datasource&#39;);<br/>
+	end;<br/>
+	</li>
+	<br/>
+	
+	<li>5种约束<br/>
+	NOT NULL 非空约束<br/>
+UNIQUE  唯一约束<br/>
+PRIMARY KEY 主键约束<br/>
+FOREIGN KEY 外键约束<br/>
+CHECK 自定义约束<br/>
+<br/>
+语法<br/>
+建表内  <br/>
+create table tablename(<br/>
+xx xx ,<br/>
+CONSTRAINT 约束名 PRIMARY KEY (字段，字段))  <br/>
+	</li>
+	<br/>
+	
+	<li>数据字典（元数据信息）<br/>
+	user_tables 用户表<br/>
+	user_objects 用户对象proc funcion<br/>
+	user_catalog 用户表、视图 同义词 <br/>
+	</li>
+	<br/>
+	
+	<li>查看表有没有数据<br/>
+		select t.num_rows,t.last_analyzed,t.* from user_tables t where t.NUM_ROWS>=1;<br/>
+		select t.num_rows,t.last_analyzed,t.* from dba_tables t where t.owner='KETTLE' and  t.NUM_ROWS>=1;<br/>
+		但是不是准确的 是系统JOB 收集的数据 <br/>
+	</li>
+<br/>
+	<li>
+		手动收集<br/>
+		begin<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;	dbms_stats.gather_schema_stats('datasource');<br/>
+		end;<br/>
+		<br/>
+	</li>
+	<br/>
+	
+	
+	<li>
+	CACHE命中率 hit/hit+miss<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;a.select 1-(sum(decode(name, &#39;physical reads&#39;, value, 0))/<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (sum(decode(name, &#39;db block gets&#39;, 
+	value, 0))+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (sum(decode(name, &#39;consistent gets&#39;, 
+	value, 0))))) &quot;Buffer Hit Ratio&quot;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from v$sysstat;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;b.select 1-(physical_reads)/(consistent_gets+db_block_gets)<br/>
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from v$buffer_pool_statistics;
+	<br/>
+		
+	</li>
+	<br/>
+	<li>
+	SQL 长sql&nbsp; 查看执行计划<br/>
+	select t.cpu_time &quot;CPU时间&quot;,t.disk_reads &quot;磁盘读&quot;, t.executions &quot;执行次数&quot;, t.*from 
+	v$sql t<br/>
+	where upper(sql_text) like &#39;%SELECT%&#39; and t.cpu_time &gt;= 1000 order by 
+	t.cpu_time desc;<br/>
+
+	<br/>select * from v$sql_plan t 与v$sql 中sql_id匹配<br/>
+	</li>
+	<br/>
+	
+	<li>查询建表元数据<br/>
+	select <span style="color:red">dbms_metadata.get_ddl(&#39;TABLE&#39;,&#39;DUAL&#39;,&#39;SYS&#39;)</span> FROM DUAL;<br/>
+	</li>
+	<br/>
+	
+	<li>删除所有表语句<br/>
+	select &#39;drop table &#39; || table_name ||&#39;;&#39;||chr(13)||chr(10) from user_tables;<br />
+	select &#39;drop view &#39; || view_name||&#39;;&#39;||chr(13)||chr(10) from user_views;<br />
+	select &#39;drop sequence &#39; || sequence_name||&#39;;&#39;||chr(13)||chr(10) from 
+	user_sequences;<br />
+	select &#39;drop function &#39; || object_name||&#39;;&#39;||chr(13)||chr(10) from 
+	user_objects where object_type=&#39;FUNCTION&#39;;<br />
+	select &#39;drop procedure &#39; || object_name||&#39;;&#39;||chr(13)||chr(10) from 
+	user_objects where object_type=&#39;PROCEDURE&#39;;<br />
+	select &#39;drop package &#39; || object_name||&#39;;&#39;||chr(13)||chr(10) from 
+	user_objects where object_type=&#39;PACKAGE&#39;;<br />
+	</li>
+	<br/>
+	
+	<li>a.误改数据 （<span style="color:red">大量数据没用</span>）<br />
+	&nbsp;&nbsp;&nbsp;&nbsp;select * from t_bme_publicdatadict as of timestamp sysdate-10/1440 t;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;别称必须在最后， 回溯10分钟之前的数据<br/><br/>
+	b.删除表 回退表<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;删除表（将表放入回收站中，占用空间并没有减少，只是重命名操作）<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;drop table tablename ;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;查找回收站(依然可以查找数据)<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;select t.object_name,t.* from user_recyclebin t where t.original_name = tablename<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;select * from "object_name" ;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;恢复表(恢复后，表索引等会重命名影响hint语句)<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;flashback table tablename to before drop;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;完全删除<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;drop table tablename purge;<br/>
+	</li>
+	<br/>
+	
+	<li>查询oracle锁<br />
+	select sess.sid, sess.serial#, lo.oracle_username, lo.os_user_name,ao.object_name, lo.locked_mode <br />
+	from v$locked_object lo, dba_objects ao, v$session sess <br />
+	where ao.object_id = lo.object_id and lo.session_id = sess.sid; <br />
+	<br />
+	<br />
+	杀掉锁表进程： 如有記錄則表示有lock，記錄下SID和serial# ，將記錄的ID替換-<br />
+	下面的738,1429，即可解除LOCK <br />
+	alter system kill session &#39;738,1429&#39;; <br />
+	<br />
+	</li>
+	<br/>
+	
+	<li>清除查询语句的缓存<br />
+		select address, hash_value, executions, parse_calls<br />
+		from v$sql<br />
+		where sql_text like 'select * from hr.test_cache%';<br />
+		begin<br />
+			&nbsp;&nbsp;&nbsp;&nbsp;dbms_shared_pool.purge('00000002AD414238,416016421','C');<br />
+		end;<br />
+	</li>
+	<br/>
+	
+	<li>
+	手工分析索引<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;a.分析索引的block中是否有坏块儿<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;analyze index idx_t validate structure：<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;b.统计索引的统计信息(全分析)，主要为CBO服务<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;analyze index idx_t compute statistics：<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;c.指定比例进行抽样分析，为CBO服务<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;analyze index idx_t estimate statistics sample 10 percent<br/>
+	<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;之后查询<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;SELECT t.height,t.blocks,t.name,t.lf_rows,t.del_lf_rows,t.del_lf_rows/t.lf_rows FROM index_stats t<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;如果t.del_lf_rows/t.lf_rows 删除的数据占总数据的15%以上 ，需要重建或者整理索引碎片<br/>
+	</li>
+	<br/>
+	
+	</ul>
+
+</body>
+
+</html>

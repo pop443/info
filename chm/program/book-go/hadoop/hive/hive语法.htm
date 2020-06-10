@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>hive 函数</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+<h4>函数</h4>
+<ul style=" list-style-type: decimal;">
+	
+	<li>虚拟列<br/>
+		INPUT__FILE__NAME（输入文件的路径）<br/>
+		BLOCK__OFFSET__INSIDE__FILE（记录在文件中的偏移量） <br/>
+	</li>
+	<br/>
+	<li>星期几 与oracle一致 星期天 为1 星期6为7<br/>
+		pmod(datediff('#date','1920-01-01')-2,7) <br/>
+	</li>
+	<br/>
+	<li>造数据<br/>
+		with tmp as (<br/>
+		select 1 id, "22" name ,"333" info )<br/>
+		insert into table user <br/>
+		select * from tmp  <br/>
+	</li>
+	<br/>
+	<li>map，可以用于行转列<br/>
+	将数据组装成map函数 语法map(key1,value1,key2,value2...)<br/>
+	</li>
+	<br/>
+	<li>explode (map 或者 array)<br/>
+	 select t.id,keys,values from (<br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  select  1 id,map('A',3,'B',4) as maps <br/>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  union all <br/>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select  2 id,map('A',5,'B',6) as maps <br/>
+	) t lateral view explode(t.maps) columns as keys,values<br/>
+	</li>
+	<br/>
+	<li>collect_list(x),利用分组函数,将一列的值转化为array<br/>
+	select t.type,collect_list(t.value) from (<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 1 type ,'A' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 1 type ,'B' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 1 type ,'A' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 2 type ,'D' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 2 type ,'E' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 3 type ,'F' value <br/>
+	) t group by t.type<br/>
+	</li>
+	<br/>
+	<li>collect_set(x),利用分组函数,将一列的值转化为array 去重<br/>
+	select t.type,collect_set(t.value) from (<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 1 type ,'A' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 1 type ,'B' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 1 type ,'A' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 2 type ,'D' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 2 type ,'E' value union all <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 	select 3 type ,'F' value <br/>
+	) t group by t.type<br/>
+	</li>
+	<br/>
+	<li>json_tuple 解析json格式<br/>
+	语法 json_tuple(jsonstring,key1,key2...)<br/>
+	SELECT id,k1,k2,k3 FROM (<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT 1 id, "{\"key1\":\"v1\",\"key2\":\"v2\",\"key3\":\"v3\"}" AS jsonstring UNION ALL<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SELECT 2 id, "{\"key1\":\"v3\",\"key2\":\"v2\",\"key3\":\"v1\"}" AS jsonstring<br/>
+	) t lateral VIEW json_tuple(t.jsonstring,'key1','key2','key3') COLUMNS AS k1,k2,k3 <br/>
+	固定格式，否则解析不出来<br/>
+	</li>
+	<br/>
+	<li>窗口函数<br/>
+	语法  rank() over(distribute by sort by) <br/>
+	与oracle窗口函数用法一致<br/>
+	<table>
+		<tr>
+			<td>oracle:</td>
+			<td>rank() over(partition by order by)</td>
+		</tr>
+		<tr>
+			<td>hive:</td>
+			<td>rank() over(distribute by sort by)</td>
+		</tr>
+	</table>
+	</li>
+
+</ul>
+
+
+
+<h4>hive表映射hbase表</h4>
+<ul style=" list-style-type: decimal;">
+	<li>创建hbase表并导入数据<br/>
+		create "hiveMapping","f1","f2"<br/>
+		put "hiveMapping","1","f1:name","xz"<br/>
+		put "hiveMapping","1","f1:age","18"<br/>
+		put "hiveMapping","1","f2:money","10"<br/>
+		put "hiveMapping","2","f2:money","15"<br/><br/>
+	</li>
+	
+	<li>创建hive外表<br/>
+		create external table hbaseMapping(<br/>
+		rowkey string,<br/>
+		name string,<br/>
+		age string,<br/>
+		money string<br/>
+		)<br/>
+		stored by 'org.apache.hadoop.hive.hbase.HBaseStorageHandler'<br/>
+		WITH SERDEPROPERTIES ("hbase.columns.mapping"=":key,f1:name,f1:age,f2:money")<br/>
+		TBLPROPERTIES("hbase.table.name"="hiveMapping")<br/>
+		//stored by 使用hive提供hbase数据处理类<br/>
+		//WITH SERDEPROPERTIES 使用序列化对象处理映射关系 :key 代表rowkey ","分割<br/>
+		//TBLPROPERTIES 使用表属性映射hbase中的哪张表 （不写默认与hive表同名）<br/><br/>
+	</li>
+	
+	<li>查询结果<br/>
+		1		xz		18		10<br/>
+		2	NULL	NULL	15<br/>
+		<br/>
+	</li>
+</ul>
+</body>
+
+</html>

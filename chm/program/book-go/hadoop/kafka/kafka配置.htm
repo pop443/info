@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>kafka配置与优化</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+
+
+<h4>kafka 配置</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="font-size:large;width:90%">
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">server.properties</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:darkgrey;text-align:center">system</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">broker.id=1</td>
+				<td style="width:80%;">唯一标识，zk topic下的分区信息中记录 broker.id号，如果修改，需要通过json文件重新配置</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">port=9092</td>
+				<td style="width:80%;">端口</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">num.network.threads=3</td>
+				<td style="width:80%;">处理网络请求的最大线程数</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">num.io.threads=8</td>
+				<td style="width:80%;">处理磁盘I/O的线程数 不要小于磁盘的数量</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">queued.max.requests=500</td>
+				<td style="width:80%;">等待IO线程处理的请求队列最大数</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">socket.send.buffer.bytes=102400</td>
+				<td style="width:80%;">socket的发送缓冲区</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">socket.receive.buffer.bytes=102400</td>
+				<td style="width:80%;">socket的接收缓冲区</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">socket.request.max.bytes=104857600</td>
+				<td style="width:80%;">server能接受的请求的最大的大小，这是为了防止server跑光内存，不能大于Java堆的大小</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:darkgrey;text-align:center">topic</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">num.partitions=1</td>
+				<td style="width:80%;">每个topic的分区个数，更多的partition会产生更多的segment file</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">auto.create.topics.enable=true</td>
+				<td style="width:80%;">是否允许自动创建topic ，若是false，就需要通过命令创建topic</td>
+			</tr>
+			
+			<tr>
+				<td style="width:20%;">default.replication.factor=1</td>
+				<td style="width:80%;">一个topic ，默认分区的replication个数 ，不能大于集群中broker的个数</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">message.max.bytes=1000000</td>
+				<td style="width:80%;">消息体的最大大小，单位是字节</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">delete.topic.enable=true</td>
+				<td style="width:80%;">是否允许删除topic</td>
+			</tr>
+			
+			<tr>
+				<td colspan="2" style="width:100%;background-color:darkgrey;text-align:center">zookeeper</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">zookeeper.connect=vggapp19:2181,vggapp20:2181,vggapp29:2181</td>
+				<td style="width:80%;">Zookeeper quorum</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">zookeeper.connection.timeout.ms=6000</td>
+				<td style="width:80%;">连接zk的超时时间</td>
+			</tr>
+
+			<tr>
+				<td style="width:20%;">zookeeper.sync.time.ms=2000</td>
+				<td style="width:80%;">ZooKeeper集群中 follower能落后leader多久</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:darkgrey;text-align:center">log(segment)</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.dirs=/sga/kafka-logs/,/sgb/kafka-logs/,/sgc/kafka-logs/</td>
+				<td style="width:80%;">日志存放目录，多个目录使用逗号分割</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.flush.interval.messages=10000</td>
+				<td style="width:80%;">当达到下面的消息数量时，会将数据flush到日志文件中</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.flush.interval.ms=3000</td>
+				<td style="width:80%;">当达到下面的时间(ms)时，执行一次强制的flush操作</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.flush.scheduler.interval.ms=3000</td>
+				<td style="width:80%;">检查是否需要将日志flush的时间间隔</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.cleanup.policy = delete</td>
+				<td style="width:80%;">日志清理策略（delete|compact）</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.cleanup.interval.mins=10</td>
+				<td style="width:80%;">日志清理时间间隔</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.retention.hours=168</td>
+				<td style="width:80%;">日志保存时间 (hours|minutes)，默认为7天（168小时）</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">llog.retention.bytes=-1</td>
+				<td style="width:80%;">日志数据存储的最大字节数 -1 不限</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.segment.bytes=1073741824</td>
+				<td style="width:80%;">控制日志segment文件的大小，超出该大小则追加到一个新的日志segment文件中（-1表示没有限制，默认512M）1G  即.log文件</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.roll.hours=168</td>
+				<td style="width:80%;">当达到下面时间，会强制新建一个segment</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.index.size.max.bytes=10485760</td>
+				<td style="width:80%;">对于segment日志的索引文件大小限制 10M 即.index文件</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">log.index.interval.bytes=4096</td>
+				<td style="width:80%;">索引计算的一个缓冲区</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">offsets.storage=kafka</td>
+				<td style="width:80%;">group offset的存储位置(kafka topic 0.8.2以上版本支持、zookeeper)</td>
+			</tr>
+			
+			
+			<tr>
+				<td colspan="2" style="width:100%;background-color:darkgrey;text-align:center">replica</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">controller.socket.timeout.ms=30000</td>
+				<td style="width:80%;"> partition management controller 与replicas之间通讯的超时时间</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">controller.message.queue.size=10</td>
+				<td style="width:80%;">controller-to-broker-channels消息队列的尺寸大小</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">replica.lag.time.max.ms=10000</td>
+				<td style="width:80%;">replicas响应leader的最长等待时间，若是超过这个时间，就将replicas排除在管理之外</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">controlled.shutdown.enable=false</td>
+				<td style="width:80%;">是否允许控制器关闭broker ,若是设置为true,会关闭所有在这个broker上的leader，并转移到其他broker</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">controlled.shutdown.max.retries=3</td>
+				<td style="width:80%;">控制器关闭的尝试次数</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">controlled.shutdown.retry.backoff.ms=5000</td>
+				<td style="width:80%;">每次关闭尝试的时间间隔</td>
+			</tr>
+		
+			<tr>
+				<td style="width:20%;">replica.lag.max.messages = 4000</td>
+				<td style="width:80%;">如果relicas落后太多,将会认为此partition relicas已经失效。<br/>
+													而一般情况下,因为网络延迟等原因,总会导致replicas中消息同步滞后。<br/>
+													如果消息严重滞后,leader将认为此relicas网络延迟较大或者消息吞吐能力有限。<br/>
+													在broker数量较少,或者网络不足的环境中,建议提高此值.</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">replica.socket.timeout.ms=30000</td>
+				<td style="width:80%;">leader与relicas的socket超时时间</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">controlled.shutdown.retry.backoff.ms=5000</td>
+				<td style="width:80%;">每次关闭尝试的时间间隔</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">replica.socket.receive.buffer.bytes=65536</td>
+				<td style="width:80%;">leader复制的socket缓存大小 64k</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">replica.fetch.max.bytes=1048576</td>
+				<td style="width:80%;">replicas每次获取数据的最大字节数 默认1M</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">replica.fetch.min.bytes=1</td>
+				<td style="width:80%;">每一个fetch操作的最小数据尺寸,如果leader中尚未同步的数据不足此值,将会等待直到数据达到这个大小</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">replica.fetch.wait.max.ms=5000</td>
+				<td style="width:80%;">replicas同leader之间通信的最大等待时间，失败了会重试</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">num.replica.fetchers=3</td>
+				<td style="width:80%;">leader中进行复制的线程数，增大这个数值会增加relipca的IO 默认1</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">replica.high.watermark.checkpoint.interval.ms=5000</td>
+				<td style="width:80%;">每个replica将最高水位进行flush的时间间隔</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:darkgrey;text-align:center">ganglia</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">kafka.ganglia.metrics.port=8671</td>
+				<td style="width:80%;">端口</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">kafka.ganglia.metrics.host=TJMASTER</td>
+				<td style="width:80%;">hostname</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">kafka.ganglia.metrics.group=kafka</td>
+				<td style="width:80%;">ganglia kafka group</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">kafka.metrics.reporters=kafka.ganglia.KafkaGangliaMetricsReporter</td>
+				<td style="width:80%;">报告类</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">kafka.ganglia.metrics.reporter.enabled=true</td>
+				<td style="width:80%;">是否允许</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:darkgrey;text-align:center">unknow</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">fetch.purgatory.purge.interval.requests=10000</td>
+				<td style="width:80%;">？</td>
+			</tr>
+			<tr>
+				<td style="width:20%;">producer.purgatory.purge.interval.requests=10000</td>
+				<td style="width:80%;">？</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">productor</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">consumer</td>
+			</tr>
+
+		</table>
+		
+
+	</li>
+	<br/>
+</ul>
+
+</body>
+
+</html>

@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>原理</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:10px;
+}
+
+</style>
+</head>
+<script>
+	function ss(){
+		var a = document.getElementsByName("hide") ;
+		if(a[0].style.display=="none"){
+			a[0].style.display="block" ;
+			a[1].style.display="block" ;
+		}else{
+			a[0].style.display="none" ;
+			a[1].style.display="none" ;
+		}
+		
+	}
+</script>
+<body>
+<h4>资源调度器 yarn rmadmin -refreshQueues​ 刷新队列（只能添加不能删除） </h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+	FifoScheduler （first in first out ）<br/>
+	最简单的调度器，按照先进先出的方式处理应用。只有一个队列可提交应用，所有用户提交到这个队列。可以针对这个队列设置ACL。没有应用优先级可以配置。 
+	<br/><br/>
+	</li>
+	<li>
+	CapacityScheduler(容量调度)<br/>
+可以看作是FifoScheduler的多队列版本。每个队列可以限制资源使用量。但是，队列间的资源分配以使用量作排列依据，使得容量小的队列有竞争优势。集群整体吞吐较大。延迟调度机制使得应用可以放弃，夸机器或者夸机架的调度机会，争取本地调度。
+	<br/><br/>
+	<table class="table">
+		<tr>
+			<td colspan="2" style="width:95%;text-align:center;background-color:lightgrey"> &lt;queue-path&gt;代表的是队列的继承树 &lt;sub-property&gt;指以下参数</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="width:95%;text-align:center;background-color:lightgrey"> 资源分配相关参数</td>
+		</tr>
+		<tr>
+			<td style="width:15%">capacity</td>
+			<td style="width:80%">队列的资源容量（百分比）,所有队列的容量之和应小于100</td>
+		</tr>
+		<tr>
+			<td style="width:15%">maximum-capacity</td>
+			<td style="width:80%">队列可以获取到的最大容量（不予保障）（集群空闲时从其他队列借取）</td>
+		</tr>
+		<tr>
+			<td style="width:15%">minimum-user-limit-percent</td>
+			<td style="width:80%">对单一用户的最小容量控制</td>
+		</tr>
+		<tr>
+			<td style="width:15%">user-limit-factor</td>
+			<td style="width:80%">单一用户的最大容量控制（在资源空闲时，每个用户可以申请到的资源上限），例如：该值配置为1.5，则单个用户可以申请到的最大资源为：min（1.5*capacity，maximum-capacity）</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="width:95%;text-align:center;background-color:lightgrey"> 限制应用程序数目相关参数</td>
+		</tr>
+		<tr>
+			<td style="width:15%">maximum-applications </td>
+			<td style="width:80%">集群或者队列中同时处于等待和运行状态的应用程序数目上限，这是一个强限值，一旦集群中应用程序数目超过该上限，后续提交的应用程序将被拒绝，默认值为10000。所有队列的数目上限可通过参数yarn.scheduler.capacity.maximum-applications设置（可看做默认值），而单个队列可通过参数yarn.scheduler.capacity.[A].maximum-applications设置适合自己的值</td>
+		</tr>
+		<tr>
+			<td style="width:15%">maximum-am-resource-percent</td>
+			<td style="width:80%">集群中用于运行应用程序ApplicationMaster的资源比例上限，该参数通常用于限制处于活动状态的应用程序数目。该参数类型为浮点型，默认是0.1，表示10%。所有队列的ApplicationMaster资源比例上限可通过参数yarn.scheduler.capacity. maximum-am-resource-percent设置（可看做默认值），而单个队列可通过参数yarn.scheduler.capacity.[A]. maximum-am-resource-percent设置适合自己的值</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="width:95%;text-align:center;background-color:lightgrey"> 队列访问和权限控制参数</td>
+		</tr>
+		<tr>
+			<td style="width:15%">state</td>
+			<td style="width:80%">队列状态可以为STOPPED或者RUNNING，如果一个队列处于STOPPED状态，用户不可以将应用程序提交到该队列或者它的子队列中，类似的，如果ROOT队列处于STOPPED状态，用户不可以向集群中提交应用程序，但正在运行的应用程序仍可以正常运行结束，以便队列可以优雅地退出</td>
+		</tr>
+		<tr>
+			<td style="width:15%">acl_submit_applications</td>
+			<td style="width:80%">集限定哪些Linux用户/用户组可向给定队列中提交应用程序。需要注意的是，该属性具有继承性，即如果一个用户可以向某个队列中提交应用程序，则它可以向它的所有子队列中提交应用程序</td>
+		</tr>
+		<tr>
+			<td style="width:15%"> acl_administer_queues</td>
+			<td style="width:80%">为队列指定一个管理员，该管理员可控制该队列的所有应用程序，比如杀死任意一个应用程序等</td>
+		</tr>
+		<tr>
+			<td colspan="2" style="width:95%;text-align:center;background-color:lightgrey"> <a href="#" onclick="javascript:ss()"> 例子</a> <br/>
+			<textarea name="hide" readonly style="width:48%;float:left;display:none;overflow-y:scroll" rows="7">
+		默认配置
+格式 
+<property>
+	<name></name>
+	<value></value>
+</property>
+yarn.scheduler.capacity.maximum-am-resource-percent=0.2
+yarn.scheduler.capacity.maximum-applications=10000
+
+yarn.scheduler.capacity.root.queues=default
+yarn.scheduler.capacity.root.acl_administer_queues=*
+yarn.scheduler.capacity.root.capacity=100
+yarn.scheduler.capacity.root.default.acl_administer_jobs=*
+yarn.scheduler.capacity.root.default.acl_submit_jobs=*
+yarn.scheduler.capacity.root.default.capacity=100
+yarn.scheduler.capacity.root.default.maximum-capacity=100
+yarn.scheduler.capacity.root.default.state=RUNNING
+yarn.scheduler.capacity.root.default.user-limit-factor=1
+
+yarn.scheduler.capacity.root.unfunded.capacity=50
+				
+			</textarea>
+			<textarea name="hide" readonly style="width:48%;float:left;display:none;overflow-y:scroll" rows="7">
+		两队列配置
+格式 
+<property>
+	<name></name>
+	<value></value>
+</property>
+
+yarn.scheduler.capacity.default.minimum-user-limit-percent=100
+yarn.scheduler.capacity.maximum-am-resource-percent=0.2
+yarn.scheduler.capacity.maximum-applications=10000
+
+
+yarn.scheduler.capacity.root.queues=default,T1
+yarn.scheduler.capacity.node-locality-delay=40
+yarn.scheduler.capacity.root.accessible-node-labels=*
+yarn.scheduler.capacity.root.acl_administer_queue=*
+yarn.scheduler.capacity.root.capacity=100
+
+yarn.scheduler.capacity.root.default.acl_administer_jobs=*
+yarn.scheduler.capacity.root.default.acl_submit_applications=*
+yarn.scheduler.capacity.root.default.capacity=70
+yarn.scheduler.capacity.root.default.maximum-capacity=70
+yarn.scheduler.capacity.root.default.state=RUNNING
+yarn.scheduler.capacity.root.default.user-limit-factor=1
+
+yarn.scheduler.capacity.root.T1.acl_administer_jobs=*
+yarn.scheduler.capacity.root.T1.acl_submit_applications=*
+yarn.scheduler.capacity.root.T1.capacity=30
+yarn.scheduler.capacity.root.T1.maximum-capacity=80
+yarn.scheduler.capacity.root.T1.state=RUNNING
+yarn.scheduler.capacity.root.T1.user-limit-factor=1
+
+			</textarea>
+			</td>
+		</tr>
+	</table>
+
+	<br/>
+	</li>
+	<li>
+	FairScheduler(公平调度)<br/>
+	多队列，多用户共享资源。特有的客户端创建队列的特性，使得权限控制不太完美。根据队列设定的最小共享量或者权重等参数，按比例共享资源。延迟调度机制跟CapacityScheduler的目的类似，但是实现方式稍有不同。资源抢占特性，是指调度器能够依据公平资源共享算法，计算每个队列应得的资源，将超额资源的队列的部分容器释放掉的特性
+	<br/><br/>
+	</li>
+</ul>
+
+</body>
+
+</html>

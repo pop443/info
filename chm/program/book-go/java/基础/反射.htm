@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>reflect</title>
+
+</head>
+
+<body>
+<div><h2>reflect</h2></div>
+<ul style="list-style:decimal">
+<li>
+java 反射 三种方式：</br>
+a.Class cz = 实例对象的.getClass() ;</br>
+b.Class cz = 类.class ;</br>
+c.Class cz = Class.forName(类路径) ;</br>
+</br>
+</li>
+
+<li>
+class API:</br></br>
+
+cz.getDeclaredMethod //获得定义的方法</br>
+cz.getMethod //获得定义的公共方法</br>
+</br>
+
+</li>
+
+<li>
+反射构造使用newInstance（不定长数组参数）</br>
+	// 反射类</br>
+	Class cz = Class.forName(USERPATH);</br>
+	Class parentC = cz.getSuperclass();</br>
+
+	Constructor constructor = parentC.getConstructor(Map.class);</br>
+	// 从父类的构造方法 获得实例</br>
+	Map<String, Object> map = new HashMap<String, Object>();</br>
+	map.put("account", "xingzhou");</br>
+	map.put("password", "123");</br>
+	Base base = (Base) constructor.newInstance(map);</br>
+	System.out.println(base.toString());</br></br>
+</li>
+<li>
+反射方法使用invoke（实例对象，不定长数组参数）</br>
+	//反射类 </br>
+	Class cz = Class.forName(USERPATH) ;</br>
+	//获得实例</br>
+	Object object = cz.newInstance() ;</br>
+	Method method = cz.getDeclaredMethod("getDefaultAge") ;</br>
+	String s = (String) method.invoke(object) ;</br>
+	System.out.println(s);</br></br>
+</li>
+
+</ul>
+
+
+
+
+
+</body>
+
+</html>

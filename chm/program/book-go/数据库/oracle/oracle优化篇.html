@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>oracle优化篇</title>
+</head>
+<script language="javascript">
+</script>
+<body>
+<h4>oracle优化篇</h4>
+<ul style=" list-style-type: decimal;">
+	<li>不走索引的原因<br/>
+	a.隐式转换 <br/>
+	b.你的表的统计信息(最可能的原因) 需要重新计算 手工分析<br/>
+	c.数据量太小 cost优化器决定<br/>
+	d.组合索引：查询谓词并未使用组合索引的第一列，此处有一个INDEX SKIP SCAN概念<br/>
+	e.索引列包含有null值 使用select count(*) from table时不会使用索引<br/>
+	f.在索引列上使用函数时不会使用索引，如果一定要使用索引只能建立函数索引。<br/>
+	g.查询数据占总数据量百分比过大，回表查询cost过大<br/>
+	h.索引列like 时 % 百分号在前 '%xx'<br/>
+	i.<>条件  select * from dept where staff_num <> 1000; 改为 select * from dept shere staff_num < 1000 or dept_id > 1000;<br/>
+	j.修改字段类型导致索引失效 ,LONG修改为CLOB，居然会导致其他列的索引失效<br/>
+	h.误删除表后恢复，索引名称改变<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;drop table emp2;<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;flashback table emp2 to before drop;<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;会影响hint语句的执行<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;查看着两个索引的名称<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;select * from user_indexes t1 where t1.TABLE_NAME='EMP2'<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;重命名<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;alter index "BIN$vk6WzSBMTq6MsKWXDL8feg==$0" rename to INDEX_EMP2_EMPNO<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;alter index "BIN$O8u7vzfTSXORRKnesiOZSw==$0" rename to INDEX_EMP2_DEPTNO<br/><br/>
+
+	</li>
+	<li>
+		字段建立<br/>
+		数据库字段(除了varchar2外)长度使用2的倍数<br/>
+		分配空间时按2的倍数分配，影响较小
+		<br/><br/>
+	</li>
+	<li>
+		
+	多表关联<br/>
+	ORACLE在解析sql语句的时候对FROM子句后面的表名是从右往左解析的，
+	  是先扫描最右边的表，然后在扫描左边的表，然后用左边的表匹配数据，
+	  匹配成功后就合并。 所以，在对多表查询中，一定要把小表写在最右边<br/><br/>
+	</li>
+	
+	<li>
+		
+	内外层关联<br/>
+	sql语句执行的时候，会把内层条件过滤与外层条件过滤相关联;产生笛卡尔积，
+	使用内层增加rownum来消除过滤相关联。<br/><br/>
+	</li>
+	
+	<li>
+	查询强制索引 hint<br/>
+	select /*+full(t)*/* from tablename t<br/>
+	select /*+index(t indexname)*/* from tablename t<br/><br/>
+	</li>
+	<li>
+	order by<br/>
+	执行一次查询会默认排序一次;
+	当内外都有排序去掉内层<br/><br/>
+	</li>
+	<li>
+	开发使用where 1=1<br/>
+	select /*+full(t)*/ count(*)  from all_objects t where 1=1;<br/>
+	select /*+full(t)*/ count(*)  from all_objects t ;<br/>
+	select  count(*)  from all_objects t where 1=1;<br/>
+	select  count(*)  from all_objects t ;<br/>
+<br/>
+	select t1.cpu_time,t1.sql_text from v$sql t1 where t1.sql_text like 'select  count(*)  from all_objects t%'<br/>
+	v$sql需要DBA 权限 ,执行后发现 执行计划一样;但是 1=1确实影响性能 ;因为 1=1需要cpu计算和内存消耗的，每行都会计算比较<br/>
+	测试时需要清空缓存<br/>
+	清空全部缓存<br/>
+	alter system flush shared_pool;<br/>
+	<br/>
+	只清除指定缓存<br/>
+	select address, hash_value, executions, parse_calls<br/>
+	from v$sql where sql_text like 'select  count(*)  from all_objects t%';<br/>
+	begin<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		dbms_shared_pool.purge('00000002AD414238,416016421','C');<br/>
+	end;<br/><br/>
+	</li>
+
+<li>
+	高水位线HWM<br/>
+	high water mark HWM 所有的oracle段 都有一个在段内容纳数据的上限，我们把这个上限称为"high water mark"或HWM
+	这个HWM是一个标记，用来说明已经有多少没有使用的数据块分配给这个segment。
+	HWM通常增长的幅度为一次5个数据块，原则上HWM只会增大，不会缩小，即使将表
+	中的数据全部删除，HWM还是为原值，由于这个特点，使HWM很象一个水库的历史
+	最高水位，这也就是HWM的原始含义，当然不能说一个水库没水了，就说该水库的
+	历史最高水位为0。但是如果我们在表上使用了truncate命令，则该表的HWM会被
+	重新置为0。<br/><br/>
+	影响：
+	<br/>
+	a) 全表扫描通常要读出直到HWM标记的所有的属于该表数据库块，即使该表中没有任何数据。<br/>
+	b) 即使HWM以下有空闲的数据库块，键入在插入数据时使用了append关键字，则在插入时使用HWM以上的数据块，此时HWM会自动增大。<br/>
+	分析表的物理块 user_tables表的更新是根据系统job<br/>
+	ANALYZE TABLE tablename ESTIMATE STATISTICS;<br/>
+	查数据块<br/>
+	SELECT blocks, empty_blocks, num_rows FROM user_tables WHERE table_name = tableName;<br/>
+	<br/>
+	降低水位:
+	<br/>
+	1.alter table tablename enable row movement;alter table tablename shrink space; --需要enable row movement 权限<br/>
+	2.alter table tablename move;<br/>
+	3.truncate table  tablename<br/>
+	<br/>
+	
+	</li>
+
+	<li>
+	嵌套多一次<br/>
+	
+	CPU,
+	内存,
+	临时表空间 暂存,
+	回滚段  回滚段不够 会等待.<br/><br/>
+	</li>
+
+	<li>
+	一张表重复查询
+	<br/>
+	使用select sum(case when () then 1 else 0 end ) t1,....<br/>
+
+	或者 使用with as
+	<br/><br/>
+	</li>
+	<li>
+	将小表钉在内存中<br/>
+	alter table tables storage(buffer_pool keep);<br/>
+	SELECT t.disk_reads,t.* FROM v$sql t where t.sql_text like 'SQL%'<br/>
+	没有IO<br/>
+	<br/><br/>
+	</li>
+	</ul>
+
+</body>
+
+</html>

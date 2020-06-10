@@ -1,0 +1,147 @@
+启停
+service puppetmaster start/puppet master start
+service puppetmaster stop/puppet master stop
+
+service puppet start/puppet agent start
+service puppet stop/puppet agent stop
+
+
+组件结构
+
+资源、属性、类、模块、变量、参数、节点
+
+资源：文件、服务、软件包、自定义脚本等  唯一性
+
+属性：资源需要定义相关的属性值，否则毫无意义
+
+类：将多个资源组织起来进行重新定义
+
+模块：多个类的合集
+
+变量：Puppet与其他语言类似，同样支持变量
+
+参数：又称参变量
+
+
+节点
+node 客户端 
+node hostname 单个主机
+node default 默认主机
+
+
+
+
+语法风格
+括号"{}"分类，以冒号":"声明，以逗号","属性约束
+
+
+变量的引用
+
+不包含变量的字符串应该使用单引号（‘‘)括起来。需要应用变量是应使用双引号（"")括起来。字符串中的多有变量应该使用花括号"{}"括起来。
+"/etc/${file}.conf"
+
+对变量本身的引用，变量是变量本身，不需要引号。
+mode => $my_mode
+
+
+模块
+模块路径由puppet.conf 中 [main]段 modulepath 配置
+模块结构
+mkdir modulepath/modulename/{files,templates,manifests}
+touch modulepath/modulename/manifests/init.pp
+init.pp 文件为自动导入
+
+
+
+实例 使用用户hadoop 启停zk
+mkdir -p /etc/puppet/modules/zookeeper/{files,templates,manifests}
+touch /etc/puppet/modules/zookeeper/manifests/init.pp
+
+
+
+
+
+
+资源：自定义命令或脚本
+
+hdp::exec { $cmd:
+	command      => $cmd,
+	path    => ["/bin","/usr/bin/"],
+	user        => 'root'
+}
+command
+指定要执行的命令。
+creates
+命令创建的一个文件。加入这个参数设置的话，只有这个文件不存在的时候命令才会执行
+cwd
+命令执行的路径。假如目录不存在，命令执行将会失败
+environment
+为命令设置附加的环境变量。加入你用这个参数设置PATH，那么将会把path参数的值覆盖。多个环境变量需要使用数组指定
+group（不要用）
+执行命令运行的用户组。这个看起来在各个平台运行结果不确定，这是平台的问题不是ruby或者puppet的问题。
+logoutput
+是否记录输出信息。
+ onlyif
+只有onlyif指定命令执行返回为0的时候，命令才会执行。比如下面的例子
+path
+命令执行搜索的路径。如果没有指定path，命令需要填写完整的路径。路径可以指定为一个数组并通过冒号分隔
+refresh
+如何更新命令。默认的当exec收到其他的资源的一个事件时会重新执行。但是这个参数允许你定义更新不同的命令。
+refreshonly
+作为一个更新机制当一个依赖的对象改变的时候命令才会执行。当这个命令依赖其他对象的时候这个选项才会有意义。
+returns
+指定预期的返回代码。假如执行的命令返回其他的代码那么将会出现错误。默认是0
+timeout
+指定命令运行的最长时间。
+tries
+命令执行重试次数，默认为1。设置这个参数命令将会重试你设置的次数直到合理的代码返回	
+try_sleep
+设置命令重试的间隔时间，单位是秒
+unless
+加入这个参数设置的话，然后exec会执行，除非unless的命令返回为0
+user
+指定执行命令的用户
+
+
+
+
+
+
+
+command
+
+ agent                                         #客户端进程，负责从Master获取数据
+  apply                                         #运行本地 manifests
+  ca                                            #本地证书的管理
+  catalog                                       #编译、保存、查看Puppet代码
+  cert                                          #证书颁发，用于签署证书
+  certificate                                   #提供访问CA证书的管理
+  certificate_request                           #管理证书请求
+  certificate_revocation_list                   #管理撤销证书的列表
+  config                                        #配置选项
+  describe                                      #管理远程网络设备
+  device                                        #管理远程网络设备
+  doc                                           #生成Puppet文档
+  facts                                         #系统信息检查
+  file                                          #在filebuckete中检索和存储文件
+  filebucket                                    #在filebucket中检索和存储文件
+  help                                          #查看帮助
+  inspect                                       #发送report报告
+  instrumentation_data                          #管理监听的数据
+  instrumentation_listener                      #管理监听状态
+  instrumentation_probe                         #管理监听探测
+  key                                           #创建、保存、删除证书密钥
+  kick                                          #远程控制Agent,远程触发puppet agent命令
+  man                                           #查看手册
+  master                                        #服务端进程
+  module                                        #从Puppet Forge创建、安装、查询模块
+  node                                          #管理节点
+  parser                                        #解析器管理
+  plugin                                        #插件管理
+  queue                                         #队列进程
+  report                                        #创建、查看报告
+  resource                                      #查看资源帮助
+  resource_type                                 #查看类、默认资源类型与节点信息
+  secret_agent                                  #模拟Agent
+  status                                        #查看Puppet状态
+  

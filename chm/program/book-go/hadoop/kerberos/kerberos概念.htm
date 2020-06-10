@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>kerberos概念</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+
+
+<h4>概念</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="font-size:large;width:90%">
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">名词解释</td>
+			</tr>
+			
+			<tr>
+				<td style="width:40%;">AS（Authentication Server）</td>
+				<td style="width:60%;">认证服务器</td>
+			</tr>
+			<tr>
+				<td style="width:40%;">KDC（Key Distribution Center）</td>
+				<td style="width:60%;">密钥分发中心</td>
+			</tr>
+			<tr>
+				<td style="width:40%;">TGT（Ticket Granting Ticket）</td>
+				<td style="width:60%;">票据授权票据，票据的票据</td>
+			</tr>
+			<tr>
+				<td style="width:40%;">TGS（Ticket Granting Server）</td>
+				<td style="width:60%;">票据授权服务器</td>
+			</tr>
+			<tr>
+				<td style="width:40%;">SS（Service Server）</td>
+				<td style="width:60%;">特定服务提供端</td>
+			</tr>
+			<tr>
+				<td style="width:40%;">Principal</td>
+				<td style="width:60%;">被认证的个体</td>
+			</tr>
+			<tr>
+				<td style="width:40%;">Ticket</td>
+				<td style="width:60%;">票据，客户端用来证明身份真实性。包含：用户名，IP，时间戳，有效期，会话秘钥</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">获取服务</td>
+			</tr>
+			
+			<tr>
+				<td style="width:40%;">Authentication（认证）</td>
+				<td style="width:60%;">客户端向认证服务器发送一条报文，获取一个包含时间戳的TGT。</td>
+			</tr>
+			
+			<tr>
+				<td style="width:40%;">Authorization（授权）</td>
+				<td style="width:60%;">客户端使用TGT向TGS请求指定Service的Ticket。</td>
+			</tr>
+			
+			<tr>
+				<td style="width:40%;">服务请求</td>
+				<td style="width:60%;">客户端向指定的Service出示服务Ticket鉴权通讯。</td>
+			</tr>
+
+		</table>
+		
+
+	</li>
+	<br/>
+</ul>
+
+</body>
+
+</html>

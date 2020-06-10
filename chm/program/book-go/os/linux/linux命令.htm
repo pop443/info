@@ -1,0 +1,1579 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<title>linux指令</title>
+<style>
+.table{
+	width:100%;
+	margin-left:-10px;
+}
+.table tr td{
+	border:1px solid black;
+	padding-left:10px;
+}
+
+.table2 tr td{
+	border:1px solid black;
+	text-align:left;
+	padding-left:10px;
+}
+
+
+.style1 {
+	color: #008000;
+}
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+<h2>linux 常用指令</h2>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+文件类型
+</div>
+<div class="divnext" >
+<table class="table2" style="width:80%;margin-left:10px" >
+			
+			<tr>
+				<td style="width:10%">d：</td>
+				<td style="width:30%">目录</td>
+				<td style="width:10%">l：</td>
+				<td style="width:30%">符号链接（指向另一个文件）</td>
+			</tr>
+			<tr>
+				<td style="width:10%">s：</td>
+				<td style="width:30%">套接字文件</td>
+				<td style="width:10%">b：</td>
+				<td style="width:30%">块设备文件</td>
+			</tr>
+			<tr>
+				<td style="width:10%">c：</td>
+				<td style="width:30%">字符设备文件</td>
+				<td style="width:10%">p：</td>
+				<td style="width:30%">命名管道文件</td>
+			</tr>
+			<tr>
+				<td style="width:10%">-：</td>
+				<td style="width:30%">普通文件，不属于以上类型</td>
+				<td style="width:10%"> </td>
+				<td style="width:30%"> </td>
+			</tr>
+		</table>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+匹配字符
+</div>
+<div class="divnext">
+<table class="table2" style="width:80%;margin-left:10px" >
+						<tr>
+				<td style="width:10%">*</td>
+				<td style="width:30%">任意字符</td>
+				<td style="width:10%">？</td>
+				<td style="width:30%">单个字符</td>
+			</tr>
+			<tr>
+				<td style="width:10%">[...]/[!...]</td>
+				<td style="width:30%">匹配字符和范围</td>
+				<td style="width:10%">&nbsp;</td>
+				<td style="width:30%">&nbsp;</td>
+			</tr>
+		</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+正则表达式
+</div>
+<div class="divnext">
+<table class="table2" style="width:80%;margin-left:10px" >
+			<tr>
+				<td style="width:10%">^</td>
+				<td style="width:30%">只匹配行首</td>
+				<td style="width:10%">$</td>
+				<td style="width:30%">只匹配行尾</td>
+			</tr>
+			<tr>
+				<td style="width:10%">.</td>
+				<td style="width:30%">匹配任意单字符</td>
+				<td style="width:10%">*</td>
+				<td style="width:30%">单字符紧跟* 匹配0个或多个同字符</td>
+			</tr>
+			<tr>
+				<td colspan="1" style="width:10%">[]</td>
+				<td colspan="3" style="width:30%">匹配[]内字符，可以使单字符也可以为序列如[1]、[1-5]、[12345]</td>
+			</tr>
+			<tr>
+				<td colspan="1" style="width:10%">\</td>
+				<td colspan="3" style="width:30%">屏蔽元字符的特殊含义，转义字符</td>
+			</tr>
+			<tr>
+				<td colspan="1" style="width:10%">pattern\{n\}</td>
+				<td colspan="3" style="width:30%">用来匹配前面pattern出现次数。n为次数</td>
+			</tr>
+			<tr>
+				<td colspan="1" style="width:10%">pattern\{n,\}m</td>
+				<td colspan="3" style="width:30%">含义同上，但次数最少为 m</td>
+			</tr>
+			<tr>
+				<td colspan="1" style="width:10%">pattern\{n,m\}</td>
+				<td colspan="3" style="width:30%">含义同上，但pattern出现次数在n与m之间</td>
+			</tr>
+
+		</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+基本配置文件
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td style="width:20%">linux版本信息</td>
+			<td style="width:75%">lsb_release -a</td>
+		</tr>
+		<tr>
+			<td style="width:20%">内核的版本号</td>
+			<td style="width:75%">cat /proc/version</td>
+		</tr>
+		<tr>
+			<td style="width:20%">root用户环境变量配置</td>
+			<td style="width:75%">cat /etc/profile</td>
+		</tr>
+		<tr>
+			<td style="width:20%">其他用户环境变量</td>
+			<td style="width:75%">cat ~/.bash_profile</td>
+		</tr>
+		<tr>
+			<td style="width:20%">磁盘挂载目录配置</td>
+			<td style="width:75%">cat /etc/fstab</td>
+		</tr>
+		<tr>
+			<td style="width:20%">主机IP映射关系</td>
+			<td style="width:75%">cat /etc/hosts</td>
+		</tr>
+		<tr>
+			<td style="width:20%">IP配置</td>
+			<td style="width:75%">cat /etc/sysconfig/network-scripts/ifcfg-xxx</td>
+		</tr>
+		<tr>
+			<td style="width:20%">网络情况</td>
+			<td style="width:75%">cat /etc/sysconfig/network</td>
+		</tr>
+		<tr>
+			<td style="width:20%">网卡信息（各个版本不一致）</td>
+			<td style="width:75%">cat /etc/udev/rules.d/xx-xx.rules</td>
+		</tr>
+		<tr>
+			<td style="width:20%">DNS配置地址</td>
+			<td style="width:75%">cat /etc/resolv.conf</td>
+		</tr>
+		
+</table>
+</div>
+
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+rpm  执行安装包
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="5" style="width:15%"><span style="color:green">rpm [options]  [package ...]</span></td>
+		</tr>
+		
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%"> rpm -qa | grep gcc </td>
+			<td colspan="6" rowspan="1" style="width:50%">查看 指定rpm包是否安装</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">rpm -e [package] [--nodeps]</td>
+			<td colspan="6" rowspan="1" style="width:50%">删除安装包</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">rpm －ivh  xx.rpm</td>
+			<td colspan="6" rowspan="1" style="width:50%">安装显示安装进度</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">rpm －Uvh  xx.rpm</td>
+			<td colspan="6" rowspan="1" style="width:50%">安装升级软件包</td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+yum Shell前端软件包管理器
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="4" style="width:15%"><span style="color:green">yum [options] [command] [package ...]</span></td>
+		</tr>
+		
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">yum list</td>
+			<td colspan="6" rowspan="1" style="width:50%">软件包列表</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">yum install [package]</td>
+			<td colspan="6" rowspan="1" style="width:50%">安装包</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">yum localinstall [package]</td>
+			<td colspan="6" rowspan="1" style="width:50%">本地安装软件包</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">yum remove [package]</td>
+			<td colspan="6" rowspan="1" style="width:50%">删除软件包</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">yum upgrade [package]</td>
+			<td colspan="6" rowspan="1" style="width:50%">更新单个包</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">yum update [package]</td>
+			<td colspan="6" rowspan="1" style="width:50%">更新版本包</td>
+		</tr>
+		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+vi 编辑指令
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="8" style="width:15%"><span style="color:green">chmod [who] operator [permission] filename</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">^</td>
+			<td colspan="2" rowspan="1"style="width:20%">行首</td>
+			<td colspan="2" rowspan="1"style="width:20%">$ </td>
+			<td colspan="2" rowspan="1" style="width:20%">行尾</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">（</td>
+			<td colspan="2" rowspan="1"style="width:20%">句首</td>
+			<td colspan="2" rowspan="1"style="width:20%">） </td>
+			<td colspan="2" rowspan="1" style="width:20%">句尾</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">Ctrl+u、Ctrl＋b</td>
+			<td colspan="2" rowspan="1"style="width:20%">文件首翻半屏、一屏</td>
+			<td colspan="2" rowspan="1"style="width:20%">Ctrl+d、Ctrl+f </td>
+			<td colspan="2" rowspan="1" style="width:20%">文件尾翻半屏、一屏</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">i / I</td>
+			<td colspan="2" rowspan="1"style="width:20%">当前字符/行首 插入</td>
+			<td colspan="2" rowspan="1"style="width:20%">o / O </td>
+			<td colspan="2" rowspan="1" style="width:20%">下一行/上一行插入</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">x / dd</td>
+			<td colspan="2" rowspan="1"style="width:20%">删除一个字符 /一行</td>
+			<td colspan="2" rowspan="1"style="width:20%">dw</td>
+			<td colspan="2" rowspan="1" style="width:20%">删除前面空格</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">:set nu </td>
+			<td colspan="2" rowspan="1"style="width:20%">设置行号</td>
+			<td colspan="2" rowspan="1"style="width:20%">/ xx</td>
+			<td colspan="2" rowspan="1" style="width:20%">查找xx字符串 回车 之后 n 下一个</td>
+		</tr>
+
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">Ctrl+G</td>
+			<td colspan="2" rowspan="1"style="width:20%">显示行数和位置百分比</td>
+			<td colspan="2" rowspan="1"style="width:20%">G</td>
+			<td colspan="2" rowspan="1" style="width:20%">最后一行</td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+vim  
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="5" style="width:15%"><span style="color:green">vim </span></td>
+		</tr>
+		
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%"> vim -d file1 file2 </td>
+			<td colspan="6" rowspan="1" style="width:50%">比较两个排序类似文件</td>
+		</tr>
+		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+sudo 特权权限
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="3" style="width:15%"><span style="color:green">sudo [option arg] command</span></td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%">修改 /etc/sudoers 文件</td>
+			<td colspan="4" rowspan="1"style="width:40%">增加一行配置 hadoop  ALL=(ALL)       NOPASSWD: ALL 可以使用root权限的用户</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:20%">su -l hdfs -c "mkdir /home/hadoop/hadoop"</td>
+			<td colspan="4" rowspan="1"style="width:40%">使用hadoop的权限，创建一个文件夹</td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+权限 chmod chgrp chown id/group umask ln
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="4" style="width:15%"><span style="color:green">chmod [who] operator [permission] filename</span></td>
+		</tr>
+		
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">who(可省略)</td>
+			<td colspan="4" rowspan="1"style="width:30%">chmod a-x filename </td>
+			<td colspan="2" rowspan="1" style="width:28%">收回所有用户执行权限</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">option 操作 + - =</td>
+			<td colspan="4" rowspan="1" style="width:30%">chmod g+w filename</td>
+			<td colspan="2" rowspan="1" style="width:28%">赋予同组用户写权限</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">permission具体权限 rwx</td>
+			<td colspan="4" rowspan="1" style="width:30%">chmod -R go+x filename</td>
+			<td colspan="2" rowspan="1" style="width:28%">赋予文件及其下所有文件 同组和其他用户的执行权限</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">chmod mode file</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">绝对模式</td>
+			<td colspan="4" rowspan="1" style="width:30%">chown 777 file</td>
+			<td colspan="2" rowspan="1" style="width:28%">赋予文件所有权限</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">group/id [username]</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">查找用户所属组 username 可省</td>
+			<td colspan="6" rowspan="1" style="width:50%">group/id username</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">umask</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">查询权限反码 </td>
+			<td colspan="6" rowspan="1" style="width:50%">002 目录-775 文件-664 <br/> 022 目录-755 文件-664</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">ln [-s] sourcePath targetPath</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">在目标目录下生成源 路径/文件 的软连接 权限为777</td>
+						<td colspan="4" rowspan="1" style="width:30%">ln [-s] /tmp /var/tmp</td>
+			<td colspan="2" rowspan="1" style="width:28%">在/var/tmp 生成了/tmp的软连接</td>
+
+		</tr>
+		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+查询 find xargs
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="4" style="width:15%"><span style="color:green">find pathname -options [-print -exec -ok] filename</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">pathname</td>
+			<td colspan="4" rowspan="1"style="width:30%">find . a.txt /find / a.txt</td>
+			<td colspan="2" rowspan="1" style="width:28%">在 当前路径下/根目录 查找a.txt</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">-options<br/>
+			-name -perm(权限)<br/>
+			-mtime -newer<br/>
+			-type -size
+			</td>
+			<td colspan="4" rowspan="1" style="width:30%">find ~ -name 1.txt <br/>
+			find . -name "[a-z][0-9].txt" -print<br/><br/>
+			find / -perm 777 -print<br/>
+			find /tmp -mtime -5 -print<br/><br/>
+			find . -newer 1.txt ! 2.txt <br/><br/>
+			find . -size +1000c -print
+			</td>
+			<td colspan="2" rowspan="1" style="width:28%">在$HOME 目录下查找1.txt文件<br/>
+			在当前目录查找名字 第一位为字母 第二位为数字的文件 双引号表达式<br/>
+			查找权限为777的文件<br/>
+			在tmp目录下查找5天内的文件 +5 5天内 -5 5天前<br/>
+			查找当前目录 比1文件新且比2文件旧的文件<br/>
+			查找文件大小大于1K的文件
+			</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">-exec </td>
+			<td colspan="4" rowspan="1" style="width:30%">
+			find . "*.sh" -exec ls -l {} \;<br/>
+			find . "*.sh" -exec {} \;<br/><br/>
+			find . -name "*.txt" -print | xargs echo ""
+			</td>
+			<td colspan="2" rowspan="1" style="width:28%">
+			-exec 执行  {} \ 代表查找结果 ls -l 表示位置<br/>
+			直接执行查找的结果 {} \;大括号 空格 斜杠 分号<br/><br/>
+			将查找的结果 输出到控制台 xargs 为find结果的批量结果</td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+crontab 计划任务 后台任务
+</div>
+<div class="divnext">
+<table class="table">
+		
+		<tr>
+			<td colspan="3" rowspan="3" style="width:15%"><span style="color:green">crontab [-u user] -e -l -r</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">设置环境变量</td>
+			<td colspan="6" rowspan="1"style="width:58%">在用户系统文件中加入 EDITOR=vi; 
+			export EDITOR 重启 source ,存储在/var/spool/cron/$username</td>
+
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">[-u user]可省略 用户名</td>
+			<td colspan="2" rowspan="1"style="width:20%">-e edit</td>
+			<td colspan="2" rowspan="1"style="width:20%">-l list</td>
+			<td colspan="2" rowspan="1"style="width:18%">-r remove</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="2" style="width:15%"><span style="color:green">at [-f script] [-m -l -r] [time] [date]</span></td>
+		</tr>
+		
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">[-f] 脚本或者命令</td>
+			<td colspan="2" rowspan="1"style="width:20%">-m -l -r  mail/list/remove</td>
+			<td colspan="2" rowspan="1"style="width:20%">[time] 时间格式</td>
+			<td colspan="2" rowspan="1"style="width:18%">[date] 日期格式</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">&</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">command &</td>
+			<td colspan="6" rowspan="1" style="width:50%">客户端一断都断</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">nohup</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">nohup command > 1.log 2>&1 &</td>
+			<td colspan="6" rowspan="1" style="width:50%">相当于起一个服务</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%" class="style1">ps -ef |grep xx</td>
+			<td colspan="1" rowspan="1" style="width:13%">查看后台进程</td>
+			<td colspan="4" rowspan="1" style="width:30%">ps -ef |grep redis</td>
+			<td colspan="2" rowspan="1" style="width:28%">kill -9 进程号</td>
+		</tr>		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+输入输出 echo read cat tee
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="2" style="width:15%" class="style1">echo -e 
+			(linux转义)</td>
+		</tr>
+		
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">\c 不换行&nbsp;</td>
+			<td colspan="2" rowspan="1"style="width:20%">\f 进纸（换行+缩进）</td>
+			<td colspan="2" rowspan="1"style="width:20%">\t tab键</td>
+			<td colspan="2" rowspan="1"style="width:18%">\n 换行</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">
+			read</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">read 控制台输入</td>
+			<td colspan="6" rowspan="1" style="width:50%">参数使用空格分隔 参数过多全给最后一个</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">shell 标准输入 0、输出 1、错误 2</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">command 1&gt;file<br/>command 2&gt;&gt;file</td>
+			<td colspan="6" rowspan="1" style="width:50%">输出重定向到文件<br/>错误追加到文件 </td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">tee</span></td>
+			<td colspan="1" rowspan="1" style="width:13%">echo "22" | tee 1.txt</td>
+			<td colspan="6" rowspan="1" style="width:50%">重定向至文件并输出到console </td>
+		</tr>	
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+命令 组合 控制 &amp;&amp; || (;)
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">
+			command1 && command2 </span></td>
+			<td colspan="1" rowspan="1" style="width:13%">cp a.txt a/ &amp;&amp; rm -rf a.txt</td>
+			<td colspan="6" rowspan="1" style="width:50%">复制成功后，删除源文件</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">
+			command1 || command2 </span></td>
+			<td colspan="1" rowspan="1" style="width:13%">cp a.txt a/ || rm -rf a.txt</td>
+			<td colspan="6" rowspan="1" style="width:50%">复制失败了，删除源文件</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">
+			(command1;command2) </span></td>
+			<td colspan="1" rowspan="1" style="width:13%">()可以省略</td>
+			<td colspan="6" rowspan="1" style="width:50%">顺序执行</td>
+		</tr>
+				
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+grep 查找
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="6" style="width:15%"><span style="color:green">grep [选项] 正则 [文件]<br/><br/>
+				cat [文件] | grep [选项] 正则</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="4" style="width:13%">[选项]</td>
+	
+		</tr>
+		<tr>
+			
+			<td colspan="2" rowspan="1"style="width:20%">-c 匹配行的计数</td>
+			<td colspan="2" rowspan="1"style="width:20%">-i 不区分大小写(单字符)</td>
+			<td colspan="2" rowspan="1"style="width:18%">-h 查询多文件不显示文件名</td>
+		</tr>
+		
+		<tr>
+			
+			<td colspan="2" rowspan="1"style="width:20%">-l 查询多文件只显示匹配的文件名</td>
+			<td colspan="2" rowspan="1"style="width:20%">-n 显示匹配行及行号</td>
+			<td colspan="2" rowspan="1"style="width:18%">-s 不显示不存在或无匹配文本的错误信息</td>
+		</tr>
+		<tr>
+			
+			<td colspan="2" rowspan="1"style="width:20%">-v 显示不包含匹配文本的所有行</td>
+			<td colspan="2" rowspan="1"style="width:20%">&nbsp;</td>
+			<td colspan="2" rowspan="1"style="width:18%">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">正则</td>
+			<td colspan="6" rowspan="1" style="width:50%">"xxx/>"代表精确查询</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1" style="width:7%">例子</td>
+			<td colspan="2" rowspan="1" style="width:18%">ll -a |grep ^[^d] 不包括文件夹</td>
+			<td colspan="2" rowspan="1" style="width:18%">grep -n "^$" 1.txt 查询空格</td>
+			<td colspan="2" rowspan="1" style="width:18%">grep -n "3\{1\}" 1.txt 3出现1次</td>
+			<td colspan="2" rowspan="1" style="width:24%">grep -n "4..1" 1.txt 4开头1结尾的4位数</td>
+		</tr>	
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+awk文本分析
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="8" style="width:15%"><span style="color:green">awk [-F field-separate] 'command' inputfile<br/><br/>
+				cat inputfile | awk [-F field-separate] 'command'</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">[-F field-separate]</td>
+			<td colspan="6" rowspan="1" style="width:50%">字段之间的分隔符 默认为空格  同hive load指令</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">正则元字符</td>
+			<td colspan="5" rowspan="1"style="width:48%">awk 正则需要用//包裹 如：~/正则/  多了+ 匹配一个或多个字符 ，？匹配出现频率</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">条件操作符</td>
+			<td colspan="5" rowspan="1"style="width:48%">< <= >= == != ~匹配 !~不匹配 （适用正则）</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">逻辑操作符</td>
+			<td colspan="5" rowspan="1"style="width:48%">&& || and or !</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">内置变量（大写）</td>
+			<td colspan="5" rowspan="1"style="width:48%">FILENAME 文件名 、FNR 浏览文件的记录数 等等 </td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">内置字符串函数</td>
+			<td colspan="5" rowspan="1"style="width:48%">gsub(r,s) 用s替换r、index(s,t)返回说字符串中t的第一个位置、length(s)返回s长度等等</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">awk脚本</td>
+			<td colspan="5" rowspan="1"style="width:48%">第一行用 #!/bin/awk -f</td>
+		</tr>
+		<tr>
+			<td colspan="5"  style="width:45%">cat /etc/passwd |awk  -F ':'  'BEGIN {print "name,shell"} {print $1" ---- "$7} END {print "blue,/bin/nosh"}'</td>
+			<td colspan="5"  style="width:45%">BEGIN与END为 awk前后的两个模式 {print 为动作 $0 代表全部 $1代表第一个}</td>
+		</tr>
+		<tr>
+			<td colspan="5"  style="width:45%">cat /etc/passwd |awk  -F ':'  'BEGIN {count=0} {count=count+1;print $1" ---- "$7} END {print count}'</td>
+			<td colspan="5"  style="width:45%">自定义了一个count 在BEGIN时初始化，过程中+1 结尾时输出</td>
+		</tr>
+		<tr>
+			<td colspan="5"  style="width:45%"> cat /etc/passwd |awk  -F ':'  'BEGIN {count=0;lengths=0} { if($1~/^r/) {count=count+1;lengths=lengths+length($1);print $1"--" length($1) "--" $7}} END {print "num:"count ",lengthsum:" lengths}'</td>
+			<td colspan="5"  style="width:45%">在BEGIN时 自定义了 count 数量 与 lengths匹配r开头的长度 ，匹配正则 r开头的时候 count+1 ,lengths 累加长 ，结尾时输出</td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+sed 文本处理
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="5" style="width:15%"><span style="color:green">sed [option] 'sed command' inputfile<br/><br/>
+				cat inputfile | sed [option] 'sed command'</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">[option]</td>
+			<td colspan="6" rowspan="1" style="width:50%">-n slient模式、-e 指令列模式、-f 使用sed脚本、-r 、<span style="color:red">-i 直接修改 无输出（修改源文件）</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">'sed command'</td>
+			<td colspan="6" rowspan="1"style="width:48%">a 增加、c 取代、d 删除、i 插入、p 打印、s 取代、=行号、</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">正则元字符</td>
+			<td colspan="6" rowspan="1"style="width:48%">sed 正则需要用//包裹</td>
+		</tr>
+		
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">sed脚本</td>
+			<td colspan="6" rowspan="1"style="width:48%">第一行用 #!/bin/sed -f</td>
+		</tr>
+		<tr>
+			<td colspan="3"  style="width:22%">sed -n p 1.txt、sed -n '1,$'p 1.txt</td>
+			<td colspan="2"  style="width:22%">打印全部</td>
+			<td colspan="2"  style="width:22%">sed -n '/c$/'= 1.txt</td>
+			<td colspan="3"  style="width:22%">打印以c结尾的行号</td>
+		</tr>
+		<tr>
+			<td colspan="3"  style="width:22%">sed -n '/.*t/'p 1.txt</td>
+			<td colspan="2"  style="width:22%">打印任意有t的行数据</td>
+			<td colspan="2"  style="width:22%">sed '1a hello' 1.txt</td>
+			<td colspan="3"  style="width:22%">在第一行后增加hello的输出 输出变 1.txt不变</td>
+		</tr>
+		<tr>
+			<td colspan="3"  style="width:22%">sed '1,3'd 1.txt</td>
+			<td colspan="2"  style="width:22%">打印删除了第一行到第三行 删两行的输出 1.txt 无改变</td>
+			<td colspan="2"  style="width:22%">sed -i '1,3'd 1.txt</td>
+			<td colspan="3"  style="width:22%">物理 删除第一行到第三行 删两行 1.txt 被改变</td>
+		</tr>
+		<tr>
+			<td colspan="3"  style="width:22%">sed  's/two/three/g' 1.txt</td>
+			<td colspan="7"  style="width:22%">全文 three 替换 two  源文件不变  g全局替换、p 打印、w 输出定向至文件 sed  's/two/three/w 3.txt' 1.txt  </td>
+		</tr>
+		<tr>
+			<td colspan="3"  style="width:22%">sed -i 's/SELINUX=enforcing/SELINUX=disabled/g'/etc/sysconfig/selinux</td>
+			<td colspan="7"  style="width:22%">把文件中的 SELINUX=enforcing替换为SELINUX=disabled </td>
+		</tr>
+		<tr>
+			<td colspan="3"  style="width:22%">sed -i 's:SELINUX=enforcing:SELINUX=disabled:g'/etc/sysconfig/selinux</td>
+			<td colspan="7"  style="width:22%">使用：分割 比如有路径转换问题 </td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+sort 排序
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="7" style="width:15%"><span style="color:green">sort [-o outfile] [选项] infile</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="6" style="width:13%">[选项]</td>
+	
+		</tr>
+		<tr>
+			
+			<td colspan="2" rowspan="1"style="width:20%">-o 输出 </td>
+			<td colspan="4" rowspan="1"style="width:39%">保存输出  也可以使用重定向方式</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">-c 测试文件是否分类</td>
+			<td colspan="4" rowspan="1"style="width:39%">sort -c 5.txt</td>
+		</tr>
+		
+		
+		<tr>
+			
+			<td colspan="2" rowspan="1"style="width:20%">-m 合并 、-u 去重</td>
+			<td colspan="4" rowspan="1"style="width:39%">sort -o 3.txt -m 1.txt 2.txt 、sort -u 3.txt</td>
+		</tr>
+		<tr>
+			
+			<td colspan="2" rowspan="1"style="width:20%">-n 以数字排序、(-k -t) 联用 -t 分隔符 -k 分隔之后的域、 -r 降序</td>
+			<td colspan="4" rowspan="1"style="width:39%"> cat 1.txt | sed 's/--/-/g' |sort  -nk2 -rnk3 -rk1  -t '-';  1.把1.txt 中所有--改成- 2.并且按-分隔 对域2数字升序后 对域3数字降序 对域1降序 </td>
+		</tr>
+		
+		<tr>
+			
+			<td colspan="2" rowspan="1"style="width:20%">-r 降序、 -f 忽略大小写、-b 忽略每一行前面的空白部分</td>
+			<td colspan="4" rowspan="1"style="width:39%">sort -o 3.txt -m 1.txt 2.txt 、sort -u 3.txt</td>
+		</tr>
+
+		
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">
+			uniq [option] filename </span></td>
+			<td colspan="3" rowspan="1" style="width:30%">-u 只显示不重复行、-d 只显示重复行、-c打印每种重复行数量  </td>
+			<td colspan="2" rowspan="1" style="width:24%">uniq -c 1.txt</td>
+			<td colspan="2" rowspan="1" style="width:24%">答应重复行数量</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">
+			join [option] file1 file2 </span></td>
+			<td colspan="3" rowspan="1" style="width:30%">-a1 左链接 -a2 右链接、-t 分隔符、-j n m 第n个文件的第m域 做链接  </td>
+			<td colspan="2" rowspan="1" style="width:24%">join -a1 1.txt 2.txt</td>
+			<td colspan="2" rowspan="1" style="width:24%">1.txt 左链接 2.txt </td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">
+			split [option] file</span></td>
+			<td colspan="3" rowspan="1" style="width:30%">-l 按行分隔、-b 按字节分隔、(-d -a)-d数字作为生成文件的后缀 -a长度   </td>
+			<td colspan="2" rowspan="1" style="width:24%">split -b 5 -d -a 2 1.txt</td>
+			<td colspan="2" rowspan="1" style="width:24%">按5字节分隔 后缀为数字 后缀长度为2 x00 x01 x02</td>
+		</tr>
+		
+		<tr>
+			<td colspan="3" rowspan="1" style="width:15%"><span style="color:green">
+			dd [option] </span></td>
+			<td colspan="3" rowspan="1" style="width:30%">dd if=/dev/zero of=hello.txt bs=100M count=1 </td>
+			<td colspan="4" rowspan="1" style="width:48%">生成100M的空文件</td>
+		</tr>		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+netstat 网络相关信息
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="7" style="width:15%"><span style="color:green">netstat [option] <br/> ss [option] </span>速度快</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-a  </td>
+			<td colspan="2" rowspan="1"style="width:20%">显示所有选项，默认不显示LISTEN相关</td>
+			<td colspan="1" rowspan="1"style="width:15%">-n</td>
+			<td colspan="3" rowspan="1"style="width:28%">拒绝显示别名，能显示数字的全部转化成数字</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-t  </td>
+			<td colspan="2" rowspan="1"style="width:20%">tcp 协议</td>
+			<td colspan="1" rowspan="1"style="width:15%">-u</td>
+			<td colspan="3" rowspan="1"style="width:28%">udp协议</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%"> -l  </td>
+			<td colspan="2" rowspan="1"style="width:20%">仅列出有在 Listen (监听) 的服務状态</td>
+			<td colspan="1" rowspan="1"style="width:15%">-p</td>
+			<td colspan="3" rowspan="1"style="width:28%">显示建立相关链接的程序名</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%"> -r  </td>
+			<td colspan="2" rowspan="1"style="width:20%">路由表</td>
+			<td colspan="1" rowspan="1"style="width:15%">-e</td>
+			<td colspan="3" rowspan="1"style="width:28%">扩展信息</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%"> -s  </td>
+			<td colspan="2" rowspan="1"style="width:20%">协议统计</td>
+			<td colspan="1" rowspan="1"style="width:15%">-c</td>
+			<td colspan="3" rowspan="1"style="width:28%">每隔一个固定时间，执行该netstat命令</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%"> -i  </td>
+			<td colspan="2" rowspan="1"style="width:20%">网卡信息</td>
+			<td colspan="1" rowspan="1"style="width:15%">-g</td>
+			<td colspan="3" rowspan="1"style="width:28%">广播组信息</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			netstat -oat | grep "mysql" |awk '{print $5}'|awk -F: '{print $1}'|sort|uniq -c|sort -nr|head -20<br/>
+			netstat -noat | grep ":3306" |awk '{print $5}'|awk -F: '{print $1}'|sort|uniq -c|sort -nr|head -20
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">连接mysql服务端口最多的的IP地址 </td>
+
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			netstat -noap | grep ':3306'<br/>
+			netstat -oap | grep 'mysql'
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">查看3306运行的服务 <br/>查看服务运行的端口</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			ss -pl 
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">列出每个进程名及其监听的端口 </td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+sar 性能监控
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="6" style="width:15%"><span style="color:green">netstat [ 选项 ]  <br/>  [ <时间间隔>  [ <次数> ] ] </td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-b  </td>
+			<td colspan="2" rowspan="1"style="width:20%">显示I/O和传递速率的统计信息</td>
+			<td colspan="1" rowspan="1"style="width:15%">-d</td>
+			<td colspan="3" rowspan="1"style="width:28%">输出每一块磁盘的使用信息</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-f  </td>
+			<td colspan="2" rowspan="1"style="width:20%">从制定的文件读取报告</td>
+			<td colspan="1" rowspan="1"style="width:15%">-i</td>
+			<td colspan="3" rowspan="1"style="width:28%">设置状态信息刷新的间隔时间</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%"> -P  </td>
+			<td colspan="2" rowspan="1"style="width:20%">报告每个CPU的状态</td>
+			<td colspan="1" rowspan="1"style="width:15%">–u</td>
+			<td colspan="3" rowspan="1"style="width:28%">输出cpu使用情况和统计信息</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%"> -R  </td>
+			<td colspan="2" rowspan="1"style="width:20%">显示内存状态</td>
+			<td colspan="1" rowspan="1"style="width:15%">-r</td>
+			<td colspan="3" rowspan="1"style="width:28%">报告内存利用率的统计信息</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%"> -n   </td>
+			<td colspan="2" rowspan="1"style="width:20%">网络信息</td>
+			<td colspan="1" rowspan="1"style="width:15%">-x</td>
+			<td colspan="3" rowspan="1"style="width:28%">进程信息</td>
+		</tr>
+		
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			sar -u | sar -u 1 3
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">查看CPU使用情况 </td>
+
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			
+			sar -o /xxxxxx 1 3<br/>
+			sar -f /xxxxxx
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">保存到/xxxxx文件 <br/>查看/xxxxx文件</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			
+			sar -n DEV 1 3<br/>
+			sar -n EDVE  1 3<br/>
+			sar -n SOCK 1 3<br/>
+			sar -n TCP 1 3
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">
+			网络接口信息 <br/>
+			网络设备通信失败信息<br/>
+			统计socket连接信息<br/>
+			统计tcp连接信息
+			
+			</td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+lsof 列出当前系统打开文件的工具
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="6" style="width:15%"><span style="color:green">lsof [option] file</span></td>
+		</tr>
+		<tr>
+			<td colspan="10" rowspan="1"style="width:15%">
+COMMAND:进程的名称 ; &nbsp;&nbsp;
+PID:进程标识符;&nbsp;&nbsp;
+USER:进程所有者;&nbsp;&nbsp;
+FD:文件描述符，如cwd、txt等 ;<br/>
+TYPE:文件类型，如DIR、REG等;&nbsp;&nbsp;
+DEVICE:指定磁盘的名称;&nbsp;&nbsp;
+SIZE:文件的大小;<br/>
+NODE:索引节点（文件在磁盘上的标识）;&nbsp;&nbsp;
+NAME:打开文件的确切名称; </td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">无参数</td>
+			<td colspan="2" rowspan="1"style="width:20%">显示开启文件file的进程</td>
+			<td colspan="1" rowspan="1"style="width:15%">-c</td>
+			<td colspan="3" rowspan="1"style="width:28%">过滤 COMMAND</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-p  </td>
+			<td colspan="2" rowspan="1"style="width:20%">过滤 PID</td>
+			<td colspan="1" rowspan="1"style="width:15%">-u</td>
+			<td colspan="3" rowspan="1"style="width:28%">过滤 USER</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-d  </td>
+			<td colspan="2" rowspan="1"style="width:20%">过滤 FD</td>
+			<td colspan="1" rowspan="1"style="width:15%">-i</td>
+			<td colspan="3" rowspan="1"style="width:28%">显示符合条件的进程情况</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">+d </td>
+			<td colspan="2" rowspan="1"style="width:20%">显示目录下被进程开启的文件</td>
+			<td colspan="1" rowspan="1"style="width:15%">+D</td>
+			<td colspan="3" rowspan="1"style="width:28%">显示目录下所有目录被进程开启的文件</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			lsof +D /var/
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">显示 /var/ 目录下所有被进程占用的文件 及所有信息</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			lsof -i tcp@vggapp19:3306 -r
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">不停止的 查看3306端口上的链接情况  </td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			lsof -i :3306 | wc -l
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">查看3306端口的链接数  </td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+curl 通信命令
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="10" rowspan="1" style="width:15%"><span style="color:green">curl [option]</span></td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			curl www.baidu.com
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">查看源码 </td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			curl -o [file] www.baidu.com
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">保存源码到文件 </td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			curl -v www.baidu.com
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">显示通信过程 </td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			curl -X POST -d "name=kafka-manager&zkHosts=vdkapp29:2181&kafkaVersion=0.10.1.0&jmxEnabled=true"   "http://vdkapp27:9843/clusters"
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%"> -X 协议请求（POST,GET,DELETE,PUT） -d 携带参数 </td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			curl -s -u admin:admin -i -X PUT -H "X-Requested-By: ambari" -d 'args' "http://test1:8080/api/v1/clusters/xz/alert_definitions/3"
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%"> -s 减少输出的信息 -u 访问带的用户名和密码 -i 输出时包括protocol头信息 -H 指定请求头参数 </td>
+		</tr>
+		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+ps 列出系统中运行的进程
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="5" style="width:15%"><span style="color:green">ps [option] </span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-A</td>
+			<td colspan="2" rowspan="1"style="width:20%">显示所有进程</td>
+			<td colspan="1" rowspan="1"style="width:15%">-e</td>
+			<td colspan="3" rowspan="1"style="width:28%">同-A</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-u  </td>
+			<td colspan="2" rowspan="1"style="width:20%">指定用户</td>
+			<td colspan="1" rowspan="1"style="width:15%">-aux</td>
+			<td colspan="3" rowspan="1"style="width:28%">显示所有进程的详细信息</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-d  </td>
+			<td colspan="2" rowspan="1"style="width:20%">过滤 FD</td>
+			<td colspan="1" rowspan="1"style="width:15%">-i</td>
+			<td colspan="3" rowspan="1"style="width:28%">显示符合条件的进程情况</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">-e </td>
+			<td colspan="2" rowspan="1"style="width:20%">环境变量</td>
+			<td colspan="1" rowspan="1"style="width:15%">-f</td>
+			<td colspan="3" rowspan="1"style="width:28%">程序间关系</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			ps -ef | grep mysql
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">查找服务相应进程</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			ps -aux
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">列出所有内存当中的程序  </td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			ps -aux --sort=-pcpu,+pmem
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">进程按 cpu降序 内存占用升序 排序 </td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			ps -eo pid,lstart,etime,cmd | grep sbt
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">查看进程运行时间</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			ps -ef | grep  '[k]afka.Kafka'<br/>
+			ps -ef | grep  'kafka.Kafka' | grep -v 'grep kafka.Kafka'
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">
+			查看进程 不输出本身进程<br/>
+			查看进程 过滤本身进程</td>
+		</tr>
+		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+mpstat CPU的一些统计信息
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="6" style="width:15%"><span style="color:green">mpstat [option] [ &lt;interval&gt; [ &lt;count&gt; ] ]</span></td>
+		</tr>
+		
+		<tr>
+			
+			<td colspan="1" rowspan="1"style="width:15%">[option] </td>
+			<td colspan="2" rowspan="1"style="width:20%">-P {|ALL}</td>
+			<td colspan="4" rowspan="1"style="width:45%">表示监控哪个CPU， cpu在[0,cpu个数-1]中取值</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">[ &lt;interval&gt; [ &lt;count&gt; ] ] </td>
+			<td colspan="2" rowspan="1"style="width:40%">&lt;interval&gt; 采样周期 </td>
+			<td colspan="4" rowspan="1"style="width:40%">&lt;count&gt; 采样次数</td>
+		</tr>
+		
+		
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">%usr 用户级别CPU利用率%</td>
+			<td colspan="2" rowspan="1"style="width:20%">%nice nice优先级的用户CPU利用率%</td>
+			<td colspan="3" rowspan="1"style="width:28%">%sys 系统级别CPU利用率%</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">%iowait 有未完成的磁盘I/O请求期间CPU空闲时间%</td>
+			<td colspan="2" rowspan="1"style="width:20%">%irq 硬件中断花费时间%</td>
+			<td colspan="3" rowspan="1"style="width:28%">%soft 软件中断花费时间%</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">%steal cpu被迫等待花费时间%</td>
+			<td colspan="2" rowspan="1"style="width:20%">%guest 虚拟处理器时CPU花费时间%</td>
+			<td colspan="3" rowspan="1"style="width:28%">%idle CPU空闲和系统没有未完成的磁盘I/O请求情况下的时间%</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			mpstat -P ALL
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">所有处理器的数据统计</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			mpstat -P ALL 2 3
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">每2秒收集一次数据，共收集三次统计数据  </td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			while :; do ps -eo pid,ni,pri,pcpu,psr,comm | grep 'mysql'; sleep 2; done
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">每2秒收集一次mysql服务CPU等统计信息  </td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+vmstat 虚拟内存统计
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="10" style="width:15%"><span style="color:green">vmstat [option] [ &lt;interval&gt; [ &lt;count&gt; ] ]</span></td>
+		</tr>
+		
+		<tr>
+			
+			<td colspan="1" rowspan="3"style="width:15%">[option] </td>
+			
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">-a</td>
+			<td colspan="2" rowspan="1"style="width:20%">活跃和非活跃内存</td>
+			<td colspan="1" rowspan="1"style="width:10%">-s</td>
+			<td colspan="2" rowspan="1"style="width:20%">内存相关统计信息及多种系统活动数量</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:10%">-d</td>
+			<td colspan="2" rowspan="1"style="width:20%">磁盘相关统计信息</td>
+			<td colspan="1" rowspan="1"style="width:10%">-f</td>
+			<td colspan="2" rowspan="1"style="width:20%">fork 数量 子线程数量</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1"style="width:15%">[ &lt;interval&gt; [ &lt;count&gt; ] ] </td>
+			<td colspan="2" rowspan="1"style="width:40%">&lt;interval&gt; 采样周期 </td>
+			<td colspan="4" rowspan="1"style="width:40%">&lt;count&gt; 采样次数</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">r: 运行队列中进程数量</td>
+			<td colspan="2" rowspan="1"style="width:20%">b: 等待IO的进程数量</td>
+			<td colspan="3" rowspan="1"style="width:28%">swpd: 使用虚拟内存大小</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">free: 可用内存大小</td>
+			<td colspan="2" rowspan="1"style="width:20%">buff: 用作缓冲的内存大小</td>
+			<td colspan="3" rowspan="1"style="width:28%">cache: 用作缓存的内存大小</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">si: 每秒从交换区写到内存的大小</td>
+			<td colspan="2" rowspan="1"style="width:20%">so: 每秒写入交换区的内存大小</td>
+			<td colspan="3" rowspan="1"style="width:28%">bi: 每秒读取的块数</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">bo: 每秒写入的块数</td>
+			<td colspan="2" rowspan="1"style="width:20%">in: 每秒中断数，包括时钟中断</td>
+			<td colspan="3" rowspan="1"style="width:28%">cs: 每秒上下文切换数</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">us: 用户进程执行时间</td>
+			<td colspan="2" rowspan="1"style="width:20%">sy: 系统进程执行时间</td>
+			<td colspan="3" rowspan="1"style="width:28%">id: 空闲时间</td>
+		</tr>
+		
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			vmstat -a 2 5
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">活跃与非活跃内存 2秒统计一次 共统计5次</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			free -m
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">每2秒收集一次数据，共收集三次统计数据  </td>
+		</tr>
+</table>
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+zip tar 打包
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td colspan="3" rowspan="3" style="width:15%"><span style="color:green">tar</span></td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">-c</td>
+			<td colspan="1" rowspan="1" style="width:13%">create 建立压缩档案的参数</td>
+			<td colspan="1" rowspan="1" style="width:13%">-x</td>
+			<td colspan="1" rowspan="1" style="width:13%">解压缩压缩档案的参数	</td>
+			<td colspan="1" rowspan="1" style="width:13%">-z</td>
+			<td colspan="2" rowspan="1" style="width:25%"> 是否需要用gzip压缩</td>
+		</tr>
+		<tr>
+			<td colspan="1" rowspan="1" style="width:13%">-v</td>
+			<td colspan="2" rowspan="1" style="width:25%">压缩的过程中显示档案</td>
+			<td colspan="1" rowspan="1" style="width:13%">-f</td>
+			<td colspan="3" rowspan="1" style="width:40%">置顶文档名，在f后面立即接文件名，不能再加参数	</td>
+		</tr>
+		
+		<tr>
+			<td colspan="3" rowspan="3" style="width:15%"><span style="color:green">tar包</span>不压缩</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1" style="width:20%">压缩</td>
+			<td colspan="5" rowspan="1" style="width:50%"> tar -cvf name.tar \目录</td>
+			
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">解压 </td>
+			<td colspan="5" rowspan="1"style="width:50%">tar -xvf name.tar</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="3" style="width:15%"><span style="color:green">tar.gz包</span>压缩</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1" style="width:20%">压缩</td>
+			<td colspan="5" rowspan="1" style="width:50%"> tar -zcvf name.tar.gz \目录</td>
+			
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">解压 </td>
+			<td colspan="5" rowspan="1"style="width:50%">tar -zxvf name.tar.gz</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="3" style="width:15%"><span style="color:green">zip包</span></td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">压缩</td>
+			<td colspan="5" rowspan="1"style="width:50%">zip –r name.zip \目录</td>
+		</tr>
+		
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">解压</td>
+			<td colspan="5" rowspan="1"style="width:50%">unzip name.zip</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="3" style="width:15%"><span style="color:green">rar包</span></td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">压缩</td>
+			<td colspan="5" rowspan="1"style="width:50%">rar e name.rar \目录</td>
+		</tr>
+		
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">解压</td>
+			<td colspan="5" rowspan="1"style="width:50%">rar a name.zip</td>
+		</tr>
+		<tr>
+			<td colspan="3" rowspan="3" style="width:15%"><span style="color:green">gz包</span></td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">压缩</td>
+			<td colspan="5" rowspan="1"style="width:50%">gzip \目录</td>
+		</tr>
+		
+		<tr>
+			<td colspan="2" rowspan="1"style="width:20%">解压</td>
+			<td colspan="5" rowspan="1"style="width:50%">gzip -d name.gz</td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+创建用户
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td style="width:20%">增加用户组</td>
+			<td style="width:75%">groupadd -g 3000 cloudadmin</td>
+		</tr>
+		<tr>
+			<td style="width:20%">增加用户并指定组</td>
+			<td style="width:75%">useradd -u 3001 -g cloudadmin hadoop</td>
+		</tr>
+		<tr>
+			<td style="width:20%"> 修改目录所属组</td>
+			<td style="width:75%">chown -R hadoop:cloudadmin /hadoop</td>
+		</tr>
+		<tr>
+			<td style="width:20%">修改hadoop用户密码</td>
+			<td style="width:75%">passwd hadoop</td>
+		</tr>
+		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+逻辑卷、物理卷挂载
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td style="width:20%">光驱挂载</td>
+			<td colspan="2" style="width:75%">mount -o loop /dev/cdrom 路径</td>
+		</tr>
+		<tr>
+			<td style="width:20%">查看未分配的磁盘</td>
+			<td colspan="2" style="width:75%">fdisk -l </td>
+		</tr>
+		<tr>
+			<td rowspan="6" style="width:10%">逻辑卷</td>
+			<td style="width:20%">初始化物理卷</td>
+			<td style="width:65%">pvcreate /dev/sdb(空闲磁盘物理卷)	<br/>
+								  pvdisplay 查看		
+			</td>
+		</tr>
+		<tr>
+			<td style="width:20%">初始化物理卷组</td>
+			<td style="width:65%">vgcreate vg名称 /dev/sdb<br/>
+								  vgdisplay 查看
+			</td>
+		</tr>
+		<tr>
+			<td style="width:20%">初始化逻辑卷</td>
+			<td style="width:65%">lvcreate -L 5G -n lv名称 vg名称 （将物理卷组加入到逻辑卷）<br/>
+								  lvdisplay 查看</td>
+		</tr>
+		<tr>
+			<td style="width:20%">格式化逻辑分区</td>
+			<td style="width:65%">mkfs -t ext4 /dev/vg名称/lv名称</td>
+		</tr>
+		<tr>
+			<td style="width:20%">挂载磁盘
+			</td>
+			<td style="width:65%">mount /dev/vg名称/lv名称 路径</td>
+		</tr>
+		<tr>
+			<td style="width:20%">磁盘长挂/etc/fstab
+			</td>
+			<td style="width:65%">逻辑磁盘名	   路径   磁盘初始化类型	defaults	1	1<br/>
+								  /dev/vg/lv01	   /hadoop   ext4	defaults	1	1		
+			</td>
+		</tr>
+		
+		<tr>
+			<td rowspan="3" style="width:10%">物理卷</td>
+			<td style="width:20%">格式化</td>
+			<td style="width:65%">mkfs -t ext4 物理卷</td>
+		</tr>
+		<tr>
+			<td style="width:20%">挂载磁盘</td>
+			<td style="width:65%">mount /dev/sdb 路径</td>
+		</tr>
+		<tr>
+			<td style="width:20%">磁盘长挂/etc/fstab
+			</td>
+			<td style="width:65%">物理磁盘名	   路径   磁盘初始化类型	defaults	1	1<br/>
+								  /dev/sdb	   /hadoop   ext4	defaults	1	1		
+			</td>
+		</tr>
+		
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+操作
+</div>
+<div class="divnext">
+<table class="table">
+		
+		<tr>
+			<td style="width:20%"> rm -rf</td>
+			<td style="width:75%">删除</td>
+		</tr>
+		<tr>
+			<td style="width:20%">ls -a/ll -a<br/>ll -R path</td>
+			<td style="width:75%">查所有文件<br/>查看所有文件（包括子文件）</td>
+		</tr>
+		<tr>
+			<td style="width:20%">touch</td>
+			<td style="width:75%">创建文件</td>
+		</tr>
+		<tr>
+			<td style="width:20%">cat</td>
+			<td style="width:75%">查看文件</td>
+		</tr>
+		<tr>
+			<td style="width:20%">echo "ss" &gt;&gt; 1.txt</td>
+			<td style="width:75%">添加ss到1.txt尾部</td>
+		</tr>
+		<tr>
+			<td style="width:20%">truncate --size=$[`cat 1.txt | wc -c`-`echo "ss" | wc -c`] 1.txt;</td>
+			<td style="width:75%">将1.txt尾部添加的ss删除</td>
+		</tr>
+		<tr>
+			<td style="width:20%">du -sk ./*</td>
+			<td style="width:75%">看当前目录的尺寸</td>
+		</tr>
+		<tr>
+			<td style="width:20%">locale</td>
+			<td style="width:75%">查字符集</td>
+		</tr>
+		<tr>
+			<td style="width:20%">scp -r 位置 IP:/位置</td>
+			<td style="width:75%">远程发送代码</td>
+		</tr>
+		<tr>
+			<td style="width:20%">free -m</td>
+			<td style="width:75%">内存M为单位</td>
+		</tr>
+		<tr>
+			<td style="width:20%">top</td>
+			<td style="width:75%">服务器性能<br/>
+								  cat /proc/cpuinfo | grep c 看CPU
+			</td>
+		</tr>
+		<tr>
+			<td style="width:20%">df -kh</td>
+			<td style="width:75%">磁盘使用情况<br/>
+								  cat /proc/meminfo | grep M
+			</td>
+		</tr>
+		<tr>
+			<td style="width:20%">jps</td>
+			<td style="width:75%">jdk1.5之后查看java进程</td>
+		</tr>
+
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+系统配置
+</div>
+<div class="divnext">
+<table class="table">
+		<tr>
+			<td style="width:20%">时间同步
+			</td>
+			<td style="width:75%">ntpdate -u 172.32.147.240</td>
+		</tr>
+		<tr>
+			<td style="width:20%">添加环境变量
+			</td>
+			<td style="width:75%">vi /etc/profile或者vi ~/.bash_profile<br/>
+								  export JAVA_HOME=/usr/java/jdk1.7<br/>
+								  export PATH=.:$JAVA_HOME/bin:$PATH<br/>
+								  source /etc/profile 或者 ~/.bash_profile
+								  </td>
+		</tr>
+		<tr>
+			<td style="width:20%">chkconfig --list|grep 服务</td>
+			<td style="width:75%"> --level   等级0表示：表示关机<br/>
+     								 等级1表示：单用户模式<br/>
+      								 等级2表示：无网络连接的多用户命令行模式<br/>
+     								 等级3表示：有网络连接的多用户命令行模式<br/>
+      								 等级4表示：不可用<br/>
+      								 等级5表示：带图形界面的多用户模式<br/>
+      								 等级6表示：重新启动<br/>
+      								 chkconfig  iptables/ip6tables   on/off
+     		 </td>
+		</tr>
+		<tr>
+			<td style="width:20%">vi /etc/inittab</td>
+			<td style="width:75%">#   0 - halt (Do NOT set initdefault to this)          停止(不设initdefault这个)<br/>
+								  #   1 - Single user mode              单用户模式<br/>
+								  #   2 - Multiuser, without NFS       多用户,没有NFS(相当于没有网络的3)<br/>
+								  #   3 - Full multiuser mode            充分多用户模式<br/>
+								  #   4 - unused              空闲<br/>
+								  #   5 - X11      图形界面<br/>
+								  #   6 - reboot (Do NOT set initdefault to this)    重启(不设initdefault这个)<br/>
+								  id:3:initdefault:   ----修改这里的参数
+			</td>
+		</tr>
+		<tr>
+			<td style="width:20%">服务启停状态</td>
+			<td style="width:75%">service 服务名 status或者/etc/init.d/服务名 start </td>
+		</tr>
+		<tr>
+			<td style="width:20%">kill杀掉进程 </td>
+			<td style="width:75%">kill 9 进程名 或者 killall 服务名</td>
+		</tr>
+</table>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

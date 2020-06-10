@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>client 指令</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:10px;
+}
+
+</style>
+</head>
+
+<body>
+<h4>hadoop 指令 以hadoop2.x为基准</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="font-size:large;">
+			<tr style="background-color:lightgrey">
+				<td colspan="2" style="width:100%;"><b>基础指令</b></td>
+			</tr>
+			<tr>
+				<td style="width:30%;">初始化集群</td>
+				<td style="width:70%;">hdfs namenode -format</td>
+			</tr>
+
+			<tr>
+				<td style="width:30%;">集群信息</td>
+				<td style="width:70%;">hdfs dfsadmin -report</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">查看文件块信息</td>
+				<td style="width:70%;">hdfs fsck $PATH -files -blocks</td>
+			</tr>
+			
+			
+			<tr>
+				<td style="width:30%;">hdfs dfs </td>
+				<td style="width:70%;">hdfs dfs -ls [-R]/-cat/-cp/-get/-put/-mv/-rm 
+				[-r]/-rmdir/-mkdir/-touchz/-stat/-tail</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">权限</td>
+				<td style="width:70%;">hdfs dfs chgro/chmod/chown [-R] &lt;path&gt;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">文件大小 -s 相当于linux dus  ; -h 大小的数量级单位</td>
+				<td style="width:70%;">hdfs dfs -du [-s] [-h] $path 
+										</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">清空回收站</td>
+				<td style="width:70%;">hdfs dfs -expunge</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">更改副本系数</td>
+				<td style="width:70%;">hadoop dfs -setrep -w 2 -R /</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">文件是否存在</td>
+				<td style="width:70%;">hdfs dfs -test src </td>
+			</tr>
+			<tr>
+				<td style="width:30%;">启动job历史记录服务</td>
+				<td style="width:70%;">mr-jobhistory-daemon.sh start historyserver</td>
+			</tr>
+			
+		</table>
+	</li>
+	<br/>
+	
+
+
+</ul>
+</body>
+
+</html>

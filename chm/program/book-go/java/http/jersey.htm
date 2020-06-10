@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>rest</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:10px;
+}
+.table tr .td1{
+	width:10%
+}
+.table tr .td2{
+	width:88%
+}
+
+</style>
+</head>
+
+<body>
+<h2>rest jersey</h2>
+<h4>http</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		
+		定义了与服务器交互的不同方法，最基本的方法有4种，分别是GET，POST，PUT，DELETE <br/>
+
+		<br/><br/>
+	</li>
+	
+</ul>
+
+<h4>REST </h4>
+<ul style=" list-style-type: none;">
+	<li>
+		REST 本身是设计风格而不是标准。<br/>
+		描述了一个架构样式的互联系统（如 Web 应用程序）。REST 约束条件作为一个整体应用时，将生成一个简单、可扩展、有效、安全、可靠的架构。
+由于它简便、轻量级以及通过 HTTP 直接传输数据的特性，RESTful Web 服务成为基于 SOAP 服务的一个最有前途的替代方案。<br/>
+<br/>
+
+	</li>
+	<li>
+		REST是一套用来创建Web Service的方法<br/><br/>
+	</li>	
+</ul>
+
+
+
+<h4>jersey</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+	rest 框架:<br/>
+	servlet 作为特定路径下的controller，反射给rest资源
+	<br/>
+	注解：<br/>
+	<table class="table">
+	<tr style=" background-color:lightgrey;">
+		<td style="width:25%">注解</td>
+		<td style="width:30%">说明</td>
+		<td style="width:40%">例子</td>	
+	</tr>
+
+	<tr>
+		<td style="width:25%">@PATH</td>
+		<td style="width:30%">路径:修饰类--主路径；修饰方法--子路径；</td>
+		<td style="width:40%">@Path("student")、@Path("get/{id}")</td>	
+	</tr>
+	<tr>
+		<td style="width:25%">@GET @POST @PUT @DELETE</td>
+		<td style="width:30%">4中http协议类型</td>
+		<td style="width:40%">@GET @POST @PUT @DELETE</td>	
+	</tr>
+	<tr>
+		<td style="width:25%">@Produces</td>
+		<td style="width:30%">限定响应内容的MIME类型<br/>（容器端 web.xml 中mime-type）</td>
+		<td style="width:40%">@Produces(value = MediaType.APPLICATION_XML)</td>	
+	</tr>
+	<tr>
+		<td style="width:25%">@Consumes</td>
+		<td style="width:30%">声明该方法使用 HTML FORM即表单输入<br/>（ form 中enctype属性）</td>
+		<td style="width:40%">@Consumes(MediaType.APPLICATION_FORM_URLENCODED)</td>	
+	</tr>
+	<tr>
+		<td style="width:25%">@Context</td>
+		<td style="width:30%">使用该注释注入上下文对象</td>
+		<td style="width:40%">Request、Response、UriInfo、ServletContext </td>	
+	</tr>
+	<tr>
+		<td style="width:25%">
+		@PathParam<br/>
+		@QueryParam<br/>
+		@FormParm<br/>
+		</td>
+		<td style="width:30%">
+		接收链接中参数<br/>
+		接收链接中的普通参数<br/>
+		接收post提交中的表单参数<br/>
+		</td>
+		<td style="width:40%">
+		接收链接中参数，如"/xxx/{name}/",@PathParm("name")<br/>
+		如"/xxx?name=ttt",@QueryParam("name")<br/>
+		form 表单参数<br/>
+		
+		</td>	
+	</tr>
+</table>
+<br/>
+	
+	</li>
+	</ul>
+
+</body>
+
+</html>

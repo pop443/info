@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>hive 自定义函数</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+<h4>hive基本类型</h4>
+<ul style=" list-style-type: decimal;">
+	
+		<table class="table" style="font-size:small">
+			<tr>
+				<td style="width:30%;">hive基本类型</td>
+				<td style="width:55%;">java类型</td>
+				<td style="width:15%;">支持版本</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">BOOLEAN</td>
+				<td style="width:55%;">Boolean</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">TINYINT</td>
+				<td style="width:55%;">Byte</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">SMALLINT</td>
+				<td style="width:55%;">Short</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">INT</td>
+				<td style="width:55%;">Int</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">BIGINT</td>
+				<td style="width:55%;">Long</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">FLOAT</td>
+				<td style="width:55%;">Float</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">DOUBLE</td>
+				<td style="width:55%;">Double</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">DATE</td>
+				<td style="width:55%;">-</td>
+				<td style="width:15%;">0.12</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">DATETIME</td>
+				<td style="width:55%;">-</td>
+				<td style="width:15%;">0.12</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">TIMESTAMP</td>
+				<td style="width:55%;">Timestamp</td>
+				<td style="width:15%;">0.8</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">DECIMAL</td>
+				<td style="width:55%;">BigDecimal</td>
+				<td style="width:15%;">0.11</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">STRING</td>
+				<td style="width:55%;">String</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">VARCHAR</td>
+				<td style="width:55%;">String</td>
+				<td style="width:15%;">0.12</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">CHAR</td>
+				<td style="width:55%;">定长String</td>
+				<td style="width:15%;">0.13</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">BINARY</td>
+				<td style="width:55%;">二进制</td>
+				<td style="width:15%;">0.8</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">ARRAY</td>
+				<td style="width:55%;">数组</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">MAP</td>
+				<td style="width:55%;">Map</td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">STRUCT</td>
+				<td style="width:55%;">To Object </td>
+				<td style="width:15%;">-</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">UNION</td>
+				<td style="width:55%;">大综合</td>
+				<td style="width:15%;">-</td>
+			</tr>
+		</table>
+	
+	<br/>
+</ul>
+<h4>自定义函数导入</h4>
+<ul style=" list-style-type: decimal;">
+	1.add jar file:///home/aueic/xz/xx.jar ;<br/>
+	2.create temporary function test as 'hiveGenericUDTF.InStringOutTable';<br/>
+	3.使用<br/>
+	<br/>
+</ul>
+<h4>UDF--org.apache.hadoop.hive.ql.udf.generic.GenericUDF;</h4>
+<ul style=" list-style-type: decimal;">
+	<li>继承GenericUDF <br/>
+		三个方法实现：<br/>
+		initialize：返回udf的返回值类型<br/>
+		
+		evaluate:拿参数，处理逻辑 <br/>
+		
+		getDisplayString：描述 （没用但是必写，不然空指针）<br/>
+		
+		类型分两大类，java的返回值类型与大数据返回值类型（xxWritable）,互转对应：如string--text int--intWritable，<br/>
+		保证initialize和evaluate 返回值类型一致<br/>
+		<a href="../../other/UDFDemo.zip">UDFDemo</a>
+	</li>
+	<br/>
+</ul>
+<h4>UDTF--org.apache.hadoop.hive.ql.udf.generic.GenericUDTF;</h4>
+<ul style=" list-style-type: decimal;">
+	<li>继承GenericUDTF <br/>
+		三个方法实现：<br/>
+		initialize：返回集合类型的返回值类型<br/>
+		<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;List<String> fieldNames = new ArrayList<String>();//String列名称集合<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;List<ObjectInspector> fieldOIs = new ArrayList<ObjectInspector>();//ObjectInspector 列值类型集合<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;//String列名称集合和ObjectInspector 列值类型集合 长度必须一致<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;fieldNames.add("fiename") ;//加名称<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;fieldOIs.add(PrimitiveObjectInspectorFactory.javaIntObjectInspector) ;//加类型<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;ObjectInspectorFactory.getStandardStructObjectInspector(fieldNames, fieldOIs);<br/>
+		<br/>
+		evaluate:拿参数，处理逻辑 <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;调用父类forward方法输出<br/>
+		
+		close: 不用写 <br/>
+		
+		<a href="../../other/UDTFDemo.zip">UDTFDemo</a>
+	</li>
+	<br/>
+</ul>
+</body>
+
+</html>

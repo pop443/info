@@ -1,0 +1,201 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>mysql</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+mysql 部署
+</div>
+<div class="divnext" >
+<br />
+	<ul style="list-style-type: decimal;">
+		<h5>window zip 方式</h5>
+		<li>
+			下载 : https://dev.mysql.com/downloads/mysql/
+		</li>
+		<li>
+			环境变量 : MYSQL_HOME:D:\mysql5.7 ;  在path 后面添加 ;%MYSQL_HOME%\bin
+		</li>
+		<li>
+			配置文件 : my.ini 文件
+		</li>
+		<li>
+			初始化数据库 : mysqld --initialize --user=mysql --console   记住最后的密码  localhost:xxxxxx
+		</li>
+		<li>
+			安装服务 : mysqld --install MySQL
+		</li>
+		<li>
+			启动服务 : net start/stop MySQL
+		</li>
+		<li>
+			修改初始化密码 : set password for root@localhost=password('1qaz!QAZ')
+		</li>
+		<li>
+			授权 : mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO '用户'@'ip' IDENTIFIED BY '密码' WITH GRANT OPTION; "</br>
+					mysql -u root -e "flush privileges;"
+		</li>
+		
+	</ul>
+	<br />
+	<ul style="list-style-type: decimal;">
+		
+			<h5>linux rpm 方式</h5>
+		
+		<li>
+			安装 : rpm -ivh mysql
+		</li>
+		<li>
+			启动 : /etc/init.d/mysqld [start/stop/restart/status];<br />
+					systemctl start  mysqld.service;
+					<br />
+		</li>
+	</ul>
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+mysql 
+</div>
+<div class="divnext" >
+<br />
+	
+	--mysql java string<br />
+	jdbc:mysql://ip:port/user?createDatabaseIfNotExist=true&characterEncoding=gbk<br /><br />
+	--mysql driver class<br />
+	com.mysql.jdbc.Driver<br />
+	<br />
+	--链接mysql 客户端<br />
+	mysql [-h ip] [-u root] [-p password] <br /><br />
+	--修改用户密码<br />
+	mysqladmin -u root -p oldPassword password newPassword<br /><br />
+	--数据库<br />
+	create/drop database &lt;数据库名&gt;<br /><br />
+	
+	--修改库的属性<br />
+	set global read_only=0 ;//否则报错 The MySQL server is running with the --skip-grant-tables option so it cannot execute this statement<br /><br />
+	
+	--创建用户并授权，ip限制<br />
+	mysql -u root -e "GRANT ALL PRIVILEGES ON 数据库名.* TO 'user'@'ip' IDENTIFIED BY 'password' WITH GRANT OPTION; "<br />
+	执行授权 将数据库的所有权限授权给从ip登陆的user用户<br />
+	mysql -u root -e "GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'WITH GRANT OPTION; "<br />
+	给所有ip连接mysql的权限<br />
+	mysql -u root -e "flush privileges;" 立即生效<br /><br />
+	
+	
+	<br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+操作
+</div>
+<div class="divnext">
+	
+	--建表/删表<br />
+	create table test(id int(4) primary key auto_increment,name char(20) default '0') ;<br />
+	drop table test ;<br /><br />
+	
+	--重命名表<br />
+	rename table old to new ;<br /><br />
+	
+	--增加/删除主键<br />
+	alter table 表名 add/drop primary key (字段名);<br /><br />
+	
+	--增加/删除唯一限制条件的索引<br />
+	alter table 表名 add/drop unique 索引名 (字段名);<br /><br />
+	
+	--增加/删除字段<br />
+	alter table 表名 add/drop 字段名 字段类型;<br /><br />
+	
+	--修改字段<br />
+	alter table 表名 change 原字段名 修改字段名 字段类型;<br /><br />
+	
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+函数
+</div>
+<div class="divnext">
+<span style=" color: #CC33FF;font-size:large">database() 显示数据库名</span><br />
+select database();<br /><br />
+
+<span style=" color: #CC33FF;font-size:large">now() 当前时间（时间戳）年-月-日 时:分:秒</span><br />
+select now();<br /><br />
+
+<span style=" color: #CC33FF;font-size:large">current_date 时间 年-月-日</span><br />
+select current_date;<br /><br />
+
+<span style=" color: #CC33FF;font-size:large">dayofmonth(current_date) 时间 日</span><br />
+select dayofmonth(current_date);<br /><br />
+
+<span style=" color: #CC33FF;font-size:large">month(current_date) 时间 月</span><br />
+select month(current_date) ;<br /><br />
+
+<span style=" color: #CC33FF;font-size:large">year(current_date) 时间 年</span><br />
+select year(current_date) ;<br /><br />
+
+<span style=" color: #CC33FF;font-size:large">concat(str1,"-",str2) str1-str2 拼接</span><br />
+select concat(str1,"-",str2);<br /><br />
+
+
+
+</div>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+导入导出
+</div>
+<div class="divnext">
+<span style=" color: #CC33FF;font-size:large">导出</span><br />
+ mysqldump -u root -p hive > /hadoop/output.sql<br /><br />
+
+<span style=" color: #CC33FF;font-size:large">导入</span><br />
+mysql -u root -e "create database input;"<br />
+mysql -u root -e "grant all privileges on input.* to 'input'@'vggapp19' identified by 'newland@xingz';"<br />
+mysql -u root -e "flush privileges;"<br />
+<br />
+mysql -u root ;<br />
+use input ;<br />
+source /hadoop/output.sql ;<br /><br />
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

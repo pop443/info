@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>log4j</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+
+<h4>log4j.properties</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+# 应用的输出 INFO 到控制台和 kafka对应文件                         	<br/>
+log4j.rootLogger=INFO, stdout ,kafka                                 	<br/>
+                                                                     	<br/>
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender               	<br/>
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout          	<br/>
+log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n     	<br/>
+                                                                     	<br/>
+log4j.appender.kafka=org.apache.log4j.DailyRollingFileAppender       	<br/>
+# 日期格式 一天换个文件                                             	<br/>
+log4j.appender.kafka.DatePattern='.'yyyy-MM-dd                       	<br/>
+# 日志路径                                                           	<br/>
+log4j.appender.kafka.File=E:\\java\\log\\kafka.log                   	<br/>
+log4j.appender.kafka.layout=org.apache.log4j.PatternLayout           	<br/>
+log4j.appender.kafka.layout.ConversionPattern=[%d] %p %m (%c)%n      	<br/>
+# 最多10个备份日志                                                  	<br/>
+log4j.appender.kafka.MaxBackupIndex=10                               	<br/>
+# 每个日志最大                                                      	<br/>
+log4j.appender.kafka.MaxFileSize=1MB                                 	<br/>
+                                                                     	<br/>
+# com.xz.kafka包下 INFO 输出到 cust对应文件                         	<br/>
+log4j.logger.com.xz.kafka=INFO,cust                                  	<br/>
+log4j.appender.cust=org.apache.log4j.DailyRollingFileAppender        	<br/>
+log4j.appender.cust.DatePattern='.'yyyy-MM-dd-HH                     	<br/>
+log4j.appender.cust.File=E:\\java\\log\\cust.log                     	<br/>
+log4j.appender.cust.layout=org.apache.log4j.PatternLayout            	<br/>
+log4j.appender.cust.layout.ConversionPattern=[%d] %p %m (%c)%n       	<br/>
+log4j.appender.cust.MaxBackupIndex=10                                	<br/>
+log4j.appender.cust.MaxFileSize=1MB                                  	<br/>
+	
+	</li>
+	<br/>
+	
+
+
+</ul>
+
+<h4>log4j API</h4>
+<ul style=" list-style-type: decimal;">
+	<li>三大组件：</br>
+	Logger：负责供客户端代码调用，执行debug(Object msg)、info(Object msg)、warn(Object msg)、error(Object msg)等方法。 </br>
+	Appender：负责日志的输出，Log4j已经实现了多种不同目标的输出方式，可以向文件输出日志、向控制台输出日志、向Socket输出日志等。 </br>
+	Layout：负责日志信息的格式化。</br>
+	
+	
+	</li>
+	</br>
+	<li>Appender：监控指定目录下的日志信息，可用于监控网络rpc传输次数</br>
+	//定义log 指向org.apache.hadoop 目录</br>
+	Logger log = Logger.getLogger("org.apache.hadoop");</br>
+	Appender appender = new AppenderSkeleton() {</br>
+		&nbsp;&nbsp;@Override</br>
+		&nbsp;&nbsp;/**格式化*/</br>
+		&nbsp;&nbsp;public boolean requiresLayout() {</br>
+		&nbsp;&nbsp;&nbsp;&nbsp;	return false;</br>
+		&nbsp;&nbsp;}</br>
+		&nbsp;&nbsp;@Override</br>
+		&nbsp;&nbsp;/**释放资源*/</br>
+		&nbsp;&nbsp;public void close() {}</br>
+		&nbsp;&nbsp;@Override</br>
+		&nbsp;&nbsp;/**核心输出方法*/</br>
+		&nbsp;&nbsp;protected void append(LoggingEvent event) {</br>
+		&nbsp;&nbsp;&nbsp;&nbsp;	String msg = event.getMessage().toString();</br>
+		&nbsp;&nbsp;&nbsp;&nbsp;	System.out.println(msg);</br>
+		&nbsp;&nbsp;}</br>
+	};</br>
+	//移除所有的输出</br>
+	log.removeAllAppenders();</br>
+	//log4j.additivity 属性 </br>
+	//false 只打印org.apache.hadoop层级下的日志</br>
+	//true 打印org.apache.hadoop 所有层级的日志</br>
+	log.setAdditivity(true);</br>
+	//增加输出Appender</br>
+	log.addAppender(appender);</br>
+	//设置级别</br>
+	log.setLevel(Level.DEBUG);</br>
+	
+	
+	</li>
+	<br/>
+	
+
+
+</ul>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>面试题集</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+.table{
+	width:100%;
+	margin-left:-10px;
+}
+.table tr td{
+	border:1px solid black;
+	padding-left:10px;
+}
+
+.table2 tr td{
+	border:1px solid black;
+	text-align:left;
+	padding-left:10px;
+}
+
+
+.style1 {
+	color: #008000;
+}
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+<h2>系统篇</h2>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+顺序存储结构 
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	<li>
+	顺序存储结构是存储结构类型中的一种，该结构是把逻辑上相邻的结点存储在物理位置上相邻的存储单元中，结点之间的逻辑关系由存储单元的邻接关系来体现<br/><br/>
+	在计算机中用一组地址连续的存储单元依次存储线性表的各个数据元素,称作线性表的顺序存储结构<br/><br/>
+	通常顺序存储结构是借助于数组<br/><br/>
+	顺序存储结构的主要优点是节省存储空间，因为分配给数据的存储单元全用存放结点的数据，结点之间的逻辑关系没有占用额外的存储空间。采用这种方法时，可实现对结点的随机存取，即每一个结点对应一个序号，由该序号可以直接计算出来结点的存储地址。但顺序存储方法的主要缺点是不便于修改，对结点的插入、删除运算时，可能要移动一系列的结点。<br/><br/>
+	优点：随机存取表中元素、储存密度大。缺点：插入和删除操作需要移动元素<br/><br/>
+	</li>
+	
+</ul>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+链表存储结构 
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	<li>
+	它不要求逻辑上相邻的元素在物理位置上也相邻.因此它没有顺序存储结构所具有的弱点,但也同时失去了顺序表可随机存取的优点<br/><br/>
+	一般在计算机的硬盘中，文件都是链式存储的。我们知道，多个扇区组成一个簇，簇是计算机存储数据的基本单位。而一个文件是存储在多个在空间上也许并不相连的簇中的。这就是链式存储。但是为了能够读取出这个文件，计算机会在该文件第一部分的尾部写上第二部分所在的簇号。第二部分的尾部又写上第三部分，以此类推，最后一部分写上一段代码，表示这是该文件的最后一部分。值得一提的是，高簇号在后。（如代码所示的1234实为簇3412）文件所占簇可认为是随机分配的<br/><br/>
+	特点<br/><br/>
+	1、比顺序存储结构的存储密度小(链式存储结构中每个结点都由数据域与指针域两部分组成，相比顺序存储结构增加了存储空间)。<br/>
+	2、逻辑上相邻的节点物理上不必相邻。<br/>
+	3、插入、删除灵活 (不必移动节点，只要改变节点中的指针)。<br/>
+	4、查找节点时链式存储要比顺序存储慢。<br/>
+	5、每个节点是由数据域和指针域组成。<br/>
+	6、由于簇是随机分配的，这也使数据删除后覆盖几率降低，恢复可能提高。<br/><br/>
+	</li>
+	
+</ul>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

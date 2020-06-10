@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>分布式</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+.table{
+	width:100%;
+	margin-left:-10px;
+}
+.table tr td{
+	border:1px solid black;
+	padding-left:10px;
+}
+
+.table2 tr td{
+	border:1px solid black;
+	text-align:left;
+	padding-left:10px;
+}
+
+
+.style1 {
+	color: #008000;
+}
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+<h2>分布式篇</h2>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+分布式系统有三个指标
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	<li>
+		Consistency（一致性）<br/><br/>
+		写操作之后的读操作，必须返回该值<br/>
+		往一个节点写入数据后，必须同步到其他节点，使读取任一节点都是写入数据<br/><br/>
+	</li>
+	<li>
+		Availability （可用性）<br/><br/>
+		是只要收到用户的请求，服务器就必须给出回应<br/>
+		往一个节点写入数据后,读取任一节点，必须返回数据，不管数据是修改前还是修改后<br/><br/>
+		
+	</li>
+	<li>
+		Partition tolerance （分区容错）<br/><br/>
+		一般来说，分区容错无法避免，因此可以认为 CAP 的 P 总是成立。CAP 定理告诉我们，剩下的 C 和 A 无法同时做到<br/>
+	</li>
+</ul>
+CA不能同时成立：因为存在通信失败<br/><br/>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+分布式事务
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	<li>
+		2PC<br/><br/>
+		<br/><br/>
+	</li>
+	<li>
+		3PC<br/><br/>
+		<br/><br/>
+	</li>
+	<li>
+		TCC：try、confirm和cancel<br/><br/>
+		<br/><br/>
+	</li>
+	<li>
+		补偿事务<br/><br/>
+		<br/><br/>
+	</li>
+</ul>
+CA不能同时成立：因为存在通信失败<br/><br/>
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+zookeeper 作为分布式协同服务 C(一致性)P (分区容错)
+</div>
+<div class="divnext">content
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+Eureka 作为分布式发现服务 A(可用性)P (分区容错)
+</div>
+<div class="divnext">
+<ul style=" list-style-type: decimal;">
+<br/>
+	<li>
+		Eureka是Netflix开发的服务发现框架，本身是一个基于REST的服务，用于定位运行在AWS域中的中间层服务，以达到负载均衡和中间层服务故障转移的目的。<br/><br/>
+		
+	</li>
+	<li>
+		Eureka包含两个组件：Eureka Server和Eureka Client。<br/>
+Eureka Server提供服务注册服务，各个节点启动后，会在Eureka Server中进行注册，这样EurekaServer中的服务注册表中将会存储所有可用服务节点的信息，服务节点的信息可以在界面中直观的看到。<br/>
+Eureka Client是一个java客户端，用于简化与Eureka Server的交互，客户端同时也就是一个内置的、使用轮询(round-robin)负载算法的负载均衡器。<br/><br/>
+		
+	</li>
+	<li>
+		在应用启动后，将会向Eureka Server发送心跳,默认周期为30秒，如果Eureka Server在多个心跳周期内没有接收到某个节点的心跳，Eureka Server将会从服务注册表中把这个服务节点移除(默认90秒)<br/><br/>
+	</li>
+	<li>
+	Eureka Server之间通过复制的方式完成数据的同步，Eureka还提供了客户端缓存机制，即使所有的Eureka Server都挂掉，客户端依然可以利用缓存中的信息消费其他服务的API。综上，Eureka通过心跳检查、客户端缓存等机制，确保了系统的高可用性、灵活性和可伸缩性
+	<br/><br/>
+	</li>
+</ul>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

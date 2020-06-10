@@ -1,0 +1,180 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>protocol buffer语言</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+<h4>protocol buffer原理</h4>
+<ul style=" list-style-type: decimal;">
+	<li> Google 公司内部的混合语言数据标准<br/>
+	用于 RPC 系统和持续数据存储系统<br/>
+		
+	</li>
+	<li>
+	<span style="color: rgb(0, 0, 0); font-family: Verdana, 'Lucida Grande', Arial, Helvetica, sans-serif; font-size: 15px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22.5px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">
+	保证同一消息报文新旧版本之间的兼容性(限定符repeated)</span><br/>
+		
+	</li>
+
+</ul>
+
+
+<h4>语法</h4>
+<ul style=" list-style-type: decimal;">
+	<li>数据类型
+			<table class="table" style="font-size:small">
+			
+			<tr>
+				<td style="width:30%;text-align:center">.proto Type</td>
+				<td style="width:30%;text-align:center">介绍</td>
+				<td style="width:30%;text-align:center">.java Type</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">double</td>
+				<td style="width:30%;text-align:center">&nbsp;</td>
+				<td style="width:30%;text-align:center">double</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">float</td>
+				<td style="width:30%;text-align:center">&nbsp;</td>
+				<td style="width:30%;text-align:center">float</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">int32</td>
+				<td style="width:30%;text-align:center">可变长度编码。如果有负数范围，推荐使用sint32</td>
+				<td style="width:30%;text-align:center">int</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">int64</td>
+				<td style="width:30%;text-align:center">可变长度编码。如果有负数范围，推荐使用sint64</td>
+				<td style="width:30%;text-align:center">long</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">uint32</td>
+				<td style="width:30%;text-align:center">可变长度编码</td>
+				<td style="width:30%;text-align:center">int</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">uint64</td>
+				<td style="width:30%;text-align:center">可变长度编码</td>
+				<td style="width:30%;text-align:center">long</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">sint32</td>
+				<td style="width:30%;text-align:center">可变长度编码，如果只有整数，推荐使用int32</td>
+				<td style="width:30%;text-align:center">int</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">sint64</td>
+				<td style="width:30%;text-align:center">可变长度编码，如果只有整数，推荐使用int64</td>
+				<td style="width:30%;text-align:center">long</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">fixed32</td>
+				<td style="width:30%;text-align:center">可变长度编码,超过<span style="color: rgb(0, 0, 0); font-family: Verdana, 'Lucida Grande', Arial, Helvetica, sans-serif; font-size: 15px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22.5px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">2</span><sup style="color: rgb(0, 0, 0); font-family: Verdana, 'Lucida Grande', Arial, Helvetica, sans-serif; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">28</sup>时更有效</td>
+				<td style="width:30%;text-align:center">int</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">fixed64</td>
+				<td style="width:30%;text-align:center">可变长度编码,超过<span style="color: rgb(0, 0, 0); font-family: Verdana, 'Lucida Grande', Arial, Helvetica, sans-serif; font-size: 15px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: 22.5px; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; display: inline !important; float: none; background-color: rgb(255, 255, 255);">2</span><sup style="color: rgb(0, 0, 0); font-family: Verdana, 'Lucida Grande', Arial, Helvetica, sans-serif; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: 1; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255);">56</sup>时更有效</td>
+				<td style="width:30%;text-align:center">long</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">sfixed32</td>
+				<td style="width:30%;text-align:center">4字节</td>
+				<td style="width:30%;text-align:center">int</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">sfixed64</td>
+				<td style="width:30%;text-align:center">8字节</td>
+				<td style="width:30%;text-align:center">long</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">bool</td>
+				<td style="width:30%;text-align:center"></td>
+				<td style="width:30%;text-align:center">boolean</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">string</td>
+				<td style="width:30%;text-align:center">UTF-8编码</td>
+				<td style="width:30%;text-align:center">String</td>
+			</tr>
+			<tr>
+				<td style="width:30%;text-align:center">bytes</td>
+				<td style="width:30%;text-align:center">包含任意序列的字节</td>
+				<td style="width:30%;text-align:center">ByteString</td>
+			</tr>
+
+		</table>
+		
+<br/>
+	</li>
+	<li>
+	限定符：<br/>
+	required：必选的参数<br/>
+	optional：可选的参数<br/>
+	repeated：不用<br/>
+	<br/>
+	</li>
+	
+	<li>
+	Options：<br/>
+	文件级别：影响当前文件中定义的所有消息和枚举<br/>
+	消息级别：影响某个消息及其包含的所有字段<br/>
+	字段级别：响应与其相关的字段<br/>
+	<br/>
+//Java代码的包名<br/>
+	option java_package = "com.xz.hbase.endpoint.protocol";<br/>
+//Java代码的类名<br/>
+	option java_outer_classname = "StatisticsProto";<br/>
+//优化级别 分别是 效率高空间占用大/效率低空间占用小/效率高空间占用小（牺牲部分功能）<br/>
+	option optimize_for = SPEED/CODE_SIZE/LITE_RUNTIME;<br/>
+<br/>
+//count结构请求<br/>
+message CountRequest {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;optional string startKey = 1  ;<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;optional string endKey = 2  ;<br/>
+}<br/>
+//count结构响应<br/>
+message CountResponse {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;required int64 count = 1 [default = 0] ;<br/>
+}<br/>
+//rowkey数量<br/>
+service RowKeyCountService {<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;rpc getRowCount(CountRequest)<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;returns (CountResponse) ;<br/>
+}<br/>
+<br/>
+	</li>
+
+	<li>
+	a.使用cmd到protoc.exe目录<br/>
+	b.执行 protoc.exe --java_out=$outPath Statistics.proto<br/>
+	c.将生成的.java文件加入工程，打包、协处理器发布流程<br/>
+	d.hbase1.2之后需要修改两个参数 <a href='hbase配置与优化.htm#coprocessor'>跳转</a>
+	<br/>
+	</li>
+	
+
+
+</ul>
+
+</body>
+
+</html>

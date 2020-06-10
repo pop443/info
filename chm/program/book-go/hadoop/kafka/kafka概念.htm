@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>kafka指令集</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:15px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h4>kafka 元数据</h4>
+<ul style=" list-style-type: decimal;">
+	<li>broker:一台kafka服务器就是一个broker<br/>
+			broker启动后，会在zookeeper上/brokers/ids 下注册此服务器的信息
+	</li>
+	<br/>
+	<li>Producer :往kafka发消息的客户端
+	</li>
+	<br/>
+	<li>consumers:从kafka取消息的客户端<br/>
+			consumers启动后，会在zookeeper上/consumers 下注册consumers group 与 topic 的信息
+	</li>
+	<br/>
+	
+	<li>Partition:多线程的topic
+	</li>
+	<br/>
+	
+	<li>producer发送数据的时候，<br/>发送KV结构数据，将根据Key分区KeyedMessage(topic,key,value);<br/>发送V结构数据，只将数据发送至单个分区KeyedMessage(topic,value)
+	</li>
+	<br/>
+	<li>创建topic后，topic里的partition会通过 broker id 记录主要读写副本，与其他备份副本，<br/>
+	broker id不可以随意更改，如果更改见<a href="kafka指令集.htm">kafka指令集.htm - 重新选举主读写副本</a>
+	</li>
+	<br/>
+	<li>.index 如何快速定位.log数据<br/>
+		.index 中定义了两个数据 一个是offset(数据条数) 此条数据在.log文件中的偏移量position<br/>
+		从index中查offset对应此index的log文件中数据的偏移量position
+	</li>
+	<br/>
+
+</ul>
+
+
+<h4>kafka 原理</h4>
+<ul style=" list-style-type: decimal;">
+	<li>PageCache优化：
+		<br/>
+		&nbsp;&nbsp;&nbsp;
+		Kafka重度依赖底层操作系统提供的PageCache功能。当上层有写操作时，操作系统只是将数据写入PageCache，同时标记Page属性为Dirty。
+		当读操作发生时，先从PageCache中查找，如果发生缺页才进行磁盘调度，最终返回需要的数据。实际上PageCache是把尽可能多的空闲内存都
+		当做了磁盘缓存来使用。同时如果有其他进程申请内存，回收PageCache的代价又很小，所以现代的OS（操作系统）都支持PageCache
+		<br/>
+		&nbsp;&nbsp;&nbsp;
+PageCache功能同时可以避免在JVM内部缓存数据，JVM为我们提供了强大的GC能力，同时也引入了一些问题不适用与Kafka的设计
+<br/>
+		&nbsp;&nbsp;&nbsp;
+
+如果Kafka重启，所有的In-Process Cache都会失效，而OS管理的PageCache依然可以继续使用。<br/>
+<br/>
+
+
+Linux总会把系统中还没被应用使用的内存挪来给Page Cache，在命令行输入free，或者cat /proc/meminfo，"Cached"的部分就是Page Cache。<br/>
+Page Cache中每个文件是一棵Radix树(又称PAT位树, 一种多叉搜索树)，节点由4k大小的Page组成，可以通过文件的偏移量(如0x1110001)快速定位到某个Page。<br/>
+当写操作发生时，它只是将数据写入Page Cache中，并将该页置上dirty标志。<br/>
+当读操作发生时，它会首先在Page Cache中查找内容，如果有就直接返回了，没有的话就会从磁盘读取文件再写回Page Cache。<br/>
+可见，只要生产者与消费者的速度相差不大，消费者会直接读取之前生产者写入Page Cache的数据，大家在内存里完成接力，根本没有磁盘访问。<br/>
+而比起在内存中维护一份消息数据的传统做法，这既不会重复浪费一倍的内存，Page Cache又不需要GC(可以放心使用60G内存了)，而且即使Kafka重启了，Page Cache还依然在<br/><br/>
+	</li>
+	<br/>
+	<li>Sendfile优化：
+		<br/>
+		传统的网络I/O<br/>
+
+		&nbsp;&nbsp;&nbsp;
+a.    OS 从硬盘把数据读到内核区的PageCache。<br/>
+&nbsp;&nbsp;&nbsp;
+
+b.    应用进程把数据从内核区Copy到用户区。<br/>
+&nbsp;&nbsp;&nbsp;
+
+c.    然后应用进程再把数据写入到Socket，数据流入内核区的Socket Buffer上。<br/>
+&nbsp;&nbsp;&nbsp;
+
+d.    OS 再把数据从Buffer中Copy到网卡的Buffer上，这样完成一次发送。<br/>
+		优化之后：<br/>
+				&nbsp;&nbsp;&nbsp;
+a.    OS 从硬盘把数据读到内核区的PageCache。<br/>
+	&nbsp;&nbsp;&nbsp; b. 应用进程把数据从内核区写入到Socket，数据流入内核区的Socket Buffer上。<br/>
+&nbsp;&nbsp;&nbsp;
+
+	c.    OS 再把数据从Buffer中Copy到网卡的Buffer上，这样完成一次发送。<br/>
+省掉应用层面<br/>
+Kafka的设计初衷是尽一切努力在内存中完成数据交换，无论是对外作为一整个消息系统，或是内部同底层操作系统的交互。<br/>
+	</li>
+	<br/>
+
+</ul>
+<h4>kafka tips</h4>
+<ul style=" list-style-type: decimal; font-size: 15px">
+<li>Partition的数量尽量提前预分配，虽然可以在后期动态增加Partition，但是会冒着可能破坏Message Key和Partition之间对应关系的风险
+		<br/>
+	</li>
+	<br/>
+	<li> Replica的数量不要过多，如果条件允许尽量把Replica集合内的Partition分别调整到不同的Rack
+		<br/>
+	</li>
+	<br/>
+
+<li>尽一切努力保证每次停Broker时都可以Clean Shutdown，否则问题就不仅仅是恢复服务所需时间长，还可能出现数据损坏或其他很诡异的问题
+		<br/>
+	</li>
+	<br/>
+	<li>强烈推荐使用Low level API，虽然繁琐一些，但是目前只有这个API可以对Error数据进行自定义处理，尤其是处理Broker异常或由于Unclean Shutdown导致的Corrupted Data时，否则无法Skip只能等着“坏消息”在Broker上被Rotate掉，在此期间该Replica将会一直处于不可用状态
+		<br/>
+	</li>
+	<br/>
+
+<li>
+		kafka可以作为解耦组件<br/>
+	</li>
+	<br/>
+
+
+
+</ul>
+
+
+
+</body>
+
+</html>

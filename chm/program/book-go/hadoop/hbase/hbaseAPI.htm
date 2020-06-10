@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>hbase API</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+<h4>hbase API</h4>
+<ul style=" list-style-type: decimal;">
+
+
+	<li>
+	SCAN:扫描器<br/>
+	缓存:旨在减少client向server端的RPC次数<br/>
+	行缓存caching:针对rowkey<br/>
+	列缓存batch:相同rowkey，family的列数<br/>
+	
+	<br/>
+	</li>
+	<br/>
+	<li>
+	Filter:过滤器
+	<br/>
+	</li>
+	<br/>
+	<br/>
+	<li >协处理器:分为Observer与Endpoint<br/>
+	Observer:类似oracle trigger<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;RegionObserver:提供数据操作事件hook，如put、scan、get等<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;WALObserver:提供WAL相关操作hook<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;MasterObserver:提供表操作事件hook，如createtable，modifytable等<br/>
+	Endpoint:类似oracle procedure <br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;0.96版本之后，RPC通信协议使用google protocol buffer语言，并发式的发送RPC任务给相应机器，并返回结果，详见https://github.com/falcon-xz/hbaseWithKafka/tree/master/src/com/xz/hbase/endpoint下的类<br/>
+	<br/>
+	协处理器:两种部署方式 <br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;1.hbase-site.xml 全局region处理<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&lt;property&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;name&gt;hbase.coprocessor.region.classes&lt;/name&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;value&gt;类全路径&lt;/value&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&lt;/property&gt;
+<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;2.表描述region 处理一张表的所有region<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;hbase shell方式:<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="hbase指令集.htm">详见hbase指令集.htm</a><br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;代码方式:<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; hbaseadmin获得htabledescriptor;addcoprocessor(&quot;$类全路径&quot;)和remove(&quot;$类全路径&quot;)<br/>
+	
+	<li>
+	
+	</li>
+	<br/>
+
+</ul>
+</body>
+
+</html>

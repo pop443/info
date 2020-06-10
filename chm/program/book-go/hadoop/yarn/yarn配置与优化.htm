@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>yarn配置与优化</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:5px;
+}
+
+</style>
+</head>
+
+<body>
+<h4> yarn-site.xml 配置与优化</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="width:95%;">
+		<tr style="background-color:lightgrey;">
+			<td style="width:20%;text-align:center">配置项</td>
+			<td style="width:40%;text-align:center">说明</td>
+			<td style="width:20%;">优化</td>
+			<td style="width:20%;">默认</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">yarn.nodemanager.delete.debug-delay-sec</td>
+			<td style="width:40%;">MR on yarn MR任务临时文件 删除策略 延迟时间</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">0</td>
+		</tr>
+		<tr>
+			<td style="width:100%;background-color:lightgrey;" colspan="4">&nbsp;</td>
+			
+		</tr>
+		<tr>
+			<td style="width:20%;">yarn.scheduler.minimum-allocation-mb</td>
+			<td style="width:40%;">单个任务可申请的最少物理内存量，默认是1024（MB）</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">依据 core memery disk 有无hbase判定</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">yarn.scheduler.maximum-allocation-mb</td>
+			<td style="width:40%;">单个任务可申请的最多物理内存量，默认是8192（MB）</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">依据 core memery disk 有无hbase判定</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">yarn.nodemanager.resource.memory-mb</td>
+			<td style="width:40%;">表示该节点上YARN可使用的物理内存总量，默认是8192（MB）</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">依据 core memery disk 有无hbase判定</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">yarn.nodemanager.pmem-check-enabled</td>
+			<td style="width:40%;">是否启动一个线程检查每个任务正使用的物理内存量，如果任务超出分配值，则直接将其杀掉</td>
+			<td style="width:20%;">true</td>
+			<td style="width:20%;">false</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">yarn.nodemanager.vmem-check-enabled</td>
+			<td style="width:40%;">是否启动一个线程检查每个任务正使用的虚拟内存量，如果任务超出分配值，则直接将其杀掉</td>
+			<td style="width:20%;">true</td>
+			<td style="width:20%;">false</td>
+		</tr>
+		
+		
+		</table>
+	
+	</li>
+	<br/>
+	
+
+
+</ul>
+
+<h4>mapred-site.xml配置与优化</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="width:95%;">
+		<tr style="background-color:lightgrey;">
+			<td style="width:20%;text-align:center">配置项</td>
+			<td style="width:40%;text-align:center">说明</td>
+			<td style="width:20%;">优化</td>
+			<td style="width:20%;">默认</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">mapreduce.admin.map.child.java.opts</td>
+			<td style="width:40%;">map任务 jvm 参数</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">-server -XX:NewRatio=8 -Djava.net.preferIPv4Stack=true</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">mapreduce.admin.reduce.child.java.opts</td>
+			<td style="width:40%;">reduce任务 jvm 参数</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">-server -XX:NewRatio=8 -Djava.net.preferIPv4Stack=true</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">yarn.app.mapreduce.am.admin-command-opts</td>
+			<td style="width:40%;">application master jvm 参数</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">-Djava.net.preferIPv4Stack=true -Dhadoop.metrics.log.level=WARN</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">mapreduce.application.classpath</td>
+			<td style="width:40%;">classpath路径</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">/usr/lib/hadoop-mapreduce/*,/usr/lib/hadoop-mapreduce/lib/*</td>
+		</tr>
+		
+		<tr>
+			<td style="width:20%;">mapreduce.map.memory.mb</td>
+			<td style="width:40%;">每个Map Task需要的内存量</td>
+			<td style="width:20%;">1024M</td>
+			<td style="width:20%;">依据 core memery disk 有无hbase判定</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">mapreduce.map.java.opts</td>
+			<td style="width:40%;">map任务设置的JVM 最大内存数</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">依据 core memery disk 有无hbase判定</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">mapreduce.reduce.memory.mb</td>
+			<td style="width:40%;">每个Reduce Task需要的内存量</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">依据 core memery disk 有无hbase判定</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">mapreduce.reduce.java.opts</td>
+			<td style="width:40%;">reduce任务设置的JVM 最大内存数</td>
+			<td style="width:20%;">&nbsp;</td>
+			<td style="width:20%;">依据 core memery disk 有无hbase判定</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">mapreduce.task.io.sort.mb</td>
+			<td style="width:40%;">任务内部排序缓冲区大小</td>
+			<td style="width:20%;">100m</td>
+			<td style="width:20%;">依据 core memery disk 有无hbase判定</td>
+		</tr>
+		
+		</table>
+	</li>
+
+</ul>
+
+</body>
+
+</html>

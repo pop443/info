@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>spark本地调试</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+<h4>spark环境 for spark on hive</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+		hadoop：下载 对应hadoop tar.gz包
+	</li>
+	<li>
+		utils：下载 https://github.com/srccodes/hadoop-common-2.2.0-bin
+	</li>
+	<li>
+		设置HADOOP_HOME：指向tar包解压缩完路径;<br/>
+		设置path：增加 %HADOOP_PATH%/bin;%HADOOP_PATH%/sbin;
+	</li>
+	<li>
+		把winutils.exe和libwinutils.lib 拷到%HADOOP_PATH%/bin下
+	<br/>
+	</li>
+	<li>
+		如果出现 \tmp\hive 的权限问题 ，cmd 里执行 <br/>	
+		winutils ls \tmp\hive<br/>
+		winutils chmod -R 777  \tmp\hive<br/>
+		<br/>
+		如果出现 deleting Spark temp dir：C:\Users\Administrator\AppData\Local\Temp\spark-dda2e721-977f-4dbc-abe7-1a44e4b08fde的权限问题 ，cmd 里执行 <br/>
+		winutils chmod -R 777 C:\Users\Administrator\AppData\Local\Temp\
+	<br/>
+	</li>
+
+	<br/>
+	
+</ul>
+
+<h4>spark streaming</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+	本地执行必须设置 setMaster("local[2]") ，不然只有拉数据线程，没有处理数据线程
+	<br/>
+	</li>
+	<br/>
+	
+</ul>
+</body>
+
+</html>

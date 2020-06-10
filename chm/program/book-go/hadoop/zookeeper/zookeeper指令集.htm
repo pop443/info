@@ -1,0 +1,147 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>zookeeper指令</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:10px;
+}
+
+</style>
+</head>
+
+<body>
+<h4>zookeeper指令集</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" >
+			
+			<tr>
+				<td style="width:95%;" style="width:100%;background-color:lightgrey" colspan="10">启停</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">zkServer.sh start/stop/state</td>
+				<td colspan="3" style="width:30%;">zookeeper 的启动/停止/状态  读取$ZOOKEEPER_HOME/conf/zoo.cfg 配置文件</td>
+				<td colspan="2" style="width:20%;">zkCli.sh [-server ip:port]</td>
+				<td colspan="3" style="width:30%;">连接指定集群 否则连接本地2181端口</td>
+			</tr>
+			<tr>
+				<td style="width:100%;background-color:lightgrey" colspan="10">client命令</td>
+			</tr>
+			<tr>
+				<td colspan="5" style="width:50%;">zkCli.sh [-server ip:port] -c ls /</td>
+				<td colspan="5" style="width:50%;">shell方式直接获取 ls / 命令结果</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">ls path [watch]</td>
+				<td colspan="3" style="width:30%;">查询znode 根节点</td>
+				<td colspan="2" style="width:20%;">get path [watch]</td>
+				<td colspan="3" style="width:30%;">获得节点值</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">create path</td>
+				<td colspan="3" style="width:30%;">查询znode 根节点</td>
+				<td colspan="2" style="width:20%;">delete path [version]</td>
+				<td colspan="3" style="width:30%;">删除文件版本</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">rmr</td>
+				<td colspan="3" style="width:30%;">删除路径</td>
+				<td colspan="2" style="width:20%;">quit</td>
+				<td colspan="3" style="width:30%;">退出</td>
+			</tr>
+			<tr>
+				<td style="width:100%;background-color:lightgrey" colspan="10">4字命令</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">echo conf | nc ip port</td>
+				<td colspan="3" style="width:30%;"> 输出相关服务配置的详细信息</td>
+				<td colspan="2" style="width:20%;">echo cons | nc ip port</td>
+				<td colspan="3" style="width:30%;">列出所有连接到服务器的客户端的完全的连接 / 会话的详细信息。</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">echo dump | nc ip port</td>
+				<td colspan="3" style="width:30%;">列出未经处理的会话和临时节点</td>
+				<td colspan="2" style="width:20%;">echo envi | nc ip port</td>
+				<td colspan="3" style="width:30%;">输出关于服务环境的详细信息</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">echo reqs | nc ip port</td>
+				<td colspan="3" style="width:30%;">列出未经处理的请求</td>
+				<td colspan="2" style="width:20%;">echo ruok | nc ip port</td>
+				<td colspan="3" style="width:30%;">测试服务是否处于正确状态。如果确实如此，那么服务返回“imok ”，否则不做任何相应</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">echo stat | nc ip port</td>
+				<td colspan="3" style="width:30%;">输出关于性能和连接的客户端的列表</td>
+				<td colspan="2" style="width:20%;">echo wchs | nc ip port</td>
+				<td colspan="3" style="width:30%;">列出服务器 watch 的详细信息</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">echo wchc | nc ip port</td>
+				<td colspan="3" style="width:30%;">通过 session 列出服务器 watch 的详细信息，它的输出是一个与watch 相关的会话的列表</td>
+				<td colspan="2" style="width:20%;">echo wchp | nc ip port：</td>
+				<td colspan="3" style="width:30%;">通过路径列出服务器 watch 的详细信息。它输出一个与 session相关的路径</td>
+			</tr>
+			<tr>
+				<td style="width:100%;background-color:lightgrey" colspan="10">维护</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:20%;">zkServer.sh start-foreground</td>
+				<td colspan="3" style="width:30%;">查看启动时是否有异常</td>
+				<td colspan="2" style="width:20%;">zkServer.sh print-cmd</td>
+				<td colspan="3" style="width:30%;">查看zookeeper启动的各个参数，包括java路径等，查找问题</td>
+			</tr>
+		</table>
+		
+
+	</li>
+	<br/>
+	
+
+
+</ul>
+
+
+<h4>zookeeper配置文件优化 zoo.cfg</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="width:90%;">
+		<tr style="background-color:lightgrey;">
+			<td style="width:20%;text-align:center">配置项</td>
+			<td style="width:40%;text-align:center">说明</td>
+			<td style="width:20%;">优化</td>
+			<td style="width:20%;">默认</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">maxClientCnxns</td>
+			<td style="width:40%;">zookeeper 服务访问连接数</td>
+			<td style="width:20%;">200</td>
+			<td style="width:20%;">30</td>
+		</tr>
+		
+
+		</table>
+	
+	</li>
+	<br/>
+	
+
+
+</ul>
+
+
+
+</body>
+
+</html>

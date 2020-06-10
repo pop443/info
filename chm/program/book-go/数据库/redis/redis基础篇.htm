@@ -1,0 +1,143 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>redis</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:15px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+库管理
+</div>
+<div class="divnext" >
+	<ul style=" list-style-type: none;">
+	<br/>
+	<li>
+		<table class="table" style="font-size:large;width:90%">
+			<tr style="background-color:lightgrey">
+
+				<td style="width:30%;">命令</td>
+				<td style="width:70%;">含义</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">auth [密码]</td>
+				<td style="width:70%;">验证密码</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">info [section]</td>
+				<td style="width:70%;">redis信息 
+				包括
+				Server、Clients、Memory、Persistence、
+				Stats、Replication、CPU、Cluster、Keyspace</td>
+			</tr>
+			
+			<tr>
+				<td style="width:30%;">select dbIndex</td>
+				<td style="width:70%;">切换库 建议多实例单库</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">dbsize</td>
+				<td style="width:70%;">key个数</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">flushdb/flushall</td>
+				<td style="width:70%;">清除库数据</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">config set</td>
+				<td style="width:70%;">动态设置</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">config rewrite</td>
+				<td style="width:70%;">持久化配置文件</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">pttl key</td>
+				<td style="width:70%;">查看key过期时间</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">expire key</td>
+				<td style="width:70%;">设置key过期时间</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">persist key</td>
+				<td style="width:70%;">删除key过期时间</td>
+			</tr>
+			
+
+		</table>
+	</li>
+	</ul>
+</div>
+
+
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+jsdis连接方式
+</div>
+<div class="divnext" >
+	<ul style=" list-style-type: decimal;">
+	<br/>
+	<li>
+		普通：<br/>
+	</li>
+	<br/>
+	<li>
+		连接池：<br/>
+		
+	</li>
+	<br/>
+	<li>
+		分布式：redis2.x没有集群功能，采用分布式<br/>
+	</li>
+	
+</div>
+
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

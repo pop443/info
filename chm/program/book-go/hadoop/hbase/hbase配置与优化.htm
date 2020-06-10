@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>hbase配置与优化</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:5px;
+}
+
+</style>
+</head>
+
+<body>
+<h4>hbase-site.xml配置与优化</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="width:95%;">
+		<tr style="background-color:lightgrey;">
+			<td style="width:20%;text-align:center">配置项</td>
+			<td style="width:30%;text-align:center">说明</td>
+			<td style="width:30%;">优化</td>
+			<td style="width:20%;">默认</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.cluster.distributed</td>
+			<td style="width:30%;">是否使用集群方式</td>
+			<td style="width:30%;">&nbsp;</td>
+			<td style="width:20%;">true</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.defaults.for.version.skip</td>
+			<td style="width:30%;">
+			hbase-default.xml中的hbase.defaults.for.version配置项与hbase-*.jar名中指定版本号一致性检测</td>
+			<td style="width:30%;">&nbsp;</td>
+			<td style="width:20%;">true</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.server.thread.wakefrequency</td>
+			<td style="width:30%;">service工作的sleep间隔，毫秒<br/>
+			检测 是否需要split操作 等
+			</td>
+			<td style="width:30%;">&nbsp;</td>
+			<td style="width:20%;">10000</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.client.retries.number</td>
+			<td style="width:30%;">最大重试次数</td>
+			<td style="width:30%;">35</td>
+			<td style="width:20%;">10</td>
+		</tr>
+		<tr style="background-color:lightgrey;">
+			<td colspan="4" style="width:100%;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width:20%; height: 66px;">
+			hbase.hregion.majorcompaction</td>
+			<td style="width:30%; height: 66px;">
+			一个Region中所有HStoreFile的大合并（Major Compaction）周期，默认是7天。</td>
+			<td style="width:30%; height: 66px;">大合并（Major Compaction）过程非常消耗系统资源，并且合并过程中写入请求全部阻塞。如果不希望在HBASE繁忙的时候进行大合并操作，可以将该值设置成0禁止周期自动合并，然后进行手工合并操作。<br/>不使用major compactions</td>
+			<td style="width:20%; height: 66px;">
+			604800000 ms(7天)</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.hregion.majorcompaction.jitter</td>
+			<td style="width:30%;">major compact时间间隔到期参数</td>
+			<td style="width:30%;">0.5</td>
+			<td style="width:20%;">0</td>
+		</tr>
+		<tr style="background-color:lightgrey;">
+			<td colspan="4" style="width:100%;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.hregion.max.filesize</td>
+			<td style="width:30%;">HStoreFile的最大值。当一个列族的HStoreFiles文件超过这个值的时候，Hregion会被分裂成两个文件。</td>
+			<td style="width:30%;">如果将该值设置成Long.MAX_VALUE，则会关闭自动分裂，但不推荐这样设置；为了防止遗忘分裂操作，推荐设置成100G。</td>
+			<td style="width:20%;">10737418240(bytes)10G</td>
+		</tr>
+		<tr style="background-color:lightgrey;">
+			<td colspan="4" style="width:100%;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.hregion.memstore.flush.size</td>
+			<td style="width:30%;">Memstore如果超过本参数设置值，则会被刷写到磁盘中。RegionServer中有一个线程定期检查Memstore是否超过本参数值，检查周期由hbase.server.thread.wakefrequency参数（默认10s）决定。</td>
+			<td style="width:30%;">酌情设置。</td>
+			<td style="width:20%;">134217728(bytes) 128M</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.hregion.memstore.block.multiplier</td>
+			<td style="width:30%;">当MemStore接近hbase.hregion.memstore.flush.size设置大小时，发生一次大量数据写入，直接超过此阀值所设倍数，则阻断请求，强制执行flush，释放内存，阻止风险进一步扩大。</td>
+			<td style="width:30%;">如果正常应用场景可以预测不会出现突发写入或者写入量可控，建议保留默认值；如果写入量经常暴涨到正常的几倍，应该调大该参数，并且预留更多内存，避免OOM异常。</td>
+			<td style="width:20%;">2</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.hregion.memstore.mslab.enabled</td>
+			<td style="width:30%;">是否启用memstore分配本地缓冲区，防止在大量写负载的时候堆的碎片过多</td>
+			<td style="width:30%;">true</td>
+			<td style="width:20%;">false</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.hstore.blockingStoreFiles</td>
+			<td style="width:30%;">当触发flush操作时，如果一个Region中的store(列族)内StoreFile数超过本参数值时，则阻塞所有的写请求进行合并操作，以减少StoreFile的数量。</td>
+			<td style="width:30%;">阻塞写请求会严重影响当前RegionServer的响应时间，但过多的StoreFile也会影响读性能。</br>
+			如果希望获得较平滑的响应时间，可将此参数设置为无限大；如果可以容忍响应时间出现一定波动，可使用默认值或自行调整。</br></td>
+			<td style="width:20%;">10</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.hstore.compactionThreshold</td>
+			<td style="width:30%;">HStoreFiles合并造成put阻塞前的预防合并措施</td>
+			<td style="width:30%;">10</td>
+			<td style="width:20%;">3</td>
+		</tr>
+		<tr style="background-color:lightgrey;">
+			<td colspan="4" style="width:100%;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.regionserver.global.memstore.upperLimit</td>
+			<td style="width:30%;">每个RegionServer上所有Region的MemStore的大小上限，默认值是0.4，即当某个RegionServer上所有的Region的MemStore的大小达到堆内存的40%时，触发全局flush操作。</td>
+			<td style="width:30%;">这个参数的作用是防止RegionServer内存占用过大，避免出现OOM异常。本参数结合BlockCache进行设置，BlockCache和MemStore的占比总和不能超过堆内存的80。</td>
+			<td style="width:20%;">0.4</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.regionserver.global.memstore.lowerLimit</td>
+			<td style="width:30%;">每个RegionServer上所有Region的MemStore的大小下限，默认值是0.35，</br>
+			即当某个RegionServer上所有的Region的MemStore的大小达到堆内存的35%时，并不触发全局flush操作，</br>
+			而是寻找一个MemStore占用最大的Region进行flush操作，此时写操作被阻塞。</td>
+			<td style="width:30%;">下限设置是所有Region强制Flush导致性能降低前的补救措施。此参数值不能大于上限值，两者需要同时增大和减小。调整此参数时建议进行压力测试，确保触发次数不要太多。 0.38</td>
+			<td style="width:20%;">0.35</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.regionserver.handler.count</td>
+			<td style="width:30%;">每台RegionServer Handle的数量，作用是每台RegionServer可以处理多少请求的线程数。这个值如果设置的太大，可以增加并行处理能力，但是如果用户使用了较大的写缓冲，会消耗很多内存；如果设置太小，请求会被阻塞而得不到正常响应。</br>
+			</td>
+			<td style="width:30%;">
+			本参数调优与内存息息相关。</br>
+			如果Hbase集群业务是单次写入内存消耗比较高的场景（单次写入量很大或者设置了较大的缓存），或RegionServer的内存比较紧张的情况，适合较少的IO线程，即该值应该设置较小；</br>
+			而如果单次请求内存消耗低，TPS要求非常高的场景，应将该值调大，该值应设置为10的倍数，一般倍数[2,30]均属正常。至于准确值需要根据压力测试结果调整。</br>
+			</td>
+			<td style="width:20%;">30</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.regionserver.maxlogs</td>
+			<td style="width:30%;">本参数能够控制基于磁盘的WAL文件数量，进而控制刷写频率。该值乘以 HDFS Block Size(dfs.blocksize)是服务器崩溃时需要替换的WAL大小。该值与磁盘刷新频率成反比，当降低这个值时，会强迫服务器更频繁地将数据刷写到磁盘上。</br>
+			</td>
+			<td style="width:30%;">酌情设置。写压力比较大时 ，可以考虑降低该值。</td>
+			<td style="width:20%;">32</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.regionserver.codecs</td>
+			<td style="width:30%;">Region Server 需要启动的编码解码器的逗号分隔列表。使用此设置以确保已安装的所有加入群集的 Region Servers 配有特定编码解码器。
+			</td>
+			<td style="width:30%;">
+			1、Gzip算法的压缩比比Snappy和LZO高，可以减少存储空间，但是速度比较慢；不推荐使用；</br>
+			2、LZO是一个无损压缩算法，专注于解压速度。但LZO是GPL开源协议，需要在HBASE安装后单独进行安装；</br>
+			3、Snappy是BSD开源协议，拥有和LZO一样的质量，并有兼容的使用许可。推荐使用Snappy算法。</br>
+			建议设置成snappy,lzo</td>
+			<td style="width:20%;">null</td>
+		</tr><tr>
+			<td style="width:20%;">hbase.regionserver.optionallogflushinterval</td>
+			<td style="width:30%;">Hlog刷写到hdfs上的周期，默认1秒。如果采用增大该延迟flush时间，
+			在这段时间内，WAL日志会保留到内存中，直到RegionServer达到该周期后才flush操作。这样可以减少WAL日志到HDFS同步的次数，提升写效率；
+			缺点是如果发生RS宕机，将会有数据丢失。</br>
+			</td>
+			<td style="width:30%;">根据实际业务情况而定。在某些可以承受少量数据丢失的应用中可以增大该值。</td>
+			<td style="width:20%;">1000 ms</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hfile.block.cache.size</td>
+			<td style="width:30%;">堆内存中用于缓存Hfile和StoreFile的百分比，也就是读缓存占用堆内存的百分比。</br>
+			RegionServer的堆内存分为两部分：一部分是MemStore,主要用来写；另一部分是BlockCache,主要用来读。</br>
+			写请求会先写入MemStore，然后达到一定条件时Flush到磁盘。读请求先到MemStore中查数据，查不到就到BlockCache中查找，再查不到就到磁盘上读，并将读如结果放入BlockCache</td>
+			<td style="width:30%;">调整BlockCache需要注意两点：</br>
+1、BlockCache和MemStore的占比总和不能超过堆内存的80%；</br>
+2、以读为主的业务多时，可调大该值（0.4是可以的，早期版本默认值0.25）；</br>
+3、不要关闭BlockCache（也就是将hfile.block.cache.size设置为0），这样会导致RegionServer不停的加载Hfile索引，增大磁盘I/O开销。</br></td>
+			<td style="width:20%;">0.4</td>
+		</tr>
+		<tr style="background-color:lightgrey;">
+			<td colspan="4" style="width:100%;">&nbsp;</td>
+		</tr>
+		
+		<tr>
+			<td style="width:20%;">zookeeper.session.timeout</td>
+			<td style="width:30%;">RegionServer连接Zookeeper的Session时长</td>
+			<td style="width:30%;">一旦发生RegionServer宕机，Hmaster需要等待这个时间后才能发现宕机，然后开始恢复。这段期间，该RegionServer将不能提供服务。</br>
+			某些场景，对业务影响时间较敏感的情况下，可以调小该值。调整前，需要统计GC时长，本参数值应该大于GC回收的最大用时。</td>
+			<td style="width:20%;">9000</td>
+		</tr>
+		
+		<tr style="background-color:lightgrey;">
+			<td colspan="4" style="width:100%;">&nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.client.keyvalue.maxsize</td>
+			<td style="width:30%;">keyvalue实例最大的size，设置存储文件中单个entry大小的上界</td>
+			<td style="width:30%;">10485760(10M)</td>
+			<td style="width:20%;">10485760(10M)</td>
+		</tr>
+		
+		<tr>
+			<td style="width:20%;">hbase.client.scanner.caching</td>
+			<td style="width:30%;">scan一次RPC缓存条数</td>
+			<td style="width:30%;">1000</td>
+			<td style="width:20%;">1</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.client.write.buffer</td>
+			<td style="width:30%;">Htable client写操作缓存字节数。当客户端提交PUT请求时，将该请求在客户端缓存，</br>
+			当数据达到设置阀值时，才向RegionServer提交请求。这种方式避免了每次和服务端交互，采取批量提交更高效。</br>
+			但是如果没有达到缓存区阀值而客户端崩溃，该部分数据将由于未发送给RegionServer而丢失。</br></td>
+			<td style="width:30%;">根据实际业务情况而定。设置该参数需要慎重。</td>
+			<td style="width:20%;">2097152(bytes)</td>
+		</tr>
+		
+		</tr>
+		<tr style="background-color:lightgrey;" id='coprocessor'>
+			<td colspan="4" style="width:100%;">动态更改 hbase schema &nbsp;</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.online.schema.update.enable</td>
+			<td style="width:30%;">是否允许在线修改 hbase schema</td>
+			<td style="width:30%;">true</td>
+			<td style="width:20%;">false</td>
+		</tr>
+		<tr>
+			<td style="width:20%;">hbase.table.sanity.checks</td>
+			<td style="width:30%;">hbase table 检查</td>
+			<td style="width:30%;">false</td>
+			<td style="width:20%;">true</td>
+		</tr>
+		</table>
+	
+	</li>
+	<br/>
+	
+
+
+</ul>
+
+<h4>hbase-env.sh配置</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="width:95%;">
+		<tr style="background-color:lightgrey;">
+			<td style="width:30%;text-align:center">配置项</td>
+			<td style="width:70%;text-align:center">配置值</td>
+		</tr>
+		<tr>
+			<td style="width:30%;">所有守护进程的堆内存大小 master regionserver thrift 自带zookeeper</td>
+			<td style="width:70%;">export HBASE_HEAPSIZE=1024</td>
+		</tr>
+		<tr>
+			<td style="width:30%;">配置目录</td>
+			<td style="width:70%;">export HBASE_CONF_DIR=${HBASE_CONF_DIR:-/etc/hbase/conf}</td>
+		</tr>
+		<tr>
+			<td style="width:30%;">pid目录</td>
+			<td style="width:70%;">export HBASE_PID_DIR=/var/run/hbase</td>
+		</tr>
+		<tr>
+			<td style="width:30%;">是否使用使用hbase管理zookeeper方式</td>
+			<td style="width:70%;">HBASE_MANAGES_ZK=false</td>
+		</tr>
+		<tr>
+			<td style="width:30%;">master服务启动参数</td>
+			<td style="width:70%;">export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -Djava.net.preferIPv6Addresses=false -Djava.net.preferIPv4Stack=true"	<br/>
+export HBASE_MASTER_OPTS="$HBASE_MASTER_OPTS -Xms1024m  -Xmx1024m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -XX:MaxGCPauseMillis=1000 -Xloggc:$HBASE_LOG_DIR/gc.log-`date +%Y%m%d%H%M` -verbose:gc  -XX:+PrintGCDetails -XX:+PrintGCTimeStamps  -XX:+PrintGCDateStamps"</td>
+		</tr>
+		
+		<tr>
+			<td style="width:30%;">regionserver服务启动参数</td>
+			<td style="width:70%;">
+			export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Djava.net.preferIPv6Addresses=false -Djava.net.preferIPv4Stack=true"<br/>
+			export HBASE_REGIONSERVER_OPTS="$HBASE_REGIONSERVER_OPTS -Xms1024m  -Xmx1024m -XX:PermSize=128m -XX:MaxPermSize=128m -XX:+UnlockExperimentalVMOptions -XX:+UseG1GC -Xloggc:$HBASE_LOG_DIR/gc.log-`date +%Y%m%d%H%M` -verbose:gc  -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps  -XX:+PrintTenuringDistribution -XX:InitiatingHeapOccupancyPercent=35  -XX:G1HeapRegionSize=3"
+			</td>
+		</tr>
+		</table>
+	
+	</li>
+	<br/>
+	
+
+
+</ul>
+
+</body>
+
+</html>

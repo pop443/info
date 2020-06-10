@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>java http</title>
+</head>
+
+<body>
+<div><h2>java请求调用</h2></div>
+
+import java.net.HttpURLConnection;<br />
+import java.net.URL;<br />
+import java.net.URLDecoder;<br />
+import java.net.URLEncoder;<br />
+<br />
+import org.apache.commons.io.IOUtils;
+<p>URL getUrl = new URL(path);<br />
+HttpURLConnection connection = (HttpURLConnection) getUrl.openConnection();<br />
+//设置请求头<br />
+connection.setRequestProperty(&quot;User-Agent&quot;,&quot;Mozilla/4.0 (compatible; MSIE 5.0; 
+Windows NT; DigExt)&quot;);<br />
+connection.setRequestProperty(&quot;Content-Type&quot;,&quot;application/x-www-form-urlencoded&quot;);<br />
+connection.setRequestMethod(&quot;POST&quot;);<br />
+connection.setUseCaches(false);<br />
+//设置outout和input的读写权限<br />
+connection.setDoOutput(true);<br />
+connection.setDoInput(true);<br />
+DataOutputStream out = new DataOutputStream(connection.getOutputStream());<br />
+out.write(s.getBytes(&quot;UTF-8&quot;));<br />
+out.flush();<br />
+out.close();<br />
+<br />
+InputStream in = connection.getInputStream();<br />
+//使用apache commons组件解析 （无乱码）<br />
+String finalLine = <span style="color:red">IOUtils.toString(in, &quot;UTF-8&quot;)</span>;<br />
+System.out.println(&quot;收到&quot; + finalLine);<br />
+in.close();<br />
+PrintWriter out1 = response.getWriter();<br />
+out1.print(finalLine);<br />
+out1.flush();<br />
+out1.close();</p>
+
+
+</body>
+
+</html>

@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>kafka指令集</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:15px;
+}
+
+</style>
+</head>
+
+<body>
+<h4>kafka指令集</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="font-size:large;width:90%">
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">启停</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-server-start.sh $KAFKA_HOME/conf/server.properties</td>
+				<td style="width:70%;">通过配置文件 启动一个broker 同一集群下server.properties里的brokerid 必须不一样</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">topic指令</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-topics.sh --describe --zookeeper 10.10.0.65</td>
+				<td style="width:70%;">查看kafka下有的topic信息</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-topics.sh --create --zookeeper 10.10.0.65 --topic test --partitions 2 --replication-factor 1 </td>
+				<td style="width:70%;">zookeeper 集群管理下 创建名为test的topic 分区为2 备份为1（备份不能大于现有的broker数量）</td>
+			</tr>
+			
+			<tr>
+				<td style="width:30%;">kafka-topics.sh --alter --zookeeper 10.10.0.65 --topic test --partitions 3</td>
+				<td style="width:70%;">修改zookeeper 集群管理的 kafka topic 为test 的partitions 为 3 </td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-topics.sh --delete --zookeeper 10.10.0.65 --topic test</td>
+				<td style="width:70%;">删除zookeeper 集群管理的 kafka 名称为test的topic <br/>
+										需要在$kafka_home/conf/server.properties 添加配置  
+										<br />delete.topic.enable=true
+				</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-topics.sh --describe --unavailable-partitions --zookeeper 10.10.0.65 </td>
+				<td style="width:70%;">查看不可用分区信息
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">kafka-reassign-partitions broker id 改变 重新分配partition</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-reassign-partitions.sh --generate --topics-to-move-json-file topic.json  --zookeeper 172.32.148.165:2181 --broker-list 1470820809,1470820882</td>
+				<td style="width:70%;">topic.json文件内容 {"topics":[{"topic": "broker"},{"topic": "broker2"}],"version":1} <br/>重新在broker-list中选举 zn 节点中 partition 的主读写副本</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">consumer offset</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-consumer-offset-checker.sh --topic test --zookeeper xwtest1:2181 --group h2</td>
+				<td style="width:70%;">当偏移量存储在zk上时 可以查offset和logsize</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list xwtest1:6667,xwtest2:6667,xwtest3:6667 --topic test --time -1</td>
+				<td style="width:70%;">当偏移量存储在broker上时 只能查到logsize</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">控制台测试 含kb</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-consumer-offset-checker.sh --zookeeper zkhosts:2181 --topic test --group consumer </td>
+				<td style="width:70%;">当consumer记录offset到zk上时 按分区数查看偏移总量和消费偏移量</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">export KAFKA_OPTS=" -Djava.security.auth.login.config=/etc/kafka/conf/kafka_client_jaas.conf  -Djava.security.krb5.conf=/etc/krb5.conf";<br/>
+/usr/lib/kafka/bin/kafka-console-producer.sh --broker-list vdkapp27:6667 --topic test  --producer.config /etc/kafka/conf/client.properties</td>
+				<td style="width:70%;">开启kb后 使用console打印输入的方式 往 broker 下topic test 发送信息</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">export KAFKA_OPTS=" -Djava.security.auth.login.config=/etc/kafka/conf/kafka_client_jaas.conf  -Djava.security.krb5.conf=/etc/krb5.conf";<br/>
+/usr/lib/kafka/bin/kafka-console-consumer.sh --bootstrap-server vdkapp27:6667 --topic test  --new-consumer  --consumer.config /etc/kafka/conf/client.properties</td>
+				<td style="width:70%;">开启kb后 使用console打印输出的方式 接受 broker 集群中的 topic test 的数据</td>
+			</tr>
+
+		</table>
+		
+
+	</li>
+	<br/>
+</ul>
+</body>
+
+</html>

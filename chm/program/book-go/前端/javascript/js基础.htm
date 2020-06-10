@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>js 插件</title>
+<style>
+
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+<script>
+function hoverhidden(obj){
+	//obj.nextSibling 获取下一个同辈元素
+	var nextObj = obj.nextSibling ;
+	if(nextObj.style.display=="block"){
+		nextObj.style.display = "" ;
+		obj.style.background = "#FFCC99"
+	}else{
+		nextObj.style.display = "block" ;
+		obj.style.background = "#99FFCC"
+	}
+}
+
+function aone(id){
+	if(id=="id1") {
+		document.getElementById(id).innerText="<span style=\"color:red\">hello</span>";
+	}
+	else {
+		document.getElementById(id).innerHTML="<span style=\"color:red\">hello</span>";
+	}
+}
+</script>
+
+<script>
+function showPopup() {
+			try {
+				var xpx = window.event.clientX - 220;
+				var ypx = window.event.clientY;
+				var width = 200;
+				var height = 140;
+
+				floatTip = window.createPopup();
+				var d = floatTip.document;
+				var oPopBody = d.body;
+				var str = '<div style="width:100%;height:100%;background-color:silver"><div align="center">Popup创建</div><div style="text-align:center"><table style="font-size:small;color: purple"><tr><th>第一行</th><th>第二行</th></tr><tr><td>1.1</td><td>1.2</td></tr><tr><td>2.1</td><td>2.2</td></tr></table></div></div>' ;
+				oPopBody.innerHTML = str;
+				//尝试没生效
+				var oStyleSheet = d.createStyleSheet();
+				oStyleSheet.addImport("cssURL");
+
+				floatTip.show(xpx, ypx, width, height, document.body);
+
+			} catch (e) {
+				alert(e);
+			}
+		}
+</script>
+</head>
+
+<body>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+基础
+</div>
+<div class="divnext" >
+<br />
+	<ul style=" list-style-type: decimal;">
+	<li>
+	
+	innerText和innerHTML区别<br/>
+
+	<a id="id1" href="#" onclick="aone('id1')">innerText</a> <br/>
+
+	<a id="id2" href="#" onclick="aone('id2')">innerHTML</a><br/>
+
+	都替换为了&lt;p style=&quot;color:red&quot;&gt;hello&lt;/p&gt;。<br/><br/>
+	</li>
+	<li>
+		a)
+		&lt;frameset&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;frame&gt;&lt;/frame&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;frame&gt;&lt;/frame&gt;<br />
+&nbsp;&nbsp;&nbsp; &lt;/frameset&gt;<br />	
+		b)&lt;iframe&gt;&lt;/iframe&gt;<br />
+		c)父页面访问子页面 document.getElementById("frameId").contentWindow.document<br />
+		d）子页面访父页面 window.parent.frames["frameName"] 只能通过name属性<br /><br/>
+		</li>
+		
+	<li>异步载入外部执行脚本：
+	<br/>
+	&lt;script&gt;<br />
+	function loadasync(url){<br />
+&nbsp;&nbsp;&nbsp; //找到head标签 取第一个<br />
+&nbsp;&nbsp;&nbsp; var head = document.getElementsByTagName(&quot;head&quot;)[0];<br />
+&nbsp;&nbsp;&nbsp; //创建一个script标签<br />
+&nbsp;&nbsp;&nbsp; var script = document.createElement(&quot;script&quot;);<br />
+&nbsp;&nbsp;&nbsp; //设置src 路径<br />
+&nbsp;&nbsp;&nbsp; script.src = url ;<br />
+&nbsp;&nbsp;&nbsp; //给head标签 增加一个子标签<br />
+&nbsp;&nbsp;&nbsp; head.appendChild(script);<br />
+	}<br />
+	&lt;/script&gt;
+	<br/><br/>
+	</li>
+	
+	<li>
+	
+	获得链接参数<br/>
+	<table>
+	<tr>
+	<td>jsp:</td>
+	<td>window.location.search.substring(1)</td>
+	</tr>
+	<tr>
+	<td>servlet:</td>
+	<td>request.getQueryString()</td>
+	</tr>
+
+	</table>
+	均获得<span style="color:red">客户端跳转 ？</span>之后的内容<br/><br/>
+		</li>
+		<li>select 下拉框过滤 :必须注意select.options.length动态变化<br/>
+<select name="selectName" >
+	<option value="asdfe">一十一asdfe18</option>
+	<option value="asfe">二十asfe27</option>
+	<option value="xn">三九xn36</option>
+	<option value="hm">四八hm45</option>
+	<option value="utu">五七utu54</option>
+	<option value="iip">六六iip63</option>
+	<option value="mm">七五mm72</option>
+	<option value="urr">八四urr81</option>
+	<option value="ww">九三ww910</option>
+	<option value="qww">十二qww109</option>
+	<option value="rrt">十一一rrt118</option>
+</select>
+<input type="text" onkeyup="" onpropertychange="javascript:ss(this)" ><br/><br/>
+<script type="text/javascript">
+var options = document.getElementsByName("selectName")[0].options ;
+var arrayOptions = new Array(options.length) ;
+for(var i=0;i<options.length;i++){
+	arrayOptions[i] = [options[i].value+"-"+options[i].innerHTML] ;
+}
+function ss(obj){
+	resetSelect() ;
+	var value = obj.value;
+	var select = document.getElementsByName("selectName")[0] ;
+	var selectOptions = select.options ;
+	//由于select 下options动态删除 导致select.options对象的长度动态变化
+	//使用正向循环的时候会产生跳号  使用反向OK
+	for(var i=selectOptions.length-1;i>=0;i--){
+		var simpleOption = selectOptions[i] ;
+		var simpleOptionHTML = simpleOption.innerHTML ;
+		if(simpleOptionHTML.indexOf(value)<0){
+			select.remove(simpleOption.index) ;
+		}
+		
+	}
+}
+//在删除select 下 option 的时候 select.options对象的长度动态变化
+function resetSelect(){
+	var select = document.getElementsByName("selectName")[0] ;
+	var selectOptions = select.options ;
+	var selectOptionsLength = selectOptions.length ;
+	for(var i=0;i<selectOptionsLength;i++){
+		select.remove(0) ;
+	}
+	for(var i=0;i<arrayOptions.length;i++){
+		//数组中对象使用时需要转型
+		var simpleArray = arrayOptions[i].toString() ;
+		var value = simpleArray.split('-')[0] ;
+		var text = simpleArray.split('-')[1] ;
+		select.add(new Option(text,value)) ;
+	}
+}
+</script>
+		
+		
+		</li>	
+	
+</ul>
+	<br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+json
+</div>
+<div class="divnext" >
+<br />
+	<ul style=" list-style-type: decimal;">
+	<li>json<br/>
+
+		格式:<br/>
+		a)键值对使用：{}，使用，分割<br/>
+		b)数组使用：[]，使用，分割<br/>
+		如：<br/>
+			<font SIZE="3" style="text-decoration: none" COLOR="#008080" >
+		&lt;</font><font SIZE="3" style="text-decoration: none" COLOR="#3f7f7f">script</font><font SIZE="3" style="text-decoration: none">
+		</font><font SIZE="3" style="text-decoration: none" COLOR="#7f007f">type</font><font SIZE="3" style="text-decoration: none">=</font><font SIZE="3" style="text-decoration: none" COLOR="#2a00ff"><i>&quot;text/javascript&quot;</i></font><font SIZE="3" style="text-decoration: none" COLOR="#008080">&gt;<br/>
+		</font><font SIZE="3" style="text-decoration: none" COLOR="#7f0055"><b>&nbsp;&nbsp;&nbsp; var</b></font><font SIZE="3" style="text-decoration: none"> 
+		people = {<br/>
+		</font><font SIZE="3" style="text-decoration: none" COLOR="#2a00ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;head&quot;</font><font SIZE="3" style="text-decoration: none"> 
+		: </font><font SIZE="3" style="text-decoration: none" COLOR="#2a00ff">&quot;yuande&quot;</font><font SIZE="3" style="text-decoration: none">,<br/>
+		</font><font SIZE="3" style="text-decoration: none" COLOR="#2a00ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;body&quot;</font><font SIZE="3" style="text-decoration: none"> 
+		: [<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		{</font><font SIZE="3" style="text-decoration: none" COLOR="#2a00ff">&quot;wear&quot;</font><font SIZE="3" style="text-decoration: none"> 
+		: </font><font SIZE="3" style="text-decoration: none" COLOR="#2a00ff">&quot;short&quot;</font><font SIZE="3" style="text-decoration: none">} ,<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		{</font><font SIZE="3" style="text-decoration: none" COLOR="#2a00ff">&quot;shoe&quot;</font><font SIZE="3" style="text-decoration: none"> 
+		: </font><font SIZE="3" style="text-decoration: none" COLOR="#2a00ff">&quot;nike&quot;</font><font SIZE="3" style="text-decoration: none">}<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		]<br/>
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		};</font> <font SIZE="3" style="text-decoration: none" COLOR="#008080">
+		<br/>&lt;/</font><font SIZE="3" style="text-decoration: none" COLOR="#3f7f7f">script</font><font SIZE="3" style="text-decoration: none" COLOR="#008080">&gt;</font>
+			转化：<br/>
+		
+				
+					a) 将字符串转化为json对象<br/>
+		
+			<font SIZE="3" COLOR="#7f0055"><b>
+		&nbsp;&nbsp;&nbsp;
+		var</b></font><font SIZE="3"> str = </font>
+		<font SIZE="3" COLOR="#2a00ff">&quot;{&#39;head&#39; : &#39;yuande&#39;,&#39;body&#39; : [{&#39;wear&#39; : 
+		&#39;short&#39;} ,{&#39;shoe&#39; : &#39;nike&#39;}]}&quot;</font><font SIZE="3">;
+		</font><font SIZE="3" COLOR="#7f0055"><br/><b>&nbsp;&nbsp;&nbsp; var</b></font><font SIZE="3"> 
+		data = eval( </font><font SIZE="3" COLOR="#2a00ff">&#39;(&#39;</font><font SIZE="3"> 
+		+ str + </font><font SIZE="3" COLOR="#2a00ff">&#39;)&#39;</font><font SIZE="3"> 
+		);
+		</font><br/>
+		b) 使用插件 json2.js 将json转化为字符串<br/>
+		
+		
+				
+	<font SIZE="3" COLOR="#7f0055"><b>
+		&nbsp;&nbsp;&nbsp;
+		var</b></font><font SIZE="3"> text = JSON.stringify( data );
+		</font>
+		
+	<div><a href="../../other/json2.js">下载json2.js</a></div>
+
+				
+	</li>
+	
+	
+	</ul>
+	<br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+Popup
+
+
+</div>
+<div class="divnext" >
+<br />
+	<span>1.可以使用ajax->jsp的方式，不用考虑样式。</span><br/>
+<span>2.可以使用ajax->response的方式，考虑样式（createStyleSheet()尝试没成功）。</span>
+<div style="text-align:center"><a href="#"  onclick="javascript:showPopup();">点我试一试</a>
+</div>
+
+<div style="padding-left:20px;background-color:#CCCCFF;">
+
+function showPopup() {<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try {<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var xpx = window.event.clientX - 220;<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var ypx = window.event.clientY;<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var width = 200;<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var height = 140;<span class="style1"><br />
+<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; floatTip = window.createPopup();<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var d = floatTip.document;<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var oPopBody = d.body;<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var str = &#39;&lt;div style=&quot;width:100%;height:100%;background-color:silver&quot;&gt;&lt;div 
+align=&quot;center&quot;&gt;Popup创建&lt;/div&gt;&lt;div style=&quot;text-align:center&quot;&gt;&lt;table style=&quot;font-size:small;color: 
+purple&quot;&gt;&lt;tr&gt;&lt;th&gt;第一行&lt;/th&gt;&lt;th&gt;第二行&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;1.1&lt;/td&gt;&lt;td&gt;1.2&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;2.1&lt;/td&gt;&lt;td&gt;2.2&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/div&gt;&lt;/div&gt;&#39;;<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; oPopBody.innerHTML = str;<span class="style1"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>//尝试没生效<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+//var oStyleSheet = d.createStyleSheet();<span class="style1"><br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+//oStyleSheet.addImport(&quot;cssURL&quot;);<span class="style1"><br />
+<br />
+</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; floatTip.show(xpx, ypx, width, height, document.body);<span class="style1"><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>} catch (e) {<span class="style1"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>alert(e);<span class="style1"><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>}<span class="style1"><br />
+</span>}</div>
+	<br />
+</div>
+
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

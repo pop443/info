@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<title>oracle</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:15px;
+}
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+hive 命令行
+</div>
+<div class="divnext">
+<br />
+<table class="table" style="font-size:large;width:90%">
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">schematool</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">初始化数据库</td>
+				<td style="width:65%;">schematool -dbType mysql -initSchema;</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">hive</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">启动metastore</td>
+				<td style="width:65%;">hive --service metastore & </td>
+			</tr>
+			<tr>
+				<td style="width:30%;">启动hiveserver2</td>
+				<td style="width:65%;">hive --service hiveserver2 &</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">启动hive client</td>
+				<td style="width:65%;">hive / hive --service cli</td>
+			</tr>
+			
+		</table>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+hive cli 执行原理
+</div>
+<div class="divnext" >
+</br>
+<ul style=" list-style-type: decimal;">
+	<li>使用hive进入cli时，linux执行hive命令，调用${hive-home}/hive文件，之后选择调用的shell脚本<br/>
+		cli使用${hive-home}/ext/cli.sh脚本<br/>
+		执行org.apache.hadoop.hive.cli.CliDriver.java main<br/>
+	</li>
+	<br/>
+	<li>1.CliDriver.java 首先判断调用命令是否能识别 如 hive -S -v -e 等<br/>
+		2.初始化log4j<br/>
+		3.初始化CliSessionState 包括配置(hive-site.xml,~/.hiverc)、jobconf所需jar。org.apache.hadoop.hive.conf.HiveConf 包括所有基本配置<br/>
+			模式（-S -v -e）、历史命令、输入输出、子线程输入输出<br/>
+		4.初始化默认库，临时文件，编译语句规则（括号，点等）<br/>
+		5.processLine 解析输入的参数前，注册ctrl+c 事件 轮询输入遇;开始处理<br/>
+		6.处理第一步:对特殊的命令如sourse、list、dfs等使用不同CommandProcessor处理类，阻塞式<br/>
+		7.<span style="color:red">driver</span>处理第二步:输入流化，使用antlr对输入进行词法分析，生成抽象语法树AST，根据AST的token值使用不同BaseSemanticAnalyzer语法解析器<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;（a）初始化所有配置 org.apache.hadoop.hive.conf.HiveConf 类中 <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;（b）生成逻辑执行计划，SemanticAnalyzer.genPlan完成。 <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;（c）优化逻辑执行计划，Optimizer完成，ParseContext作为上下文信息进行传递。 <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;（d）生成物理执行计划，SemanticAnalyzer.genMapRedTasks完成。 <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;（e）物理计划优化，PhysicalOptimizer完成，PhysicalContext作为上下文信息进行传递。 <br/>
+		8.<span style="color:red">driver-compile</span>处理第三步:编译并生成执行计划 如果只是查询表的列，不走MR，走fetch task，通过set hive.fetch.task.conversion=more 设置<br/>
+		9.<span style="color:red">driver</span>处理第四步:设置MR配置，通过执行计划生成task任务，分为runnable和running任务,driverContext维护task任务，执行完之后打印信息<br/>
+	</li>
+	<br/><br/>
+
+
+
+</ul>
+	<br />
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+hive sql 配置选项
+</div>
+<div class="divnext">
+<br />
+<table class="table" style="font-size:large;width:90%">
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">基本配置</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">显示字段名称</td>
+				<td style="width:65%;">set hive.cli.print.header=true;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">显示当前数据库名</td>
+				<td style="width:65%;">set hive.cli.print.current.db=true;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">查询块大小</td>
+				<td style="width:65%;">set dfs.block.size;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">查表详细信息 </td>
+				<td style="width:65%;">desc [formatted] tableName ;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">查看建表信息</td>
+				<td style="width:65%;">show create table tableName ;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">查函数信息</td>
+				<td style="width:65%;">desc function functionName ;</td>
+			</tr>
+		
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">执行配置</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">执行引擎</td>
+				<td style="width:65%;">set hive.execution.engine=MR;(TEZ,SPARK)</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">队列</td>
+				<td style="width:65%;">set mapreduce.job.queuename=hive;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">优先级</td>
+				<td style="width:65%;">set mapreduce.job.priority=HIGH;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">查询执行计划</td>
+				<td style="width:65%;">explain [extended] HQL ;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">设置reducer数量</td>
+				<td style="width:65%;">set hive.exec.reducers.bytes.per.reducer=xxx字节;  每个reducer处理的字节数<br/>
+								  set mapred.reduce.tasks=xx ;  xx个reducer数</td>
+			</tr>
+			
+			<tr>
+				<td style="width:30%;">执行本地job 的输入数据阀值 （本地执行无监控数据）</td>
+				<td style="width:65%;">set hive.exec.mode.local.auto.inputbytes.max=1;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">简单查询不走mr 比如where id=1</td>
+				<td style="width:65%;">set hive.fetch.task.conversion=more; (minimal)</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">外表分区</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">创建分区</td>
+				<td style="width:70%;">alter table [T] add IF NOT EXISTS partition (ptdate=$lastday) location 'hdfs://ha/[T]/$lastday';</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">删除分区</td>
+				<td style="width:70%;">alter table [T] drop IF EXISTS partition (ptDate=$oldday);</td>
+			</tr>
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">动态分区</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">开启动态分区</td>
+				<td style="width:70%;">set hive.exec.dynamic.partition=true;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">设置分区列<span style="color:red">全部是动态</span>的</td>
+				<td style="width:70%;">set hive.exec.dynamic.partition.mode=nonstrict ;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">设置一个dml允许创建的分区数量的最大值 default 1000</td>
+				<td style="width:70%;">set hive.exec.max.dynamic.partitions=10000;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">设置每个mapper/reducer允许创建的分区数量的最大值 default 100</td>
+				<td style="width:70%;">set hive.exec.max.dynamic.partitions.pernode=1000 ;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">设置每个mapper/reducer允许创建的分区数量的最大值 default 100</td>
+				<td style="width:70%;">set hive.exec.max.dynamic.partitions.pernode=1000 ;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">实例</td>
+				<td style="width:70%;"><a href="../../other/inputdata.sql">下载hive导数据</a></td>
+			</tr>
+		</table>
+
+</div>
+
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

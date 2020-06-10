@@ -1,0 +1,109 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>原理</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	
+	border:1px solid black;
+}
+
+</style>
+</head>
+
+<body>
+<h4>namenode启动过程</h4>
+<ul style=" list-style-type: decimal;">
+	<li>Namenode将HDFS的文件和目录元数据存储在fsimage中(二进制文件),格式为<br/>
+	
+	image head : imgVersion(int)版本  namespaceID(int)区别集群 numfiles(long)文件数量包括目录 genStamp(long)时间戳<br/>
+	源数据信息 : path(String)路径--replications(short)：副本数--mtime(long)修改时间戳--atime(long)访问时间戳--blocksize(long)块大小计为0--<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	numBlocks(int)文件快，目录为-1--nsQuota(long)namespace Quota值--dsQuota(long)：disk Quota值--username(String) 所属用户名--<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	group(String)所属组--permission(short) perm信息<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+	如果是文件夹多三个信息:blockid(long)--numBytes(long)大小--genStamp(long)时间戳<br/>
+		<br/>
+	</li>
+	<li>
+	
+	fsimage加载如内存记录block，但没有记录block对应datanode信息，之后在datanode启动时扫描本地，将block信息发送给namenode,这个过程叫blockReport。<br/>
+	block -> datanodes list的对应表信息存在BlocksMap中<br/>
+	BlocksMap包括三部分：<br/>
+	a.fsimage进内存的blockID，numbytes,stamp<br/>
+	b.fsimage进内存的hdfs的INodeFile对象<br/>
+	c.blockReport过程后，得到block所属datanodes列表信息（datanodes列表信息：与副本数量一致，数组形式，主机ID--上一个--下一个）<br/><br/>
+	</li>
+	<li>
+	启动过程本质就是:<br/>
+	a.加载fsimage，生成BlocksMap对象的key（block）<br/>
+	b.blockReport过程，填充BlocksMap对象的value（block对应的datanodes列表的三元组信息）<br/>
+	</li>
+</ul>
+
+<h4>heartbeat心跳</h4>
+<ul style=" list-style-type: decimal;">
+	<li>dfs.heartbeat.interval参数控制默认3秒
+	datanode定时发送心跳给namenode<br/>
+	入参：
+	a.动态代理namenode对象，包括标示、名称、版本、ipc端口<br/>
+	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;b.容量空间、使用量、剩余量等指标<br/>
+	返回值：Command数组 namenode通过心跳需要datanode执行的命令
+	<br/>
+	
+		<br/>
+		
+	</li>
+	
+	
+</ul>
+
+<h4>block recovery文件修复或调整</h4>
+<ul style=" list-style-type: decimal;">
+	<li>block recovery 触发前置条件：<br/>
+		lease：hdfs上的文件是一写多读式，在一个client要对文件处理时，会持有一个由namenode维护的lease(文件锁)，并生成租约<br/>
+		
+	</li>
+	<li>
+		 namenode触发block recovery过程：<br/>
+		a.当client宕机或异常后，namenode发现文件租期已过，从内存中获得这个锁文件的INode信息，并查看block队列，如果为空，则是空文件，删除lease记录;
+		否则获得最后一个block(hdfs不能修改，只能追加，所以最后一个block之前的都是完好的block),<br/>
+		b.targets是一个datanode队列，表示最后一个block是在哪些datanode上，从datanode队列中选择一个作为primary datanode<br/>
+		c.namenode将block recovery保存在heartbeat的response里，发送给primary datanode
+	</li>
+	<li>
+		primary datanode执行block recovery命令：<br/>
+		a.primary datanode 对targets的datanode发送start block recovery指令，自己直接执行，确定block的验证信息和mete信息正确，
+		返回BlockRecord对象，表示这个block正在被recovery<br/>
+		b.对每个BlockRecord，查看keepLength标志位是否为true，如果为true，则只修复 blocksize 跟 namenode中记录的blocksize一致的block，否则全部修复<br/>
+		c.期间更新stamp时间戳，匹配block size,更新验证信息和meta文件<br/>
+		d.最后由primary datanode向namenode汇报信息，namenode更新信息。
+		
+	</li>
+	
+</ul>
+
+<h4>Hadoop安全机制</h4>
+<ul style=" list-style-type: decimal;">
+	<li>用户篇：<br/>
+		用户伪装机制使得Hadoop支持类似于linux “sudo”的功能，即用户A以用户B的身份执行功能<br/>
+		功能允许一个超级用户代理其他用户执行作业或者命令，但对外看来执行者仍是普通用户<br/>
+		hive执行shell命令，验证用户为hive/vggapp19@NEWLAND.COM（KB状态）,无访问hdfs权限<br/>
+		在core-site中增加两个参数：hadoop.proxyuser.hive.hosts=*;hadoop.proxyuser.hive.groups=*;<br/>
+		会伪装所有主机上所有运行hive的用户<br/>
+		
+	</li>
+
+</ul>
+</body>
+
+</html>

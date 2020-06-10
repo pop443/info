@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>无标题 1</title>
+</head>
+
+<body>
+
+<font SIZE="4" COLOR="#7f0055"><b>
+import</b></font><font SIZE="4"> java.util.HashMap;<br/>
+</font><font SIZE="4" COLOR="#7f0055"><b>
+import</b></font><font SIZE="4"> java.util.Map;<br/>
+<br/>
+</font><font SIZE="4" COLOR="#7f0055"><b>
+public</b></font><font SIZE="4"> </font>
+<font SIZE="4" COLOR="#7f0055"><b>class</b></font><font SIZE="4"> HashMapTest {<br/>
+</font><font SIZE="4" COLOR="#3f5fbf">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /**<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#3f5fbf">简单分流算法实现<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f9fbf"><b>@param</b></font><font SIZE="4"> </font>
+<font SIZE="4" COLOR="#3f5fbf">str</font><font SIZE="4"> <br/>
+</font><font SIZE="4" COLOR="#3f5fbf">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f9fbf"><b>@param</b></font><font SIZE="4"> </font>
+<font SIZE="4" COLOR="#3f5fbf">size</font><font SIZE="4"> <br/>
+</font><font SIZE="4" COLOR="#3f5fbf">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; *</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f9fbf"><b>@return</b></font><font SIZE="4">
+</font><font SIZE="4" COLOR="#3f5fbf">索引值<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; */<br/>
+</font><font SIZE="4" COLOR="#7f0055"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public</b></font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f0055"><b>static</b></font><font SIZE="4"> </font>
+<font SIZE="4" COLOR="#7f0055"><b>int</b></font><font SIZE="4"> finIndex(String 
+key,</font><font SIZE="4" COLOR="#7f0055"><b>int</b></font><font SIZE="4"> size 
+){<br/>
+</font><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //获得主键的hashcode<br/>
+</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f0055"><b><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>int</b></font><font SIZE="4"> 
+keyCode = key.hashCode();<br/>
+</font><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //与范围数量-1 进行按位与操作 因为下标为 
+0~size-1<br/>
+</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //首先进行-1 减得优先级比 &amp; 高<br/>
+</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //得到 0~size-1 范围内的索引值<br/>
+</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f0055"><b><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>int</b></font><font SIZE="4"> 
+index = keyCode &amp; size -1 ;<br/>
+</font><font SIZE="4" COLOR="#7f0055"><b><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>return</b></font><font SIZE="4"> 
+index;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br/>
+<br/>
+</font><font SIZE="4" COLOR="#7f0055"><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public</b></font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f0055"><b>static</b></font><font SIZE="4"> </font>
+<font SIZE="4" COLOR="#7f0055"><b>void</b></font><font SIZE="4"> main(String[] 
+args) {<br/>
+</font><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //创建一个map 数组 对象 <br/>
+</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f0055"><b><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>int</b></font><font SIZE="4"> 
+size = 4 ;<br/>
+<font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>Map&lt;String,String&gt;[] map = </font>
+<font SIZE="4" COLOR="#7f0055"><b>new</b></font><font SIZE="4"> HashMap[size] ;<br/>
+</font><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //给每个map初始化<br/>
+</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f0055"><b><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>for</b></font><font SIZE="4"> 
+(</font><font SIZE="4" COLOR="#7f0055"><b>int</b></font><font SIZE="4"> i = 0; i 
+&lt; size; i++) {<br/>
+<font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>map[i] = </font><font SIZE="4" COLOR="#7f0055"><b>new</b></font><font SIZE="4"> 
+HashMap&lt;String,String&gt;() ;<br/>
+<font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>}<br/>
+</font><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //将很多key-value 均匀的放入 
+size个map中<br/>
+</font><font SIZE="4">
+</font><font SIZE="4" COLOR="#7f0055"><b><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>for</b></font><font SIZE="4"> 
+(</font><font SIZE="4" COLOR="#7f0055"><b>int</b></font><font SIZE="4"> i = 0; i 
+&lt; 10000; i++) {<br/>
+<font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>String key = i+</font><font SIZE="4" COLOR="#2a00ff">&quot;-key&quot;</font><font SIZE="4"> 
+;<br/>
+<font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>String value = i+</font><font SIZE="4" COLOR="#2a00ff">&quot;-value&quot;</font><font SIZE="4"> 
+;<br/>
+</font><font SIZE="4" COLOR="#7f0055"><b><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>int</b></font><font SIZE="4"> 
+index = HashMapTest.<i>finIndex</i>(key, size) ;<br/>
+</font><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //相应map中放入key-value<br/>
+</font><font SIZE="4">
+<font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>map[index].put(key, value) ;<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br/>
+</font><font SIZE="4" COLOR="#7f0055"><b><font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>for</b></font><font SIZE="4"> 
+(</font><font SIZE="4" COLOR="#7f0055"><b>int</b></font><font SIZE="4"> i = 0; i 
+&lt; size; i++) {<br/>
+<font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>System.</font><font SIZE="4" COLOR="#0000c0"><i>out</i></font><font SIZE="4">.println(map[i].size());<br/>
+<font SIZE="4" COLOR="#3f7f5f">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</font>}<br/>
+<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br/>
+<p>}<br/>
+</font>
+
+</body>
+
+</html>

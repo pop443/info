@@ -1,0 +1,719 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>面试题集</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+.table{
+	width:100%;
+	margin-left:-10px;
+}
+.table tr td{
+	border:1px solid black;
+	padding-left:10px;
+}
+
+.table2 tr td{
+	border:1px solid black;
+	text-align:left;
+	padding-left:10px;
+}
+
+
+.style1 {
+	color: #008000;
+}
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+<h2>java篇</h2>
+
+
+<h4>基础</h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+关键字
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	<li>
+	原子性：一个操作是不可中断的，要全部执行完成，要不就都不执行<br/>
+	可见性：可见性是指当多个线程访问同一个变量时，一个线程修改了这个变量的值，其他线程能够立即看得到修改的值<br/>
+	有序性：有序性即程序执行的顺序按照代码的先后顺序执行。（禁止指令重排）<br/><br/>
+	</li>
+	<li>
+	synchronized: 原子性、可见性、有序性
+	</li>
+	<li>
+	volatile: 可见性、有序性
+	</li>
+	<li>
+	transient:禁序列化
+	</li>
+	
+</ul>
+
+</div>
+
+<h4>Map</h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+hashmap结构
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	<li>
+	数据结构的物理存储结构只有两种：顺序存储结构和链式存储结构。<br/><br/>
+	在数组中根据下标查找某个元素，一次定位就可以达到，哈希表利用了这种特性，哈希表的主干就是数组。<br/><br/>
+	存储位置 = f(关键字) （类似分流）<br/><br/>
+	哈希函数会尽可能地保证 计算简单和散列地址分布均匀；数组是一块连续的固定长度的内存空间，
+	再好的哈希函数也不能保证得到的存储地址绝对不发生冲突。那么哈希冲突如何解决呢？哈希冲突的
+	解决方案有多种:开放定址法（发生冲突，继续寻找下一块未被占用的存储地址），再散列函数法，
+	链地址法，而HashMap即是采用了链地址法，也就是数组+链表的方式<br/><br/>
+	<img src="mianshi/hashmap.jpg"/>
+		<br/><br/>
+		简单来说，HashMap由数组+链表组成的，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的，
+		如果定位到的数组位置不含链表（当前entry的next指向null）,那么对于查找，添加等操作很快，
+		仅需一次寻址即可；如果定位到的数组包含链表，对于添加操作，其时间复杂度为O(n)，首先遍历链表，
+		存在即覆盖，否则新增；对于查找操作来讲，仍需遍历链表，然后通过key对象的equals方法hashcode方法逐一比对查找。
+		所以，性能考虑，HashMap中的链表出现越少，性能才会越好。
+		<br/><br/>
+		hashmap默认大小为16，一次扩容把链表循环放入新链表中，每次扩容为2的次幂，是因为计算分片公式  
+		<br/>index = HashCode（Key） & （Length - 1）  
+		<br/>& 运算后 负载均衡 ， 非2的次幂会造成负载不均衡
+		
+		<br/>
+	</li>
+	
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+hashmap put 
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: none;">
+	
+	
+	<li>
+	
+	put value      <br/>
+	1.如果数组是null或者长度为0 初始化链表数组      <br/>
+	2.如果计算key下标hash 无数据 直接创建一个链表数组       <br/>
+	3.如果计算key下标hash 有数据（即hash冲突）     <br/>
+	&nbsp;&nbsp;&nbsp;a.检查equals是否相同 相同覆盖   <br/>
+	&nbsp;&nbsp;&nbsp;b.如果不相同 检查数组是否是红黑树 直接追加value <br/>
+	&nbsp;&nbsp;&nbsp;c.链表：循环到下一个节点为null 如果链表长度达到了 8，且数组长度小于64，那么就重新散列 如果数组长度大于64 创建红黑树 <br/>
+	<br/>
+	</li>
+	
+	
+</ul>
+
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+map实现
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: none;">
+	<li>
+	HashMap : 
+		<ul>
+			<li>key 如果为null key默认设置为0 
+			</li>
+			<li>数组+链表（红黑树） 性能高
+			</li>
+			<li>线程不安全 
+			</li>
+			<li>无序
+			</li>
+		</ul>
+	</li>
+	<li>
+	Hashtable : 
+		<ul>
+			
+			<li>线程安全 synchronized 方法，效率低下
+			</li>
+			<li>数组+链表 
+			</li>
+			<li>有序
+			</li>
+		</ul>
+	</li>
+	<li>
+	ConcurrentHashMap : 
+		<ul>
+			<li>线程安全（锁分段技术） <br/>
+			get方法里将要使用的共享变量都定义为volatile，所以不用加锁
+			<br/>
+			put方法里持有Segment锁
+			</li>
+			<li>Segment+数组+链表
+			</li>
+			<li>无序
+			</li>
+		</ul>
+	</li>
+	<li>
+	LinkedHashMap : 
+		<ul>
+			<li>线程不安全 <br/>
+			get方法里将要使用的共享变量都定义为volatile，所以不用加锁
+			<br/>
+			put方法里持有Segment锁
+			</li>
+			<li>链表+数组+链表（红黑树）
+			</li>
+			<li>分为访问排序和插入排序
+			</li>
+		</ul>
+	</li>
+	<li>
+	IdentityHashMap : 
+		<ul>
+			<li>线程不安全 
+			</li>
+			<li>key 直接比较内存地址
+			</li>
+			<li>无序
+			</li>
+		</ul>
+	</li>
+	<li>
+	UnmodifiableMap : 
+		<ul>
+			<li>只读集合，仅仅保证的是它的引用不能被修改
+			</li>
+			<li>Collections.unmodifiableMap
+			</li>
+			
+		</ul>
+	</li>
+	
+	
+	
+</ul>
+
+</div>
+
+
+<h4>String </h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+String StringBuffer Stringbuilder
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: none;">
+	<li>
+	<table class="table2" style="width:80%;margin-left:10px" >
+			<tr>
+				<td style="width:10%">~</td>
+				<td style="width:30%">String</td>
+				<td style="width:30%">StringBuffer</td>
+				<td style="width:30%">StringBuilder</td>
+			</tr>
+			<tr>
+				<td style="width:10%">线程安全</td>
+				<td style="width:30%">-</td>
+				<td style="width:30%">安全 </td>
+				<td style="width:30%">不安全</td>
+			</tr>
+			<tr>
+				<td style="width:10%">性能</td>
+				<td style="width:30%">低（final类，重新分配栈对象）</td>
+				<td style="width:30%">中（变量，线程安全）</td>
+				<td style="width:30%">高（变量，线程不安全）</td>
+			</tr>
+			
+		</table>
+	</li>
+	
+</ul>
+</div>
+
+<h4>JUC  java.util.concurrent</h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+CountDownLatch
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	<li>
+	当一个线程需要另外一个或多个线程完成后，再开始执行。比如主线程要等待一个子线程完成环境相关配置的加载工作，主线程才继续执行，就可以利用 CountDownLatch 来实现
+		<br/><br/>
+	</li>
+	<li>
+	底层原理
+	<ul>
+		<li>
+			aqs:全称 AbstractQueuedSynchronizer （抽象队列同步器。目的：获得共享），是 java.util.concurrent 中提供的一种高效且可扩展的同步机制。<br/>
+			它可以用来实现可以依赖 int 状态的同步器，获取和释放参数以及一个内部FIFO等待队列<br/>CountDownLatch，ReentrantLock、Semaphore 等功能实现都使用了它.<br/>
+		<br/><br/>
+		</li>
+		<li>
+			cas:比较和交换（Conmpare And Swap）是用于实现多线程同步的原子指令。atomic包下 <br/>它将内存位置的内容与给定值进行比较，只有在相同的情况下，将该内存位置的内容修改为新的给定值。 这是作为单个原子操作完成的。 原子性保证新值基于最新信息计算; 如果该值在同一时间被另一个线程更新，则写入将失败。 操作结果必须说明是否进行替换; <br/>这可以通过一个简单的布尔响应（这个变体通常称为比较和设置），或通过返回从内存位置读取的值来完成<br/>
+		
+		
+		<br/><br/>
+		</li>
+	</ul>
+	</li>
+	<li>
+	当高并发请求时，countdownlatch的await方法有可能会引起死锁。如果使用的线程池数量较少，在高并发时会出现多个请求占用了全部的线程资源，但是每个请求又需要await其他线程，其他线程在等待线程池资源，导致多个请求同时进入线程阻塞，最后形成死锁。<br/><br/>
+	解决方案：
+	<ul>
+		<li>
+			扩大线程数量
+		<br/><br/>
+		</li>
+		<li>
+		异步非阻塞获取并行任务执行类 ExecutorCompletionService  谁先完成谁先出 <span style="color:red">不是fifo</span>
+		
+		
+		<br/><br/>
+		</li>
+		<li>
+		线程池拒绝策略
+		
+		
+		<br/><br/>
+		</li>
+	</ul>
+	
+	
+		<br/><br/>
+	</li>
+</ul>
+
+</div>
+
+<h4>引用</h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+四种级别的引用
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	
+	<li>
+	强引用：new 的对象
+	<h5>特点</h5>
+	<ul>
+		<li>强引用可以直接访问目标对象
+		</li>
+		<li>强引用所指向的对象在任何时候都不会被系统回收。JVM宁愿抛出OOM异常，也不会回收强引用所指向的对象
+		</li>
+		<li>强引用可能导致内存泄漏
+		</li>
+	</ul>
+<br/><br/>
+	</li>
+	<li>
+	软引用：软引用是除了强引用外，最强的引用类型。可以通过java.lang.ref.SoftReference使用软引用。一个持有软引用的对象，不会被JVM很快回收，JVM会根据当前堆的使用情况来判断何时回收。当堆使用率临近阈值时，才会去回收软引用的对象。因此，软引用可以用于实现对内存敏感的高速缓存
+	<br/><br/>
+	</li>
+	<li>
+	弱引用：弱引用是一种比软引用较弱的引用类型。在系统GC时，只要发现弱引用，不管系统堆空间是否足够，都会将对象进行回收。在java中，可以用java.lang.ref.WeakReference实例来保存对一个Java对象的弱引用。<br/><br/>
+	软引用，弱引用都非常适合来保存那些可有可无的缓存数据，如果这么做，当系统内存不足时，这些缓存数据会被回收，不会导致内存溢出。而当内存资源充足时，这些缓存数据又可以存在相当长的时间，从而起到加速系统的作用。
+	<br/><br/>
+	</li>
+	<li>
+	虚引用：虚引用是所有类型中最弱的一个。一个持有虚引用的对象，和没有引用几乎是一样的，随时可能被垃圾回收器回收。当试图通过虚引用的get()方法取得强引用时，总是会失败。并且，虚引用必须和引用队列一起使用，它的作用在于跟踪垃圾回收过程。<br/><br/>
+	当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在垃圾回收后，销毁这个对象，将这个虚引用加入引用队列。程序可以通过判断引用队列中是否已经加入了虚引用，来了解被引用的对象是否将要被垃圾回收。如果程序发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动。
+	<br/><br/>
+	</li>
+	
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+对象与值
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	
+	<li>
+	值传递与引用传递<br/><br/>
+	对象和基本的数据类型处理不一样<br/>
+	当把Java的基本数据类型（如int，char，double等）作为入口参数传给函数体的时候，
+	传入的参数在函数体内部变成了局部变量，这个局部变量是输入参数的一个拷贝，
+	所有的函数体内部的操作都是针对这个拷贝的操作，函数执行结束后，
+	这个局部变量也就完成了它的使命，它影响不到作为输入参数的变量。
+	这种方式的参数传递被称为"值传递"。而在Java中用对象作为入口参数的传递则缺省为"引用传递"，
+	也就是说仅仅传递了对象的一个"引用"，这个"引用"的概念同C语言中的指针引用是一样的。
+	当函数体内部对输入变量改变时，实质上就是在对这个对象的直接操作。
+<br/><br/>
+	</li>
+	<li>
+	深浅复制<br/><br/>
+	浅复制：无法复制对象，只能复制基本类型<br/>
+	深复制：可以复制对象，序列化是最好的方案<br/><br/>
+	</li>
+	
+</ul>
+
+</div>
+
+<h4>线程</h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+线程
+</div>
+<div class="divnext" >
+<br/>
+
+<ul style=" list-style-type: decimal;">
+	
+	<li>
+		<h4>线程状态</h4>
+		<img src="mianshi/threadstats.png" width="800px" height="400px"/>
+		<ul>
+	
+			<li>
+				新建(new):新建一个线程的对象
+			</li>
+			<li>
+				可运行(runable):线程对象创建后，其他线程调用该线程的start方法。
+				或者该线程位于可运行线程池中等待被线程调用，已获取cpu的使用权。
+		 
+			</li>
+			<li>
+				运行中(running):可运行的线程获取了cpu的使用权，执行程序代码
+			</li>
+			<li>
+				阻塞(block):由于某些原因该线程放弃了cpu的使用权。停止执行。除非线程进入可运行的状态，才会有机会获取cpu的使用权。
+				<ul>
+	
+					<li>
+						等待阻塞：运行中的线程执行wait方法，这时候该线程会被放入等待队列
+					</li>
+					<li>
+						同步阻塞：运行中的线程获取同步锁，如果该同步锁被别的线程占用，这个线程会成被放入锁池，等待其他线程释放同步锁
+					</li>
+					<li>
+						其他阻塞：运行的线程执行sleep或者join方法这个线程会成为阻塞状态。当sleep超时，join等待线程终止，该线程会进入可运行状态
+					</li>
+				</ul>
+			</li>
+			<li>
+				死亡(TERMINATED):线程执行完了或者因异常退出了run()方法，该线程结束生命周期
+		
+			</li>
+			
+	
+		</ul>
+	</li>
+	<li>
+		<h4>线程改变状态</h4>
+		<ul>
+			<li>wait-Object方法: 释放锁 
+			</li>
+			<li>notify-Object方法: 随机唤醒一个 wait 线程 ，放入锁池
+			</li>
+			<li>notifyAll-Object方法: 唤醒所有 wait 线程 ，放入锁池，等待锁竞争
+			</li>
+			<li>sleep-Thread方法: 不释放锁，需要捕捉异常，只对当前线程有效
+			</li>
+			<li>yield-Thread方法:暂停当前正在执行的线程对象，让同等优先权的线程或更高优先级的线程有执行的机会。状态由可执行状态后马上又被执行
+			</li>
+			<li>join-Thread方法:
+				不释放锁。<br/>
+				某一个线程的执行过程中调用另一个线程执行，等到被调用的线程执行结束后，再继续执行当前线程
+			</li>
+		</ul>
+	</li>
+	<li>
+
+	</li>
+	
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+线程池
+</div>
+<div class="divnext" >
+<br/>
+
+<ul style=" list-style-type: decimal;">
+	
+	
+	<li>
+		<h4>线程池参数</h4>
+		<ul style=" list-style-type: decimal;">
+			<li>
+				corePoolSize:核心线程数<br/>
+				如果等于0,则任务执行完之后,没有任何请求进入时销毁线程池的线程;<br/>
+				如果大于0,即使本地任务执行完毕,核心线程也不会被销毁.<br/>
+				设置过大会浪费资源;<br/>
+				设置过小会导致线程频繁地创建或销毁<br/><br/>
+			</li>
+			<li>
+				maximumPoolSize:核心线程数<br/>
+				表示线程池能够容纳同时执行的最大线程数<br/>
+				从第1处来看,必须>=1.<br/>
+				如果待执行的线程数大于此值,需要借助第5个参数的帮助,缓存在队列中.<br/>
+				如果maximumPoolSize = corePoolSize,即是固定大小线程池<br/><br/>
+			</li>
+			<li>
+				keepAliveTime:线程池中的线程空闲时间<br/>
+				当空闲时间达到keepAliveTime时,线程会被销毁,直到只剩下corePoolSize个线程;<br/>
+				避免浪费内存和句柄资源.<br/>
+				在默认情况下,当线程池的线程数大于corePoolSize时,keepAliveTime才起作用.<br/>
+				但是当ThreadPoolExecutor的allowCoreThreadTimeOut = true时,核心线程超时后也会被回收.<br/><br/>
+			</li>
+			<li>
+				 TimeUnit:时间单位<br/><br/>
+				
+			</li>
+			<li>
+				 workQueue:缓存队列<br/>
+				当请求的线程数大于maximumPoolSize时,线程进入BlockingQueue<br/><br/>
+			</li>
+			<li>
+				 threadFactory:线程工厂（命名用）<br/><br/>
+			</li>
+			<li>
+				 handler:执行拒绝策略的对象<br/>
+				 当超过第5个参数workQueue的任务缓存区上限的时候,就可以通过该策略处理请求,这是一种简单的限流保护.<br/>
+					友好的拒绝策略可以是如下三种<br/>
+					a:AbortPolicy:直接抛出异常，默认情况下采用这种策略<br/>
+					b:CallerRunsPolicy:只用调用者所在线程来运行任务<br/>
+					c:DiscardOldestPolicy:丢弃队列里最近的一个任务，并执行当前任务<br/>
+					d:DiscardPolicy:不处理，丢弃掉<br/><br/>
+			</li>
+		</ul>
+	</li>
+	<li>
+		禁止使用 Executors 工具类创建 ExecutorService 线程池<br/>
+		maximumPoolSize会被设置成 Integer.MAX_VALUE 风险比较大<br/><br/>
+	</li>
+	<li>
+		ExecutorService 停止<br/><br/>
+		
+		public static void gracefulShutdown(ExecutorService pool, int shutdownTimeout, int shutdownNowTimeout,TimeUnit timeUnit) {<br/>
+			pool.shutdown(); // 停止接收新任务并尝试完成所有已存在任务><br/>
+			try {<br/>
+				// 停止接收新任务并尝试完成所有已存在任务<br/>
+				if (!pool.awaitTermination(shutdownTimeout, timeUnit)) {<br/>
+					pool.shutdownNow(); // 如果超时, 则调用shutdownNow, 取消在workQueue中Pending的任务,并中断所有阻塞函数<br/>
+					// 等待取消的回应<br/>
+					if (!pool.awaitTermination(shutdownNowTimeout, timeUnit)) {<br/>
+						System.err.println("线程池还未停止");<br/>
+					}<br/>
+				}<br/>
+			} catch (InterruptedException ie) {<br/>
+				// (Re-)Cancel if current thread also interrupted 取消中断的线程<br/>
+				pool.shutdownNow();<br/>
+				// 保留中断状态<br/>
+				Thread.currentThread().interrupt();<br/>
+			}<br/>
+		}<br/><br/>
+	</li>
+	
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+ThreadLocal
+</div>
+<div class="divnext" >
+ThreadLocal 提供了线程本地的实例。它与普通变量的区别在于，每个使用该变量的线程都会初始化一个完全独立的实例副本。ThreadLocal 变量通常被<span style="color:red">private static</span>修饰。当一个线程结束时，它所使用的所有 ThreadLocal 相对的实例副本都可被回收。<br/><br/>
+
+<ul style=" list-style-type: decimal;">
+	
+	<li>
+		使用场景：ThreadLocal 适用于每个线程需要自己独立的实例且该实例需要在多个方法中被使用，也即变量在线程间隔离而在方法或类间共享的场景。
+	</li>
+	<li>
+注意事项：ThreadLocalMap key为弱引用，value为强引用，线程结束后 必须调用remove方法;删除ThreadLocal与ThreadLocalMap的映射关系。
+	</li>
+	<li>
+
+	</li>
+	
+</ul>
+
+</div>
+
+<h4>java锁</h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+锁
+</div>
+<div class="divnext" >
+<br/>
+内置锁，显示锁，各种容器及锁优化，锁消除，锁粗化，锁偏向，轻重量级锁
+https://blog.csdn.net/u010648018/article/details/79750608<br/>
+<h4>种类</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+		<ul>
+			<li>
+				独享锁(互斥锁)/共享锁(读写锁)<br/><br/>
+				独享锁:是指该锁一次只能被一个线程所持有。 (ReentrantLock、 Synchronized)<br/><br/>
+			
+				
+				共享锁:是指该锁可被多个线程所持有。 (ReadWriteLock)<br/><br/>
+			</li>
+			锁升级：读锁到写锁 (不支持)<br/>
+
+			锁降级：写锁到读锁 (支持)<br/>
+		</ul>
+		
+	</li>
+	<li>
+		<ul>
+			<li>
+				公平锁/非公平锁:<br/><br/>
+				公平锁是指多个线程按照申请锁的顺序来获取锁。<br/><br/>
+				非公平锁是指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁。<br/><br/>
+			</li>
+			对于Java ReentrantLock而言，通过构造函数指定该锁是否是公平锁，默认是非公平锁。非公平锁的优点在于吞吐量比公平锁大。公平锁维护等待队列，当获取系统资源的时候，需要先从等待队列中找到等待的线程<br/>
+
+			对于Synchronized而言，也是一种非公平锁。由于其并不像ReentrantLock是通过AQS的控制线程对锁的获取， 所以并没有任何办法使其变成公平锁。<br/>
+
+		</ul>
+	</li>
+	<li>
+		<ul>
+			<li>
+				可重入锁:<br/><br/>
+				可重入锁又名递归锁，是指同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁。<br/>
+
+				ReentrantLock和Synchronized都是可重入锁。可重入锁的一个好处是可一定程度避免死锁
+				
+			</li>
+			
+
+		</ul>
+	</li>
+	<li>
+		<ul>
+			<li>
+				乐观锁/悲观锁:<br/><br/>
+				乐观锁/悲观锁不是指具体类型的锁，而是看待并发的角度。<br/><br/>
+
+悲观锁认为存在很多并发更新操作，采取加锁操作，如果不加锁一定会有问题<br/><br/>
+
+乐观锁认为不存在很多的并发更新操作，不需要加锁。数据库中乐观锁的实现一般采用版本号，Java中可使用CAS实现乐观锁。<br/><br/>
+				
+			</li>
+			
+
+		</ul>
+	</li>
+	<li>
+		<ul>
+			<li>
+				分段锁:<br/><br/>
+				分段锁是一种锁的设计，并不是一种具体的锁。对于ConcuttentHashMap就是通过分段锁实现高效的并发操作<br/><br/>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<ul>
+			<li>
+				自旋锁:<br/><br/>
+				自旋锁是指尝试获取锁的线程不会阻塞，而是采用循环的方式尝试获取锁。好处是减少上下文切换，缺点是一直占用CPU资源<br/><br/>
+			</li>
+		</ul>
+	</li>
+	<li>
+		<ul>
+			<li>
+				偏向锁/轻量级锁/重量级锁:<br/><br/>
+				自旋锁是指尝试获取锁的线程不会阻塞，而是采用循环的方式尝试获取锁。好处是减少上下文切换，缺点是一直占用CPU资源<br/><br/>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+</div>
+
+
+<h4>web</h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+servlet安全性
+</div>
+<div class="divnext" >
+<br/>
+Servlet体系结构是建立在Java多线程机制之上的，它的生命周期是由Web容器负责的。
+	当客户端第一次请求某个Servlet时，Servlet容器将会根据web.xml配置文件实例化这个Servlet类。
+	当有新的客户端请求该Servlet时，一般不会再实例化该Servlet类，
+	也就是有多个线程在使用这个实例。Servlet容器会自动使用线程池等技术来支持系统的运行<br/><br/>
+	线程安全方案<br/>
+<ul style=" list-style-type: decimal;">
+	
+	<li>
+实现 SingleThreadModel 接口，类似Serializable 标识接口，指定了系统如何处理对同一个Servlet的调用（单例还是多例），没有具体功能，<br/>
+消耗线程池容量，增加线程开销
+	</li>
+	<li>
+同步对共享数据的操作 Synchronized (this){}
+	</li>
+	<li>
+避免使用实例变量
+	</li>
+	
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+避免重复提交表单
+</div>
+<div class="divnext" >
+解决方案
+<ul style=" list-style-type: decimal;">
+	
+	<li>
+前台使用悬浮框;按钮不可用等
+	</li>
+	<li>
+后台使用session+token 方式 ，验证单次token是否符合要求
+	</li>
+
+	
+</ul>
+
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

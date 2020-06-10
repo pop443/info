@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>oracle索引篇</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+.table{
+	width:100%;
+	margin-left:-10px;
+}
+.table tr td{
+	border:1px solid black;
+	padding-left:10px;
+}
+
+.table2 tr td{
+	border:1px solid black;
+	text-align:left;
+	padding-left:10px;
+}
+
+
+.style1 {
+	color: #008000;
+}
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+<script language="javascript">
+</script>
+<body>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+索引种类
+</div>
+<div class="divnext">
+
+<ul style=" list-style-type: decimal;">
+	<li>普通索引
+	</li>
+	<li>反向索引
+	</li>
+	<li>组合索引
+	</li>
+	<li>函数索引
+	</li>
+	<li>位图索引
+	</li>
+
+</div>
+</ul>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+索引
+</div>
+<div class="divnext">
+<ul style=" list-style-type: decimal;">
+
+	<li>创建索引<br/>
+	使用速度 数值<字符串<日期<br/>
+	一般索引是B*Tree索引,在索引结构中存储着键值和键值的RowID,并且是一一对应的<br/>
+	create index index_name on tablename(colums...);<br/>
+	<br/>
+	特点:<br/>
+	a.index需要储存空间和I/O操作。<br/>
+	b.index的目的是加快select的速度的。<br/>
+	c.insert,update,delete数据oracle会同时对索引进行相应的调整，因此会增加一定的消耗。<br/>
+	d.查询占全表的30%以下，使用索引;否则回表+使用index的cost 比 全表扫的更大<br/>
+	e.Index 对null 无效。<br/>
+	<br/>
+	
+	使用:<br/>
+	a.索引和表应该放在不同的表空间，在读取一个表时，记录和索引是同时读取，修改也同步进行，会引起竞争。<br/>
+	b.索引空间是extent是大小应该是5 blocks的倍数，因为oracle是一次读出5个blocks，如果你的extends是6，就会造成2次I/O操作。<br/>
+	c.在创建索引时可以关闭索引对应的redo 日志，提高速度。<br/>
+	d.重建索引 &nbsp;&nbsp;
+		alter index index_name rebuild [tablespace tablespace_name ]<br/>
+	e.整理索引碎片，高效不锁表&nbsp;&nbsp;
+		Alter index  index_name coalesce;<br/>
+<br/>
+	缺点:<br/>
+	a.增加索引会降低INSERT语句的性能，因为需要同时对表和索引进行插入。<br/>
+	b.索引列的UPDATE操作将会减慢执行速度，因为数据库必须管理对表和索引的改动。<br/>
+	c.大量行的DELETE操作将会由于表中存在索引而减慢执行速度。<br/>
+	</li>
+	<br/>
+
+	
+	
+	
+	<li>监控索引的使用状态
+	生成用户下所有监控索引语句<br/>
+	select 'alter index '||index_name||' monitoring usage;' from user_indexes;<br/>
+	生成用户下所有监控解除索引语句<br/>
+	select 'alter index '||index_name||' nomonitoring usage;' from user_indexes;<br/>
+	查看监控信息 主要是看USED 字段 使用为YES  没使用为NO <br/>
+	select t.USED,t.* from v$object_usage t <br/>
+	
+	</li>
+	<br/>
+	
+	
+	
+	
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+执行计划
+</div>
+<div class="divnext">
+
+<ul style=" list-style-type: decimal;">
+	<li>
+		表访问的几种方式：<br/>
+		<ul>
+			<li>TABLE ACCESS FULL（全表扫描）</li>
+			<li>TABLE ACCESS BY INDEX ROWID（通过ROWID的表存取）</li>
+			<li>INDEX FULL SCAN（索引扫描）：<br/>
+			步骤：回表<br/>
+			<ul>
+					<li>扫描索引得到对应的ROWID</li>
+					<li>通过ROWID定位到具体的行读取数据</li>
+					
+				</ul>
+			详细类型：<br/>
+				<ul>
+					<li>INDEX UNIQUE SCAN（索引唯一扫描）</li>
+					<li>INDEX RANGE SCAN（索引范围扫描）</li>
+					<li>INDEX FULL SCAN（索引全扫描）：进行全索引扫描时，查询出的数据都必须从索引中可以直接得到（注意全索引扫描只有在CBO模式下才有效）</li>
+					<li>INDEX FAST FULL SCAN（索引快速扫描）：扫描索引中的所有的数据块，与 INDEX FULL SCAN 类似，但是一个显著的区别是它不对查询出的数据进行排序（即数据不是以排序顺序被返回）</li>
+					<li>INDEX SKIP SCAN（索引跳跃扫描）: 
+					且在查询时有除了前导列（索引中第一列）外的其他列作为条件，并且优化器模式为CBO时<br/>
+					当Oracle发现前导列的唯一值个数很少时，会将每个唯一值都作为常规扫描的入口，在此基础上做一次查找，最后合并这些查询<br/></li>
+				</ul>
+			</li>
+			<br/>
+		</ul>
+	</li>
+	<li>
+		表连接方式<br/>
+		<ul>
+			<li>SORT MERGE JOIN（排序-合并连接）：<br/>
+			排序-合并连接的表无驱动顺序，谁在前面都可以；<br/>
+			排序-合并连接适用的连接条件有： <   <=   =   >   >= ，不适用的连接条件有： <>    like <br/>
+			</li>
+			<li>NESTED LOOPS（嵌套循环）：<br/>
+			嵌套循环的表有驱动顺序，注意选择合适的驱动表。<br/>
+			嵌套循环连接有一个其他连接方式没有的好处是：可以先返回已经连接的行，而不必等所有的连接操作处理完才返回数据，这样可以实现快速响应。<br/>
+			应尽可能使用限制条件（Where过滤条件）使驱动表（row source 1）返回的行数尽可能少，同时在匹配表（row source 2）的连接操作关联列上建立唯一索引（UNIQUE INDEX）或是选择性较好的非唯一索引，此时嵌套循环连接的执行效率会变得很高。若驱动表返回的行数较多，即使匹配表连接操作关联列上存在索引，连接效率也不会很高。<br/><br/>
+			</li>
+			<li>HASH JOIN（哈希连接）：<br/>
+			三种模式：<br/>
+				<ul>
+					<li>OPTIMAL HASH JOIN：模式是从驱动表（也称Build Table）上获取的结果集比较小，可以把根据结果集构建的整个Hash Table都建立在用户可以使用的内存区域里</li>
+					<li>ONEPASS HASH JOIN：从驱动表（也称Build Table）上获取的结果集较大，无法将根据结果集构建的Hash Table全部放入内存中时，会使用 ONEPASS 模式</li>
+					<li>MULTIPASS HASH JOIN：当内存特别小或者相对而言Hash Table的数据特别大时，会使用 MULTIPASS 模式。MULTIPASS会多次读取磁盘数据，应尽量避免使用该模式</li>
+				</ul>
+			</li>
+			<li>CARTESIAN PRODUCT（笛卡尔积）</li>
+			
+			<br/>
+		</ul>
+	</li>
+	
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+
+
+
+</body>
+
+</html>

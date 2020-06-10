@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<title>redis高级篇</title>
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<style>
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	
+}
+childul{
+	padding-left:-5%;
+}
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:15px;
+}
+.td1{
+	width:20;
+}
+.td2{
+	width:30;
+}
+.td3{
+	width:50;
+}
+</style>
+
+</head>
+
+<body>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+内部数据结构 object encoding key
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: decimal;">
+	<li>
+	类型：
+	<table class="table">
+		
+		<tr>
+			<td rowspan="3" class="td1">string
+			</td>
+			<td class="td2">int
+			</td>
+			<td class="td3">8字节长整型
+			</td>
+			
+			
+		</tr>
+		<tr>
+			<td class="td2">embstr
+			</td>
+			<td class="td3">元素&lt;=39字节
+			</td>
+		</tr>
+		<tr>
+			<td class="td2">raw
+			</td>
+			<td class="td3">&gt;39字节
+			</td>
+		</tr>
+		
+		
+		<tr>
+			<td rowspan="2" class="td1">hash
+			</td>
+			<td class="td2">ziplist(压缩列表)
+			</td>
+			<td class="td3">元素&lt;64字节，数量&lt;512
+			</td>
+			
+			
+		</tr>
+		<tr>
+			<td class="td2">hashtable(哈希表)
+			</td>
+			<td class="td3">元素&gt;64字节或者数量&gt;512
+			</td>
+		</tr>
+		
+		<tr>
+			<td rowspan="3" class="td1">list
+			</td>
+			<td class="td2">ziplist(压缩列表)
+			</td>
+			<td class="td3">元素&lt;64字节，数量&lt;512
+			</td>
+			
+			
+		</tr>
+		<tr>
+			<td class="td2">linkedlist
+			</td>
+			<td class="td3">元素&gt;64字节或者数量&gt;512
+			</td>
+		</tr>
+		<tr>
+			<td class="td2">quicklist
+			</td>
+			<td class="td3">介于两者
+			</td>
+		</tr>
+		
+		
+		<tr>
+			<td rowspan="2" class="td1">set
+			</td>
+			<td class="td2">intset
+			</td>
+			<td class="td3">元素&lt;64字节，数量&lt;512
+			</td>
+			
+			
+		</tr>
+		<tr>
+			<td class="td2">hashtable(哈希表)
+			</td>
+			<td class="td3">元素&gt;64字节或者数量&gt;512
+			</td>
+		</tr>
+		
+		
+		<tr>
+			<td rowspan="2" class="td1">sorted set
+			</td>
+			<td class="td2">ziplist(压缩列表)
+			</td>
+			<td class="td3">元素&lt;64字节，数量&lt;128
+			</td>
+			
+			
+		</tr>
+		<tr>
+			<td class="td2">skiplist
+			</td>
+			<td class="td3">元素&gt;64字节或者数量&gt;128
+			</td>
+		</tr>
+		
+	</table>
+	</li>
+	<li>
+	集合差异:
+	<table class="table" style="font-size:large;width:90%">
+			<tr style="background-color:lightgrey">
+				<td style="width:15%;">数据类型</td>
+				<td style="width:20%;">重复元素</td>
+				<td style="width:20%;">是否有序</td>
+				<td style="width:20%;">有序实现方式</td>
+				<td style="width:25%;">应用场景</td>
+			</tr>
+			<tr>
+				<td style="width:15%;">list</td>
+				<td style="width:20%;">是</td>
+				<td style="width:20%;">是</td>
+				<td style="width:20%;">索引下标</td>
+				<td style="width:25%;">时间轴、消息队列</td>
+			</tr>
+			<tr>
+				<td style="width:15%;">set</td>
+				<td style="width:20%;">否</td>
+				<td style="width:20%;">否</td>
+				<td style="width:20%;">无</td>
+				<td style="width:25%;">标签、社交</td>
+			</tr>
+			<tr>
+				<td style="width:15%;">有序集合</td>
+				<td style="width:20%;">否</td>
+				<td style="width:20%;">是</td>
+				<td style="width:20%;">分值</td>
+				<td style="width:25%;">排行系统、社交</td>
+			</tr>
+		</table>
+	</li>
+	</ul>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+缓存问题
+</div>
+<div class="divnext" >
+	<ul style=" list-style-type: decimal;">
+	
+	<li>
+	缓存穿透
+		<ul class="childul">
+			<li>
+			缓存穿透是指缓存和数据库中都没有的数据，而用户不断发起请求，如发起为id为“-1”的数据或id为特别大不存在的数据。这时的用户很可能是攻击者，攻击会导致数据库压力过大。<br/>
+			</li>
+			<li>
+				解决方案:<br/>
+				<ul class="childul">
+					<li>接口层增加校验，如用户鉴权校验，id做基础校验，id<=0的直接拦截；
+					</li>
+					<li>从缓存取不到的数据，在数据库中也没有取到，这时也可以将key-value对写为key-null，缓存有效时间可以设置短点，如30秒（设置太长会导致正常情况也没法使用）。这样可以防止攻击用户反复用同一个id暴力攻击
+					</li>
+				</ul>
+			</li>
+		</ul>
+		 
+	</li>
+	<li>
+	缓存击穿
+		<ul class="childul">
+	
+		<li>
+			缓存击穿是指缓存中没有但数据库中有的数据（一般是缓存时间到期），这时由于并发用户特别多，同时读缓存没读到数据，又同时去数据库去取数据，引起数据库压力瞬间增大，造成过大压力<br/>
+		</li>
+		<li>
+			解决方案:<br/>
+			<ul class="childul">
+				<li>设置热点数据永远不过期
+				</li>
+				<li>加互斥锁，互斥锁 ReentrantLock.tryLock() ReentrantLock.unlock()
+				</li>
+			</ul>
+		</li>
+		
+		</ul>
+	</li>
+	<li>
+	缓存雪崩
+		<ul class="childul">
+	
+		<li>
+			缓存雪崩是指缓存中数据大批量到过期时间，而查询数据量巨大，引起数据库压力过大甚至down机。和缓存击穿不同的是，        缓存击穿指并发查同一条数据，缓存雪崩是不同数据都过期了，很多数据都查不到从而查数据库。<br/>
+		</li>
+		<li>
+			解决方案:<br/>
+			<ul class="childul">
+				<li>缓存数据的过期时间设置随机，防止同一时间大量数据过期现象发生
+				</li>
+				<li>如果缓存数据库是分布式部署，将热点数据均匀分布在不同搞得缓存数据库中。
+				</li>
+				<li>设置热点数据永远不过期。
+				</li>
+			</ul>
+		</li>
+		
+		</ul>
+	</li>
+	
+	</ul>
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+慢查询
+</div>
+<div class="divnext" >
+	<ul style=" list-style-type: decimal;">
+	<br/>
+	<li>
+		a.	slowlog-log-slower-than	预设阈值 生产10000 （10毫秒）<br/>
+		b.	slowlog-max-len			存储条数 生产1000以上
+		<br/><br/>
+		获取 slowlog get [n] ；获得list 每个element有4个属性：<br/>
+		a. 标识id<br/>
+		b. 时间戳<br/>
+		c. 命令耗时<br/>
+		d. 执行命令和参数<br/><br/>
+		<table class="table" style="font-size:large;width:90%">
+			<tr>
+
+				<td rowspan="2" style="width:15%;">参数</td>
+				<td style="width:40%;">slowlog-log-slower-than</td>
+				<td style="width:45%;">预设阈值 生产10000 （10毫秒）</td>
+			</tr>
+			
+			<tr>
+				<td style="width:40%;">slowlog-max-len</td>
+				<td style="width:45%;">存储条数 生产1000以上</td>
+			</tr>
+			
+			<tr>
+
+				<td rowspan="3" style="width:15%;">查询</td>
+				<td style="width:40%;">slowlog get [n]</td>
+				<td style="width:45%;">获得list 每个element有4个属性：<br/>
+		a. 标识id<br/>
+		b. 时间戳<br/>
+		c. 命令耗时<br/>
+		d. 执行命令和参数</td>
+			</tr>
+			
+			<tr>
+				<td style="width:40%;">slowlog len</td>
+				<td style="width:45%;">慢查询列表长度</td>
+			</tr>
+			<tr>
+				<td style="width:40%;">slowlog reset</td>
+				<td style="width:45%;">清理慢查询列表</td>
+			</tr>
+			
+
+		</table>
+	</li>
+	</ul>
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+优化
+</div>
+<div class="divnext" >
+	<ul style=" list-style-type: none;">
+
+	<li>
+	<br/>
+容量预估：http://www.redis.cn/redis_memory/ 
+	</li>
+	</ul>
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>

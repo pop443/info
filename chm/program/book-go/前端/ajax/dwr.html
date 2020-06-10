@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Language" content="zh-cn" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>基本ajax</title>
+</head>
+
+<body>
+DWR<br>
+----------web.xml----------<br>
+&lt;servlet&gt;<br>
+&lt;servlet-name&gt;dwr&lt;/servlet-name&gt;<br>
+&lt;servlet-class&gt;org.directwebremoting.servlet.DwrServlet&lt;/servlet-class&gt;<br>
+&lt;init-param&gt;<br>
+&lt;param-name&gt;debug&lt;/param-name&gt;<br>
+&lt;param-value&gt;true&lt;/param-value&gt;<br>
+&lt;/init-param&gt;<br>
+&lt;/servlet&gt;<br>
+&lt;servlet-mapping&gt;<br>
+&lt;servlet-name&gt;dwr&lt;/servlet-name&gt;<br>
+&lt;url-pattern&gt;/dwr/*&lt;/url-pattern&gt;<br>
+&lt;/servlet-mapping&gt;<br>
+init-param debug <br>
+path/工程名/dwr<br>
+-------------------------<br>
+<br>
+----------dwr.xml----------<br>
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br>
+&lt;!DOCTYPE dwr PUBLIC &quot;-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN&quot; 
+&quot;http://getahead.org/dwr//dwr30.dtd&quot;&gt;<br>
+&lt;dwr&gt; <br>
+&lt;allow&gt; <br>
+&lt;create creator=&quot;new&quot; javascript=&quot;DWRUserCheck&quot;&gt; <br>
+&lt;param name=&quot;class&quot; value=&quot;com.ysb.UserValidate&quot; /&gt; <br>
+&lt;include method=&quot;checkuser&quot;/&gt;<br>
+&lt;include method=&quot;checkuserAtter&quot;/&gt;<br>
+&lt;/create&gt; <br>
+&lt;/allow&gt; <br>
+&lt;/dwr&gt; <br>
+1.class: 类创建方式<br>
+2.javascript: 前台页面的包名；DWRUserCheck<br>
+3.param name: 类<br>
+4.value:完整类路径<br>
+包含; include method <br>
+-------------------------<br>
+<br>
+----------前台----------<br>
+<br>
+&lt;!--JS --&gt;<br>
+&lt;script type=&#39;text/javascript&#39; src=&#39;&lt;%=path %&gt;js/dwr/engine.js&#39;&gt;&lt;/script&gt;<br>
+&lt;script type=&#39;text/javascript&#39; src=&#39;&lt;%=path %&gt;js/dwr/util.js&#39;&gt;&lt;/script&gt;<br>
+&lt;script type=&#39;text/javascript&#39; src=&#39;&lt;%=path %&gt;dwr/interface/DWRUserCheck.js&#39;&gt;&lt;/script&gt;<br>
+<br>
+<br>
+DWRUserCheck.checkuser(arge,function(result){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+//arge 参数<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //function(result) 回调<br>
+});<br>
+<br>
+dwr BUG(在iframe和远程调用的时候会出现同步失效问题)<br>
+dwr.engine.setAsync(false);dwr.engine.setAsync(true);<br>
+-------------------------<br>
+<br>
+<br>
+----------提高和拓展----------<br>
+&lt;dwr&gt;<br>
+&lt;allow&gt; <br>
+&lt;create creator=&quot;...&quot; javascript=&quot;...&quot; scope=&quot;...&quot;&gt; <br>
+&lt;param name=&quot;...&quot; value=&quot;...&quot;/&gt; <br>
+&lt;auth method=&quot;...&quot; role=&quot;...&quot;/&gt; <br>
+&lt;exclude method=&quot;...&quot;/&gt; //包含<br>
+&lt;include method=&quot;...&quot;/&gt; //排除 权限控制<br>
+&lt;/create&gt; <br>
+... <br>
+&lt;/allow&gt; <br>
+&lt;/dwr&gt;<br>
+<p style="color:red">1.creator 有8种方式 new-新建;none-静态;script-单例;spring-bean:struts-formbean;<br></p>
+------------------------------<br>
+<br>
+<br>
+<table border="1" width="100%" id="table1" cellspacing="0" cellpadding="0" style="border-collapse: collapse">
+	<tr>
+		<td bgcolor="#FFCC99">附件</td>
+	</tr>
+	<tr>
+		<td><div><a href="../other/业软公共 提高培训 TopEng-CSP dwr 培训胶片V1.0.ppt">业软公共 提高培训 TopEng-CSP dwr 培训胶片V1.0.ppt</a></div>
+</td>
+	</tr>
+</table>
+</body>
+
+</html>

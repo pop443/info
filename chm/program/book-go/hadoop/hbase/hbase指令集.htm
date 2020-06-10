@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>hbase指令集</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+	text-align:left;
+	border:1px solid black;
+	padding-left:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<h4>hbase指令集</h4>
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="font-size:large">
+			<tr style="background-color:lightgrey;">
+				<td colspan="2" style="width:100%;"><b>hbase 指令</b> </td>
+			</tr>
+			<tr>
+				<td style="width:30%;">查看hfile内容 </td>
+				<td style="width:70%;">hbase hfile -v -p -f $PATH</td>
+			</tr>
+			
+			<tr>
+				<td style="width:30%;"> 进入hbase zookeeper控制台</td>
+				<td style="width:70%;">hbase zkcli </td>
+			</tr>
+			<tr>
+				<td style="width:30%;">查看hbase表概要 </td>
+				<td style="width:70%;">hbase hbck</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">启动重启regionserver服务</td>
+				<td style="width:70%;">hbase-daemon.sh start/restart 
+				regionserver</td>
+			</tr>
+			
+			
+			
+			<tr style="background-color:lightgrey;">
+				<td colspan="2" style="width:100%;"><b>hbase client 指令</b> </td>
+			</tr>
+			<tr>
+				<td style="width:30%;">hbase信息 直接查元数据</td>
+				<td style="width:70%;">zk_dump</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">hbase 手动合并 HStoreFile</td>
+				<td style="width:70%;">major_compact &#39;t1&#39;,&#39;c1&#39;</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">增加表级coprocessor(必须在启动前加入jar包)$类全路径 为必填 
+				其他可以空</td>
+				<td style="width:70%;">disable &#39;$tableName';<br/>
+								alter '$tableName',METHOD=>'table_att','coprocessor'=>'$jarpath|$类全路径|$序列号|$权限(SYSTEM/USER)'<br/>
+								alter '$tableName',METHOD=>'table_att_unset&#39;,NAME 
+	=&gt; &#39;$name&#39;<br/>
+				enable '$tableName'</td>
+			</tr>
+		</table>
+	</li>
+	<br/>
+</ul>
+
+</body>
+
+</html>

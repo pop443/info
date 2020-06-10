@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>hbase原理</title>
+<style>
+.table{
+	
+	width:100%;
+	margin-left:10px;
+	
+}
+.table tr td{
+		text-align:left;
+	border:1px solid black;
+	padding-left:10px;
+}
+
+</style>
+</head>
+
+<body>
+<h4>hbase 0.98 元数据 zookeeper</h4>
+<ul style=" list-style-type: decimal;">
+	<li>启动hbase时，依次启动线程1.读取配置文件,2链接zookeeper,3启动master,4启动regionserver<br/>
+		hbase会把元数据存储在zookeeper下:<br/>
+		在hdfs上新建功能目录及建系统表 'hbase:meta'<br/>
+		master注册路径为$zk_path/hbase/master;<br/>
+		备用master注册路径为$zk_path/hbase/backup-master;<br/>
+		meta表注册路径为$zk_path/hbase/meta-region-server;<br/>
+		regionserver注册路径为$zk_path/hbase/rs<br/>
+		
+	</li>
+	<li>client访问hbase region时,读取hbase配置文件<br/>
+		连接zookeeper，zookeeper读取$zk_path/hbase/meta-region-server<br/>
+		读取meta表,get拿regionserverinfo,scan 数据块存放位置,找寻址入口
+	</li>
+	<li>去region所在机器上的block拿数据
+	</li>
+		<br/>
+	
+
+
+</ul>
+
+
+<h4>hbase元数据 hdfs</h4>
+<ul style=" list-style-type: decimal;">
+	<li>0.96版本之后的数据结构 hdfs 上
+		<table class="table" style="font-size:small">
+			
+			<tr>
+				<td style="width:30%;">/hbase/.tmp</td>
+				<td style="width:70%;">当对表做创建或者删除操作的时候，会将表move 到该 tmp 目录下，然后再去做处理操作。</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">/hbase/WALs</td>
+				<td style="width:70%;">WAL（Write Ahead Log）,HBase 会在第一次启动之初会给每一台 RegionServer 在/hbase/WALs 下创建一个目录（主机名，端口，启动时间long型），<br/>若客户端如果开启WAL 模式，会先将数据写入一份到/hbase/WALs下，当 RegionServer crash 或者目录达到一定大小，会开启 replay 模式</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">/hbase/archive</td>
+				<td style="width:70%;">HBase 在做 Split或者 compact 操作完成之后，会将 HFile 移到.archive 目录中，然后将之前的 hfile 删除掉，该目录由 HMaster 上的一个定时任务定期去清理</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">/hbase/corrupt</td>
+				<td style="width:70%;">存储HBase做损坏的日志文件，一般都是为空的</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">/hbase/data</td>
+				<td style="width:70%;">存放数据，支持namespace模型，系统会预置两个 namespace 即：hbase和default </td>
+			</tr>
+			<tr>
+				<td style="width:30%;">/hbase/hbase.id</td>
+				<td style="width:70%;">它是一个文件，存储集群唯一的 cluster id 号，是一个 uuid</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">/hbase/hbase.version</td>
+				<td style="width:70%;">存储集群的版本号</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">/hbase/oldWALs</td>
+				<td style="width:70%;">当WALs 文件夹中的 HLog 没用之后会 move 到oldWALs 中，HMaster 会定期去清理</td>
+			</tr>
+		</table>
+		
+
+	</li>
+	<br/>
+	
+
+
+</ul>
+
+
+<h4>hbase 存储结构</h4>
+<ul style=" list-style-type: decimal;">
+	<li>Rowkey:在hfile中rowkey保存为字节数组，按字典序排序（升序）存储<br/><br/>
+		Cell:由rowkey,family,column,version确定的一个存储单元<br/><br/>
+		KeyValue:最小的存储单元，一个keyvalue为一列，为字节数组存储。<br/>
+			包括RowKeyLength、RowKey、ColumnFamilyLength、ColumnFamily、Qualifier、TimeStamp、Type（PUT操作）、Value<br/>
+			并记录偏移量信息。
+	</li>
+	<br/>
+	
+	<li>region:设计20-200个region ,每个存放5-20G的数据量
+	</li>
+	<br/>
+
+</ul>
+
+<h4>hbase regionserver split process</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+	regionserver获得一个共享读锁，防止table schema被修改，在/hbase(zk下目录)下创建znode（标示路径/regionName），并设置成分裂状态<br/>
+	</li>
+	<li>
+	在分裂region目录创建.splits文件目录。下线需要分裂的region，之后在.splits下创建分裂区域 A,B<br/>
+	</li>
+	<li>
+	拆分存储文件，创建存储文件的引用文件<br/>
+	</li>
+	<li>
+	hdfs创建实际目录，并参考分裂区域A、B<br/>
+	</li>
+	<li>
+	regionserver发送put数据给meta表，更新表和分裂region的信息，成功：父region被拆分，失败：清除脏数据<br/>
+	</li>
+	<li>
+	regionserver并行打开两个分裂区域region A、B<br/>
+	</li>
+	<li>
+	现在分裂region及分裂后的两个region都上线，client会发现新的region,并更新缓存。regionserver更新/hbase下znode状态，分裂完成<br/>
+	</li>
+	<li>
+	在分裂region的数据重写入分裂区域A、B 且无引用关系后，master的GC 会删除分裂region<br/>
+	</li>
+	<br/>
+</ul>
+
+<h4>hbase coprocessor Endpoint</h4>
+<ul style=" list-style-type: decimal;">
+	<li>
+	类似于oracle producer，提供基于region块的并行化计算<br/><br/>
+	</li>
+	
+	<li>
+	启动或动态加载后，会在hbase的临时文件夹（hbase.local.dir参数）下生成临时jar包，用于计算<br/><br/>
+	</li>
+	
+	<li>
+	master对regionserver发送rpc请求，regionserver找到table下的region块，有木桶效应，<br/>返回各个region的计算结果封装成 Map&lt;byte[] regionname,object 计算结果&gt; 返回给client。<br/><br/>
+	</li>
+</ul>
+
+</body>
+
+</html>
