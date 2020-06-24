@@ -949,16 +949,87 @@ sar 性能监控
 		</tr>
 		<tr>
 			<td colspan="5" rowspan="1" style="width:45%">
-			
-			/var/log/sa/sa03<br/>
-			sar -n DEV -f /var/log/sa/sa01<br/>
-			sar -n SOCK -f /var/log/sa/sa01
+			/var/log/sa<br/>
+			/var/log/sa/sa03
 			</td>
 			<td colspan="5" rowspan="1" style="width:45%">
 			过去的统计信息生成目录地址<br/>
-			过去的统计信息 网络接口信息<br/>
-			过去的统计信息 统计socket连接信息<br/>
-			
+			这个月或者上个月3号的统计信息
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			sar -f /var/log/sa/sa23 -u | grep PM | awk '{if($1>="05:00:01" && $1<="07:00:02"){print $0}}' 
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">
+			CPU <br/>
+			%user   用户空间的CPU使用<br/>
+			%nice   改变过优先级的进程的CPU使用率<br/>
+			%system   内核空间的CPU使用率<br/>
+			%iowait   CPU等待IO的百分比 <br/>
+			%steal   虚拟机的虚拟机CPU使用的CPU<br/>
+			%idle   空闲的CPU<br/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			sar -f /var/log/sa/sa23 -b | grep PM | awk '{if($1>="05:00:01" && $1<="07:00:02"){print $0}}' 
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">
+			io <br/>
+			tps  磁盘每秒钟的IO总数，等于iostat中的tps<br/>
+			rtps  每秒钟从磁盘读取的IO总数<br/>
+			wtps  每秒钟从写入到磁盘的IO总数<br/>
+			bread/s  每秒钟从磁盘读取的块总数<br/>
+			bwrtn/s  每秒钟此写入到磁盘的块总数<br/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			sar -f /var/log/sa/sa23 -q | grep PM | awk '{if($1>="05:00:01" && $1<="07:00:02"){print $0}}' 
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">
+			负载 <br/>
+			runq-sz    运行队列的长度（等待运行的进程数，每核的CP不能超过3个）<br/>
+			plist-sz   进程列表中的进程（processes）和线程数（threads）的数量<br/>
+			ldavg-1  最后1分钟的CPU平均负载，即将多核CPU过去一分钟的负载相加再除以核心数得出的平均值，5分钟和15分钟以此类推<br/>
+			ldavg-5   最后5分钟的CPU平均负载<br/>
+			ldavg-15  最后15分钟的CPU平均负载<br/>
+			blocked  <br/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			sar -f /var/log/sa/sa23 -d | grep PM | awk '{if($1>="05:00:01" && $1<="07:00:02"){print $0}}' 
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">
+			磁盘 设备查看 lsblk -a <br/>
+			DEV  磁盘设备的名称，如果不加-p，会显示dev253-0类似的设备名称，因此加上-p显示的名称更直接<br/>
+			tps  每秒I/O的传输总数<br/>
+			rd_sec/s  每秒读取的扇区的总数<br/>
+			wr_sec/s  每秒写入的扇区的总数<br/>
+			avgrq-sz  平均每次次磁盘I/O操作的数据大小（扇区）<br/>
+			avgqu-sz  磁盘请求队列的平均长度<br/>
+			await  从请求磁盘操作到系统完成处理，每次请求的平均消耗时间，包括请求队列等待时间，单位是毫秒（1秒等于1000毫秒），等于寻道时间+队列时间+服务时间<br/>
+			svctm  I/O的服务处理时间，即不包括请求队列中的时间<br/>
+			%util  I/O请求占用的CPU百分比，值越高，说明I/O越慢<br/>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="5" rowspan="1" style="width:45%">
+			sar -f /var/log/sa/sa23 -n DEV | grep PM | awk '{if($1>="05:00:01" && $1<="07:00:02"){print $0}}' 
+			</td>
+			<td colspan="5" rowspan="1" style="width:45%">
+			网络接口信息<br/>
+			IFACE  本地网卡接口的名称<br/>
+			rxpck/s  每秒钟接受的数据包<br/>
+			txpck/s  每秒钟发送的数据库<br/>
+			rxKB/S  每秒钟接受的数据包大小，单位为KB<br/>
+			txKB/S  每秒钟发送的数据包大小，单位为KB<br/>
+			rxcmp/s  每秒钟接受的压缩数据包<br/>
+			txcmp/s  每秒钟发送的压缩包<br/>
+			rxmcst/s  每秒钟接收的多播数据包  <br/>
+
 			</td>
 		</tr>
 </table>
