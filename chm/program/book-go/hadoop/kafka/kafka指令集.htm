@@ -79,7 +79,7 @@
 				<td style="width:70%;">当偏移量存储在broker上时 只能查到logsize</td>
 			</tr>
 			<tr>
-				<td colspan="2" style="width:100%;background-color:lightgrey;">控制台测试 含kb</td>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">控制台测试 含kerberos</td>
 			</tr>
 			<tr>
 				<td style="width:30%;">kafka-consumer-offset-checker.sh --zookeeper zkhosts:2181 --topic test --group consumer </td>
@@ -95,7 +95,17 @@
 /usr/lib/kafka/bin/kafka-console-consumer.sh --bootstrap-server vdkapp27:6667 --topic test  --new-consumer  --consumer.config /etc/kafka/conf/client.properties</td>
 				<td style="width:70%;">开启kb后 使用console打印输出的方式 接受 broker 集群中的 topic test 的数据</td>
 			</tr>
-
+			<tr>
+				<td colspan="2" style="width:100%;background-color:lightgrey;">生产消费控制台</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-console-producer.sh --broker-list 172.32.148.245:9092,172.32.148.246:9092 --topic ignite_topic </td>
+				<td style="width:70%;">控制台生产</td>
+			</tr>
+			<tr>
+				<td style="width:30%;">kafka-console-consumer.sh --bootstrap-server 172.32.148.245:9092,172.32.148.246:9092 --topic ignite_topic --from-beginning</td>
+				<td style="width:70%;">控制台消费</td>
+			</tr>
 		</table>
 		
 
