@@ -105,6 +105,7 @@ other\UDTFDemo.zip
 other\shell\study.sh
 other\shell\initUser.sh
 other\shell\log.sh
+other\shell\thread_jstack.sh
 other\emberJS.txt
 other\Logger.js
 
