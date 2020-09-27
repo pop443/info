@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK" />
+<script type="text/javascript" src="../../other/jquery-1.7.2.js"></script>
+<script type="text/javascript" src="../../other/css.js"/></script>
+<title>linux 排障</title>
+<style>
+.table{
+	width:100%;
+	margin-left:-10px;
+	margin-top:20px;
+}
+.table tr td{
+	border:1px solid black;
+	padding-left:10px;
+}
+
+
+
+
+.style1 {
+	color: #008000;
+}
+
+div{
+	padding-left:3%;
+}
+.divfirst{
+	width:96%;
+	background-color:#FFCC99;
+}
+.divnext{
+	border-style: dotted;
+	border-color: #C0C0C0;
+	display:none;
+	width:94%;
+	margin-left:1%;
+}
+</style>
+
+</head>
+
+<body>
+<h2>排障命令</h2>
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+网络
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="font-size:large;">
+			<tr style="background-color:lightgrey">
+				<td colspan="2" style="width:100%;"><b>mtr  ？？？网关  高LOSS  ICMP路由策略</b></td>
+			</tr>
+			<tr>
+				<td style="width:60%;">mtr -a 10.32.225.68 -c 100  -r pcache15</td>
+				<td style="width:40%;"> -a 确定本地ip  -c 次数 -r 模式显示</td>
+			</tr>
+
+			
+			
+		</table>
+	</li>
+	<br/>
+</ul>
+
+</div>
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+交换内存 swap
+</div>
+<div class="divnext" >
+<ul style=" list-style-type: none;">
+	<li>
+		<table class="table" style="font-size:large;">
+			<tr style="background-color:lightgrey">
+				<td colspan="2" style="width:100%;"><b>/proc/pid/smaps</b></td>
+			</tr>
+			<tr>
+				<td style="width:60%;">for i in $(cd /proc;ls | grep "^[0-9]" | awk '$0>100'); do awk '/Swap:/{a=a+$2}END{print '"$i"',a/1024"M",'"$i"'}' /proc/$i/smaps;done| sort -k2nr | head</td>
+				<td style="width:40%;"> 进程使用swap空间排序 </td>
+			</tr>
+
+			
+			
+		</table>
+	</li>
+	<br/>
+</ul>
+
+</div>
+
+
+<h4></h4>
+<div class="divfirst"  onclick="javascript:hoverhidden(this)">
+test
+</div>
+<div class="divnext">content
+</div>
+
+
+
+</body>
+</html>
