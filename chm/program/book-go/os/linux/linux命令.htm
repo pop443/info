@@ -731,6 +731,10 @@ sed 文本处理
 			<td colspan="3"  style="width:22%">sed -i 's:SELINUX=enforcing:SELINUX=disabled:g'/etc/sysconfig/selinux</td>
 			<td colspan="7"  style="width:22%">使用：分割 比如有路径转换问题 </td>
 		</tr>
+		<tr>
+			<td colspan="3"  style="width:22%">sed '/id=".*_mycat.*"/,/<\/bean>/d' 1.xml</td>
+			<td colspan="7"  style="width:22%">把xml中 从id包含 _mycat 的节点到 <\/bean>节点全部删掉</td>
+		</tr>
 </table>
 </div>
 
